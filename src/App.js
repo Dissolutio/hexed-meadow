@@ -14,8 +14,8 @@ export const App = () => {
 
   return (
     <>
-      <HexedMeadowClient gameID="gameid" playerID='0' />
-      <HexedMeadowClient gameID="gameid" playerID='1' />
+      {/* <HexedMeadowClient gameID="gameid" playerID='0' /> */}
+      <HexedMeadowClient gameID="gameid" />
     </>
   );
 }
@@ -24,8 +24,8 @@ const HexedMeadowClient = Client({
   game: HexedMeadow,
   board: Board,
   // multiplayer: Local(),
-  multiplayer: SocketIO({ server: 'http://localhost:8000' }),
-  // multiplayer: SocketIO({ server: 'http://battlescape-server.herokuapp.com' }),
+  // multiplayer: SocketIO({ server: 'http://localhost:8000' }),
+  multiplayer: SocketIO({ server: 'https://hexed-meadow-server.herokuapp.com/' }),
   numPlayers: 2,
   debug: false,
   enhancer: window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
