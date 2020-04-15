@@ -8,14 +8,10 @@ import Board from './ui/Board'
 import { HexedMeadow } from './game/game'
 
 export const App = () => {
-  // return (
-  //   <MainLobby />
-  // )
-
   return (
     <>
-      {/* <HexedMeadowClient gameID="gameid" playerID='0' /> */}
-      <HexedMeadowClient gameID="gameid" />
+      <HexedMeadowClient gameID="gameid" playerID={'0'} />
+      <HexedMeadowClient gameID="gameid" playerID={'1'} />
     </>
   );
 }
