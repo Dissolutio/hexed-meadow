@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"workbench.colorTheme": "Abyss",
+		"editor.cursorWidth": 4,
+		"workbench.colorCustomizations": {
+			"editorCursor.foreground": "#ffff00",
+			"terminalCursor.foreground": "#ffff00"
+		}
+	}
+}
