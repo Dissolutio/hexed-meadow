@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import styled from 'styled-components';
+import { Client, Lobby } from 'boardgame.io/react';
+import { Local } from 'boardgame.io/multiplayer';
+import { SocketIO } from "boardgame.io/multiplayer";
 
-function App() {
+import Board from './ui/Board'
+import { HexedMeadow } from './game/game'
+
+export const App = () => {
+  // return (
+  //   <MainLobby />
+  // )
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <HexedMeadowClient gameID="gameid" playerID='0' />
+      <HexedMeadowClient gameID="gameid" playerID='1' />
+    </>
   );
 }
 
-export default App;
+const HexedMeadowClient = Client({
+  game: HexedMeadow,
+  board: Board,
+  // multiplayer: Local(),
+  multiplayer: SocketIO({ server: 'http://localhost:8000' }),
+  // multiplayer: SocketIO({ server: 'http://battlescape-server.herokuapp.com' }),
+  numPlayers: 2,
+  debug: false,
+  enhancer: window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+});
+
+// const MainLobby = () => {
+//   return (
+//     <Lobby
+//       gameServer={`http://localhost:8000`}
+//       lobbyServer={`http://localhost:8000`}
+//       // gameServer={`http://battlescape-server.herokuapp.com`}
+//       // lobbyServer={`http://battlescape-server.herokuapp.com`}
+//       gameComponents={[{ game: Battlescape, board: Board }]}
+//     />
+//   )
+// }
