@@ -1,8 +1,7 @@
-import React from 'react'
-import styled from 'styled-components';
-import { HexGrid, Layout, Hexagon, HexUtils } from 'react-hexgrid';
-// import { unitIcons } from '../game/constants/unitIcons'
-import { playerColors } from '../game/mapGen'
+import React from "react";
+import styled from "styled-components";
+import { HexGrid, Layout, Hexagon, HexUtils } from "react-hexgrid";
+import { UnitIcon } from "../ui/UnitIcon";
 
 export function MapDisplay({ mapProps }) {
   const {
@@ -12,27 +11,29 @@ export function MapDisplay({ mapProps }) {
     mapSize,
     zoomLevel,
     armyCardsInGame,
-    startingUnits,
+    gameUnits,
     activeHexID,
     activeUnitID,
     onClickBoardHex,
-    onClickMapBackground
-  } = mapProps
+    onClickMapBackground,
+  } = mapProps;
 
-  const boardHexesArr = Object.values(boardHexes)
-  const originFactor = -10
-  const sizeFactor = 25
+  const boardHexesArr = Object.values(boardHexes);
+  const originFactor = -10;
+  const sizeFactor = 25;
   return (
-    <HexSVGStyle
-      onClick={onClickMapBackground}
-    >
+    <HexSVGStyle onClick={onClickMapBackground}>
       <HexGrid
-        width={`${mapSize * 200}`}
-        height={`${mapSize * 221}`}
-        viewBox={`${mapSize * originFactor} ${mapSize * originFactor} ${mapSize * sizeFactor} ${mapSize * sizeFactor}`}
+        // width={`${mapSize * 200}`}
+        // height={`${mapSize * 221}`}
+        // viewBox={`${mapSize * originFactor} ${mapSize * originFactor} ${mapSize * sizeFactor} ${mapSize * sizeFactor}`}
+        // width="100%"
+        // height="100%"
+        viewBox={`-50 -50 100 100`}
       >
         <Layout
-          size={{ x: `${zoomLevel}`, y: `${zoomLevel}` }}
+          // size={{ x: `${zoomLevel}`, y: `${zoomLevel}` }}
+          size={{ x: `3`, y: `3` }}
           flat={true}
           origin={{ x: 0, y: 0 }}
           spacing={1.01}
@@ -41,7 +42,7 @@ export function MapDisplay({ mapProps }) {
             playerID={playerID}
             boardHexesArr={boardHexesArr}
             startZones={startZones}
-            startingUnits={startingUnits}
+            gameUnits={gameUnits}
             armyCardsInGame={armyCardsInGame}
             activeHexID={activeHexID}
             onClickBoardHex={onClickBoardHex}
@@ -50,42 +51,47 @@ export function MapDisplay({ mapProps }) {
         </Layout>
       </HexGrid>
     </HexSVGStyle>
-  )
+  );
 }
 
 const Hexes = (props) => {
   const {
     playerID,
     boardHexesArr,
-    startingUnits,
+    gameUnits,
     armyCardsInGame,
     activeHexID,
     activeUnitID,
     onClickBoardHex,
     startZones,
-  } = props
+  } = props;
 
-  const startZone = startZones[playerID]
+  const startZone = startZones[playerID];
 
   function isStartZoneHex(hex) {
-    return startZone.includes(hex.id)
+    return startZone.includes(hex.id);
   }
   function isActiveHex(hex) {
-    return hex.id === activeHexID
+    return hex.id === activeHexID;
   }
 
   function getUnitForHex(hex) {
-    if (!hex.occupyingUnitID) { return '' }
-    return startingUnits[hex.occupyingUnitID]
+    if (!hex.occupyingUnitID) {
+      return "";
+    }
+    const res = gameUnits[hex.occupyingUnitID];
+    return res;
   }
   function calcClassNames(hex) {
-    return activeUnitID ?
-      `${isStartZoneHex(hex) ? 'startZoneHex' : ''}`
-      :
-      `${isActiveHex(hex) ? 'selectedMapHex' : ''}`
+    if (activeUnitID && isStartZoneHex(hex)) {
+      return "startZoneHex";
+    }
+    if (isActiveHex(hex)) {
+      return "selectedMapHex";
+    }
+    return "";
   }
   return boardHexesArr.map((hex, i) => {
-    // const unitSVGPatternID = getUnitForHex(hex) ? getUnitForHex(hex).portraitPattern : ''
     return (
       <Hexagon
         key={i}
@@ -93,43 +99,24 @@ const Hexes = (props) => {
         onClick={(e, source) => onClickBoardHex(e, source.props)}
         className={calcClassNames(hex)}
       >
-        {/* <UnitIcon unit={getUnitForHex(hex)} /> */}
-      </Hexagon >
-    )
-  })
-}
-
-// const UnitIcon = ({ unit }) => {
-//   const { hsCardID } = unit
-//   if (!unit || !hsCardID) {
-//     return null
-//   }
-//   const unitPlayerID = unit.playerID
-//   const playerColor = playerColors[unitPlayerID]
-//   const props = {
-//     x: "-2.5",
-//     y: "-2.5",
-//     style: {
-//       fill: `${playerColor}`,
-//       fontSize: '0.3rem',
-//       transform: "translate(30, 0)",
-//     }
-//   }
-//   return unitIcons[hsCardID](props)
-// }
+        <UnitIcon unit={getUnitForHex(hex)} />
+      </Hexagon>
+    );
+  });
+};
 
 const HexSVGStyle = styled.div`
-    color: var(--light-blue);
-    g {
-      fill: var(--light-blue);
-    }
-    .selectedMapHex > g {
-      fill: var(--neon-green);
-    }
-    .startZoneHex > g {
-      fill: var(--neon-green);
-    }
-    svg g polygon {
+  color: var(--light-blue);
+  g {
+    fill: var(--light-blue);
+  }
+  .selectedMapHex > g {
+    fill: var(--neon-green);
+  }
+  .startZoneHex > g {
+    fill: var(--neon-green);
+  }
+  svg g polygon {
     stroke: var(--dark-blue);
     stroke-width: 0.2;
   }
@@ -138,9 +125,8 @@ const HexSVGStyle = styled.div`
   }
   @media (hover: hover) {
     svg g:hover {
-        fill: var(--neon-orange);
-        fill-opacity: 0.6;
-      }
-
+      fill: var(--neon-orange);
+      fill-opacity: 0.6;
+    }
   }
 `;

@@ -1,69 +1,84 @@
-import { hexedMeadowCards } from './hexedMeadowCards'
+import { hexedMeadowCards } from "./hexedMeadowCards";
 
-
-const beestBuds = hexedMeadowCards[0]
-const queenBee = hexedMeadowCards[1]
-const spellingBeez = hexedMeadowCards[2]
-const butterFries = hexedMeadowCards[3]
-const mamaButterfly = hexedMeadowCards[4]
-const butteryScarwings = hexedMeadowCards[5]
+const beestBuds = hexedMeadowCards[0];
+const queenBee = hexedMeadowCards[1];
+const spellingBeez = hexedMeadowCards[2];
+const butterFries = hexedMeadowCards[3];
+const mamaButterfly = hexedMeadowCards[4];
+const butteryScarwings = hexedMeadowCards[5];
 
 // MAKE STARTING ARMY CARDS
-export const armyCardsInGame =
-{
-  [beestBuds.id]: {
-    playerID: '0',
+export const armyCards = [
+  {
+    playerID: "0",
     cardQuantity: 1,
-    ...beestBuds
+    ...beestBuds,
   },
-  [butterFries.id]: {
-    playerID: '1',
+  {
+    playerID: "1",
     cardQuantity: 1,
-    ...butterFries
+    ...butterFries,
   },
-  // '003': {
-  //   playerID: '2',
-  //   cardQuantity: 1,
-  //   ...beestBuds
-  // },
-  // '004': {
-  //   playerID: '3',
-  //   cardQuantity: 1,
-  //   ...beestBuds
-  // },
-}
+];
 
 //  MAKE STARTING UNITS
-export const startingUnits = convertCardsToStartingUnits(armyCardsInGame)
+export const gameUnits2 = cardsToUnits(armyCards);
+
+function cardsToUnits(cards) {
+  // id factory
+  let unitID = 0;
+  function makeUnitID(playerID) {
+    return `u${unitID++}-p${playerID}`;
+  }
+  return cards.reduce((result, card) => {
+    const numFigures = parseInt(card.figures) * card.cardQuantity;
+    const figuresArr = Array.apply({}, Array(numFigures));
+    // ...
+    const unitsFromCard = figuresArr.reduce((unitsResult, figure, i, arr) => {
+      const unitID = makeUnitID(card.playerID);
+      const newGameUnit = {
+        unitID,
+        cardID: card.cardID,
+        playerID: card.playerID,
+      };
+      return {
+        ...unitsResult,
+        [unitID]: newGameUnit,
+      };
+    }, {});
+    return {
+      ...result,
+      ...unitsFromCard,
+    };
+  }, {});
+}
 function convertCardsToStartingUnits(armyCardsInGame) {
   // id factory
-  let unitID = 0
+  let unitID = 0;
   function makeUnitID(playerID) {
-    return `u${unitID++}-p${playerID}`
+    return `u${unitID++}-p${playerID}`;
   }
-  // cards...
-  const startingUnits = Object.values(armyCardsInGame)
-    // ...to figures
-    .reduce((result, currentCard) => {
-      const figuresArr = Array.apply(null, Array(parseInt(currentCard.figures) * currentCard.cardQuantity))
-      // ...to game units
-      const unitsFromCurrentCard = figuresArr.reduce((unitsResult, figure, i, arr) => {
-        const unitID = makeUnitID(currentCard.playerID)
-        const newGameUnit = {
-          unitID,
-          hsCardID: currentCard.hsCardID,
-          playerID: currentCard.playerID,
-
-        }
-        return {
-          ...unitsResult,
-          [unitID]: newGameUnit
-        }
-      }, {})
+  // cards to gameUnits
+  const cards = Object.values(armyCardsInGame);
+  return cards.reduce((result, card) => {
+    const numFigures = parseInt(card.figures) * card.cardQuantity;
+    const figuresArr = Array.apply({}, Array(numFigures));
+    // ...
+    const unitsFromCard = figuresArr.reduce((unitsResult, figure, i, arr) => {
+      const unitID = makeUnitID(card.playerID);
+      const newGameUnit = {
+        unitID,
+        cardID: card.cardID,
+        playerID: card.playerID,
+      };
       return {
-        ...result,
-        ...unitsFromCurrentCard
-      }
-    }, {})
-  return startingUnits
+        ...unitsResult,
+        [unitID]: newGameUnit,
+      };
+    }, {});
+    return {
+      ...result,
+      ...unitsFromCard,
+    };
+  }, {});
 }
