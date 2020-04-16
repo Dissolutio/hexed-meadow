@@ -49,10 +49,8 @@ export const boardHexesWithPrePlacedUnits = () => {
 }
 
 export const playerColors = {
-  0: 'rgb(3, 64, 120)', // blue #034078
-  1: 'rgb(219,219,320)', // red #db2d20
-  // 2: 'rgb(219,2,142)',
-  // 3: 'rgb(100,345,32)',
+  0: 'RGB(255, 212, 0)', // blue #034078
+  1: 'rgb(130, 2, 99)', // red #db2d20
 }
 
 function fillHexInfo(prev, curr) {

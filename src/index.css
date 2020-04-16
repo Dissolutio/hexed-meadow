@@ -6,7 +6,12 @@ html {
   --neon-orange: rgb(224, 150, 40);
   --neon-green: #BaDa55;
   --black: #1f1919;
-  background-color: black;
+  --grass-green: RGB(149, 198, 35);
+  --wood-brown: RGB(87, 51, 25);
+  --water-blue: RGB(4, 67, 137);
+  --forest-green: #37480D;
+  --bee-yellow: RGB(255, 212, 0);
+  --butterfly-purple: rgb(130, 2, 99);
 }
 body {
   box-sizing: border-box;
@@ -14,4 +19,5 @@ body {
   margin: 0;
   width: 100vw;
   height: 100vh;
+  background-color: var(--forest-green);
 }

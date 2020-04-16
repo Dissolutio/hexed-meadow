@@ -1,22 +1,22 @@
 import { hexedMeadowCards } from './hexedMeadowCards'
 
 
-const beestBuds = hexedMeadowCards['101']
-const queenBee = hexedMeadowCards['102']
-const spellingBeez = hexedMeadowCards['103']
-const butterFries = hexedMeadowCards['201']
-const mamaButterfly = hexedMeadowCards['202']
-const butteryScarwings = hexedMeadowCards['203']
+const beestBuds = hexedMeadowCards[0]
+const queenBee = hexedMeadowCards[1]
+const spellingBeez = hexedMeadowCards[2]
+const butterFries = hexedMeadowCards[3]
+const mamaButterfly = hexedMeadowCards[4]
+const butteryScarwings = hexedMeadowCards[5]
 
 // MAKE STARTING ARMY CARDS
 export const armyCardsInGame =
 {
-  '001': {
+  [beestBuds.id]: {
     playerID: '0',
     cardQuantity: 1,
     ...beestBuds
   },
-  '002': {
+  [butterFries.id]: {
     playerID: '1',
     cardQuantity: 1,
     ...butterFries
