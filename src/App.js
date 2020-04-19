@@ -44,8 +44,8 @@ const MainLobby = () => {
     <Lobby
       // gameServer={`http://localhost:8000`}
       // lobbyServer={`http://localhost:8000`}
-      gameServer={`https://hexed-meadow.herokuapp.com`}
-      lobbyServer={`https://hexed-meadow.herokuapp.com`}
+      gameServer={`https://hexed-meadow-server.herokuapp.com`}
+      lobbyServer={`https://hexed-meadow-server.herokuapp.com`}
       gameComponents={[{ game: HexedMeadow, board: Board }]}
       // debug={true}
     />
