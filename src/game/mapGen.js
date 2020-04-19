@@ -1,32 +1,32 @@
-import { GridGenerator } from 'react-hexgrid';
-import { startingUnits, armyCardsInGame } from './startingUnits'
+import { GridGenerator } from 'react-hexgrid'
+import { gameUnits } from './startingUnits'
 
 // HEXES MADE BY REACT-HEXGRID => Battlescape Map Hexes :)
-export const mapSize = 9
+export const mapSize = 3
 const basicHexes = GridGenerator.hexagon(mapSize)
 export const boardHexes = basicHexes.reduce(fillHexInfo, {})
 
 // MAKE SOME STARTZONES FOR 2 PLAYERS ON A SIMPLE MAP
 const boardHexesArr = Object.values(boardHexes)
-const P0StartHexesArr = boardHexesArr.filter(hex => hex.r >= (mapSize - 2))
-const P1StartHexesArr = boardHexesArr.filter(hex => hex.r <= -(mapSize - 2))
-const P2StartHexesArr = boardHexesArr.filter(hex => hex.q >= (mapSize - 2))
-const P3StartHexesArr = boardHexesArr.filter(hex => hex.q <= -(mapSize - 2))
-const P0StartZone = P0StartHexesArr.map(hex => hex.id)
-const P1StartZone = P1StartHexesArr.map(hex => hex.id)
-const P2StartZone = P0StartHexesArr.map(hex => hex.id)
-const P3StartZone = P1StartHexesArr.map(hex => hex.id)
+const P0StartHexesArr = boardHexesArr.filter((hex) => hex.r >= mapSize - 2)
+const P1StartHexesArr = boardHexesArr.filter((hex) => hex.r <= -(mapSize - 2))
+// const P2StartHexesArr = boardHexesArr.filter((hex) => hex.q >= mapSize - 2);
+// const P3StartHexesArr = boardHexesArr.filter((hex) => hex.q <= -(mapSize - 2));
+const P0StartZone = P0StartHexesArr.map((hex) => hex.id)
+const P1StartZone = P1StartHexesArr.map((hex) => hex.id)
+// const P2StartZone = P0StartHexesArr.map((hex) => hex.id);
+// const P3StartZone = P1StartHexesArr.map((hex) => hex.id);
 export const startZones = {
   '0': P0StartZone,
-  '1': P1StartZone
+  '1': P1StartZone,
 }
 
 export const boardHexesWithPrePlacedUnits = () => {
-  const allUnits = Object.values(startingUnits)
+  const allUnits = Object.values(gameUnits)
   let boardHexesCopy = { ...boardHexes }
   let startZonesCopy = {
     '0': [...startZones['0']],
-    '1': [...startZones['1']]
+    '1': [...startZones['1']],
   }
 
   allUnits.forEach((unit) => {
@@ -48,11 +48,6 @@ export const boardHexesWithPrePlacedUnits = () => {
   return boardHexesCopy
 }
 
-export const playerColors = {
-  0: 'RGB(255, 212, 0)', // blue #034078
-  1: 'rgb(130, 2, 99)', // red #db2d20
-}
-
 function fillHexInfo(prev, curr) {
   const fullHex = {
     ...curr,
@@ -62,6 +57,6 @@ function fillHexInfo(prev, curr) {
   }
   return {
     ...prev,
-    [fullHex.id]: fullHex
+    [fullHex.id]: fullHex,
   }
 }

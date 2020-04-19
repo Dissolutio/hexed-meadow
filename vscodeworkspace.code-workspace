@@ -5,7 +5,7 @@
 		}
 	],
 	"settings": {
-		"workbench.colorTheme": "Abyss",
+		"workbench.colorTheme": "Kelp Forest Bold",
 		"editor.cursorWidth": 4,
 		"workbench.colorCustomizations": {
 			"editorCursor.foreground": "#ffff00",

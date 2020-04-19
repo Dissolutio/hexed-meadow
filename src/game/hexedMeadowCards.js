@@ -1,7 +1,7 @@
-export const hexedMeadowCards = [
-  {
+export const hexedMeadowCards = {
+  hm101: {
     name: 'Bee-st Buds',
-    id: '101',
+    cardID: 'hm101',
     race: 'bee',
     life: '1',
     move: '5',
@@ -9,12 +9,12 @@ export const hexedMeadowCards = [
     attack: '0',
     defense: '1',
     points: '50',
-    figures: '4',
+    figures: '2',
     hexes: '1',
   },
-  {
+  hm102: {
     name: 'Queen Bee',
-    id: '102',
+    cardID: 'hm102',
     race: 'bee',
     life: '3',
     move: '4',
@@ -25,9 +25,9 @@ export const hexedMeadowCards = [
     figures: '1',
     hexes: '1',
   },
-  {
+  hm103: {
     name: 'Spelling Beez',
-    id: '103',
+    cardID: 'hm103',
     race: 'bee',
     life: '2',
     move: '4',
@@ -38,9 +38,9 @@ export const hexedMeadowCards = [
     figures: '2',
     hexes: '1',
   },
-  {
+  hm201: {
     name: 'ButterFries',
-    id: '201',
+    cardID: 'hm201',
     race: 'butterfly',
     life: '2',
     move: '3',
@@ -48,12 +48,12 @@ export const hexedMeadowCards = [
     attack: '1',
     defense: '1',
     points: '50',
-    figures: '4',
+    figures: '2',
     hexes: '1',
   },
-  {
+  hm202: {
     name: 'Mama Butterfly',
-    id: '202',
+    cardID: 'hm202',
     race: 'butterfly',
     life: '5',
     move: '3',
@@ -64,9 +64,9 @@ export const hexedMeadowCards = [
     figures: '1',
     hexes: '1',
   },
-  {
+  hm203: {
     name: 'Buttery Scarwings',
-    id: '203',
+    cardID: 'hm203',
     race: 'butterfly',
     life: '1',
     move: '5',
@@ -77,4 +77,4 @@ export const hexedMeadowCards = [
     figures: '2',
     hexes: '1',
   },
-]
+}
