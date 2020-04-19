@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { UnitIcon } from './UnitIcon'
+
 export const ArmyForPlacing = ({
     availableUnits,
     onClickUnit,

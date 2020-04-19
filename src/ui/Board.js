@@ -6,6 +6,7 @@ import { BoardContextProvider, useBoardContext } from './useBoardContext'
 import { TopConsole } from './TopConsole'
 import { MapDisplay } from './MapDisplay'
 import { DataReadout } from './DataReadout'
+import { ArmyForPlacing } from './ArmyForPlacing'
 
 export const Board = (props) => {
     const {
@@ -131,14 +132,18 @@ export const Board = (props) => {
         onClickMapBackground,
     }
 
-    const dataReadoutProps = {
-        currentPhase,
-        currentPlayer,
-        activePlayers,
-        numPlayers,
-        currentTurn,
-        errorMsg,
-    }
+    // const dataReadoutProps = {
+    //     currentPhase,
+    //     currentPlayer,
+    //     activePlayers,
+    //     numPlayers,
+    //     currentTurn,
+    //     errorMsg,
+    // <DataReadout
+    //     activeHex={boardHexes[activeHexID]}
+    //     dataReadoutProps={dataReadoutProps}
+    // />
+    // }
 
     return (
         <BoardContextProvider>
@@ -150,9 +155,11 @@ export const Board = (props) => {
                     <MapDisplay mapProps={mapProps} />
                 </MainDisplay>
                 <BottomConsole>
-                    <DataReadout
-                        activeHex={boardHexes[activeHexID]}
-                        dataReadoutProps={dataReadoutProps}
+                    <ArmyForPlacing
+                        availableUnits={availableUnits}
+                        onClickUnit={onClickPlacementUnit}
+                        activeUnitID={activeUnitID}
+                        errorMsg={errorMsg}
                     />
                 </BottomConsole>
             </LayoutFlexColumn>
@@ -224,7 +231,6 @@ const MainDisplay = styled.div`
         }
     }
 `
-
 const BottomConsole = styled.div`
     /* position: fixed;
   bottom: 0; */

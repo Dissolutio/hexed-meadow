@@ -1,13 +1,7 @@
 import React from 'react'
 
 export const TopConsole = (props) => {
-    const {
-        playerID,
-        availableUnits,
-        onClickUnit,
-        activeUnitID,
-        errorMsg,
-    } = props
+    const { playerID } = props
 
     return (
         <div>
