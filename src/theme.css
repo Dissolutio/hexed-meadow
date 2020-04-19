@@ -4,14 +4,15 @@ html {
   --dark-blue: #263959;
   --red: #db2d20;
   --neon-orange: rgb(224, 150, 40);
-  --neon-green: #BaDa55;
+  --neon-green: #bada55;
   --black: #1f1919;
   --grass-green: RGB(149, 198, 35);
   --wood-brown: RGB(87, 51, 25);
   --water-blue: RGB(4, 67, 137);
-  --forest-green: #37480D;
+  --forest-green: #37480d;
   --bee-yellow: RGB(255, 212, 0);
-  --butterfly-purple: rgb(130, 2, 99);
+  /* --butterfly-purple: #820263; */
+  --butterfly-purple: #ce049b;
 }
 body {
   box-sizing: border-box;
@@ -19,4 +20,8 @@ body {
   margin: 0;
   width: 100vw;
   height: 100vh;
+  background-color: var(--black);
+}
+#lobby-view {
+  padding: 0 !important;
 }

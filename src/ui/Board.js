@@ -34,7 +34,7 @@ export const Board = (props) => {
   const activePlayers = ctx.activePlayers
   const numPlayers = ctx.numPlayers
   const currentTurn = ctx.turn
-  const { placeUnit } = moves
+  const { placeUnit, confirmReady } = moves
   // computed
   const startZone = startZones[playerID]
   const myArmyCards = armyCards.filter((card) => card.playerID === playerID)
@@ -55,11 +55,10 @@ export const Board = (props) => {
     const unitsForPlacement = myUnits.map((gameUnit) => {
       const armyCard = armyCards.find((card) => card.cardID === gameUnit.cardID)
       return {
-        unitID: gameUnit.unitID,
+        ...gameUnit,
         name: armyCard.name,
       }
     })
-    console.log('%c⧭', 'color: red', unitsForPlacement)
     return unitsForPlacement
   }
 
@@ -119,6 +118,7 @@ export const Board = (props) => {
 
   const mapProps = {
     boardHexes,
+    currentPhase,
     startZones,
     mapSize,
     armyCards,
@@ -147,17 +147,19 @@ export const Board = (props) => {
     <BoardContextProvider>
       <LayoutFlexColumn>
         <div className="top-console">
-          <TopConsole playerID={playerID} />
+          <TopConsole playerID={playerID} currentPhase={currentPhase} />
         </div>
         <MainDisplay className={`board-${playerID}`}>
           <MapDisplay mapProps={mapProps} />
         </MainDisplay>
         <BottomConsole>
           <ArmyForPlacing
+            playerID={playerID}
+            confirmReady={confirmReady}
+            currentPhase={currentPhase}
             availableUnits={availableUnits}
             onClickUnit={onClickPlacementUnit}
             activeUnitID={activeUnitID}
-            errorMsg={errorMsg}
           />
         </BottomConsole>
       </LayoutFlexColumn>
@@ -175,7 +177,6 @@ const LayoutFlexColumn = styled.div`
   .top-console {
     /* position: fixed;
     top: 0; */
-    color: var(--black);
     height: 10%;
     width: 100%;
   }
@@ -197,7 +198,6 @@ const MainDisplay = styled.div`
     border-radius: 10px;
   }
   &.board-0 {
-    background: var(--forest-green);
     background: radial-gradient(ellipse at top, var(--bee-yellow), transparent),
       radial-gradient(ellipse at bottom, var(--black), transparent);
     ::-webkit-scrollbar-track-piece {
@@ -208,7 +208,6 @@ const MainDisplay = styled.div`
     }
   }
   &.board-1 {
-    background: var(--forest-green);
     background: radial-gradient(
         ellipse at top,
         var(--butterfly-purple),

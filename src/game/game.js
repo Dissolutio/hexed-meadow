@@ -14,6 +14,7 @@ const initialGameState = {
   armyCards,
   gameUnits,
   mapSize,
+  ready: { '0': false, '1': false },
 }
 
 export const HexedMeadow = {
@@ -28,11 +29,20 @@ export const HexedMeadow = {
   },
   seed: 'random_string',
   phases: {
-    mainGame: {
+    placementPhase: {
       start: true,
+      moves: { placeUnit, confirmReady },
       onBegin: (G, ctx) => {
-        ctx.events.setActivePlayers({ all: 'placingArmies' })
-        console.log('GAME BEGINS')
+        ctx.events.setActivePlayers({ all: 'placingUnits' })
+        console.log('PLACING ARMIES BEGIN')
+      },
+      endIf: (G) => G.ready['0'] && G.ready['1'],
+      next: 'mainGame',
+    },
+    mainGame: {
+      onBegin: (G, ctx) => {
+        ctx.events.setActivePlayers({ all: 'placeOrderMarkers' })
+        console.log('MAIN GAME BEGIN')
       },
     },
   },
@@ -45,4 +55,7 @@ export const HexedMeadow = {
 
 function placeUnit(G, ctx, hexId, unit) {
   G.boardHexes[hexId].occupyingUnitID = unit.unitID
+}
+function confirmReady(G, ctx, playerID) {
+  G.ready[playerID] = true
 }

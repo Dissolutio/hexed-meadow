@@ -2,12 +2,17 @@ import React from 'react'
 import styled from 'styled-components'
 import { UnitIcon } from './UnitIcon'
 
-export const ArmyForPlacing = ({
-  availableUnits,
-  onClickUnit,
-  activeUnitID,
-  errorMsg,
-}) => {
+export const ArmyForPlacing = (props) => {
+  const {
+    playerID,
+    currentPhase,
+    confirmReady,
+    availableUnits,
+    onClickUnit,
+    activeUnitID,
+  } = props
+  const [waiting, setWaiting] = React.useState(false)
+
   const selectedStyle = (unitID) => {
     if (activeUnitID === unitID) {
       return {
@@ -20,10 +25,40 @@ export const ArmyForPlacing = ({
       return {}
     }
   }
+  if (currentPhase === 'mainGame') {
+    return (
+      <ArmyListStyle playerID={playerID}>
+        <p>{`READY FOR MAIN GAME --- but it ain't built yet :(`}</p>
+      </ArmyListStyle>
+    )
+  }
+  if (waiting) {
+    return (
+      <ArmyListStyle playerID={playerID}>
+        <p>Waiting for opponents to finish placing armies...</p>
+      </ArmyListStyle>
+    )
+  }
+  if (availableUnits.length === 0) {
+    return (
+      <ArmyListStyle playerID={playerID}>
+        <p>Done placing your units?</p>
+        <button
+          onClick={() => {
+            confirmReady(playerID)
+            setWaiting(true)
+          }}
+        >
+          CONFIRM PLACEMENT
+        </button>
+      </ArmyListStyle>
+    )
+  }
 
   return (
-    <>
-      <ArmyListStyle>
+    <ArmyListStyle playerID={playerID}>
+      <h2>Place your units</h2>
+      <ul>
         {availableUnits &&
           availableUnits.map((unit) => (
             <li key={unit.unitID}>
@@ -31,22 +66,39 @@ export const ArmyForPlacing = ({
                 style={selectedStyle(unit.unitID)}
                 onClick={() => onClickUnit(unit.unitID)}
               >
-                <UnitIcon unit={unit} />
+                <UnitIcon
+                  unit={unit}
+                  iconProps={{
+                    x: '10',
+                    y: '10',
+                    fontSize: '1rem',
+                    transform: '',
+                  }}
+                />
                 <span>{unit.name}</span>
               </button>
             </li>
           ))}
-      </ArmyListStyle>
-      <p style={{ color: 'red' }}>{errorMsg}</p>
-    </>
+      </ul>
+    </ArmyListStyle>
   )
 }
-const ArmyListStyle = styled.ul`
+const ArmyListStyle = styled.div`
   display: flex;
   flex-flow: row wrap;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
+  ${(props) =>
+    props.playerID === '0'
+      ? `
+      color: var(--bee-yellow);
+      `
+      : `
+      color: var(--butterfly-purple);
+      `}
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
   button {
     display: flex;
     flex-flow: column nowrap;

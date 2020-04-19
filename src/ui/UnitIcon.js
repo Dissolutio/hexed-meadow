@@ -6,16 +6,23 @@ export const playerIconColors = {
   1: 'var(--butterfly-purple)',
 }
 
-export const UnitIcon = ({ unit }) => {
+export const UnitIcon = ({ unit, iconProps }) => {
+  const {
+    x = '-0.55',
+    y = '-0.55',
+    fontSize = '0.07rem',
+    transform = 'translate(30, 0)',
+  } = iconProps ? iconProps : {}
   if (!unit) return null
   const playerColor = playerIconColors[unit?.playerID] ?? 'red'
+
   const gameIconProps = {
-    x: '-0.55',
-    y: '-0.55',
+    x,
+    y,
     style: {
       fill: `${playerColor}`,
-      fontSize: '0.07rem',
-      transform: 'translate(30, 0)',
+      fontSize,
+      transform,
     },
   }
   switch (unit.cardID) {

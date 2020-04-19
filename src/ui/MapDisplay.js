@@ -6,10 +6,10 @@ import { UnitIcon } from '../ui/UnitIcon'
 export function MapDisplay({ mapProps }) {
   const {
     playerID,
+    currentPhase,
     boardHexes,
     startZones,
     mapSize,
-    zoomLevel,
     armyCards,
     gameUnits,
     activeHexID,
@@ -18,21 +18,14 @@ export function MapDisplay({ mapProps }) {
     onClickMapBackground,
   } = mapProps
 
-  const boardHexesArr = Object.values(boardHexes)
-  const originFactor = -10
-  const sizeFactor = 25
   return (
     <HexSVGStyle onClick={onClickMapBackground}>
       <HexGrid
-        // width={`${mapSize * 200}`}
-        // height={`${mapSize * 221}`}
-        // viewBox={`${mapSize * originFactor} ${mapSize * originFactor} ${mapSize * sizeFactor} ${mapSize * sizeFactor}`}
         width="100%"
         // height="100%"
         viewBox={`-7 -7 14 14`}
       >
         <Layout
-          // size={{ x: `${zoomLevel}`, y: `${zoomLevel}` }}
           size={{ x: `1`, y: `1` }}
           flat={true}
           origin={{ x: 0, y: 0 }}
@@ -40,7 +33,8 @@ export function MapDisplay({ mapProps }) {
         >
           <Hexes
             playerID={playerID}
-            boardHexesArr={boardHexesArr}
+            currentPhase={currentPhase}
+            boardHexes={boardHexes}
             startZones={startZones}
             gameUnits={gameUnits}
             armyCards={armyCards}
@@ -57,7 +51,8 @@ export function MapDisplay({ mapProps }) {
 const Hexes = (props) => {
   const {
     playerID,
-    boardHexesArr,
+    currentPhase,
+    boardHexes,
     gameUnits,
     armyCards,
     activeHexID,
@@ -66,7 +61,9 @@ const Hexes = (props) => {
     startZones,
   } = props
 
+  const boardHexesArr = Object.values(boardHexes)
   const startZone = startZones[playerID]
+  console.log('%c⧭', 'color: #00a3cc', currentPhase)
 
   function isStartZoneHex(hex) {
     return startZone.includes(hex.id)
@@ -76,7 +73,11 @@ const Hexes = (props) => {
   }
 
   function getUnitForHex(hex) {
-    return gameUnits[hex?.occupyingUnitID]
+    const unit = gameUnits[hex?.occupyingUnitID]
+    if (currentPhase === 'placementPhase' && unit?.playerID !== playerID) {
+      return {}
+    }
+    return unit
   }
   function calcClassNames(hex) {
     if (activeUnitID && isStartZoneHex(hex)) {
