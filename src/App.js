@@ -12,8 +12,8 @@ import './theme.css'
 export const App = () => {
   return (
     <>
-      {/* <HexedMeadowClient gameID="gameid" /> */}
-      {/* <HexedMeadowClient gameID="gameid" playerID={'1'} /> */}
+      {/* <HexedMeadowClient gameID="gameid" playerID={'0'} />
+      <HexedMeadowClient gameID="gameid" playerID={'1'} /> */}
       <MainLobby />
     </>
   )
