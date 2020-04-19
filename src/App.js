@@ -29,9 +29,9 @@ const HexedMeadowClient = Client({
   // loading: LoadingComponent,
   board: Board,
   // multiplayer: Local(),
-  // multiplayer: SocketIO({ server: "http://localhost:8000" }),
+  // multiplayer: SocketIO({ server: 'http://localhost:8000' }),
   multiplayer: SocketIO({
-    server: 'https://hexed-meadow-server.herokuapp.com/',
+    server: 'https://hexed-meadow-server.herokuapp.com',
   }),
   debug: false,
   enhancer:
@@ -44,9 +44,10 @@ const MainLobby = () => {
     <Lobby
       // gameServer={`http://localhost:8000`}
       // lobbyServer={`http://localhost:8000`}
-      gameServer={`https://hexed-meadow.herokuapp.com/`}
-      lobbyServer={`https://hexed-meadow.herokuapp.com/`}
+      gameServer={`https://hexed-meadow.herokuapp.com`}
+      lobbyServer={`https://hexed-meadow.herokuapp.com`}
       gameComponents={[{ game: HexedMeadow, board: Board }]}
+      // debug={true}
     />
   )
 }
