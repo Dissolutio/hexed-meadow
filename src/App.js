@@ -12,9 +12,9 @@ import './theme.css'
 export const App = () => {
   return (
     <>
-      {/* <HexedMeadowClient gameID="gameid" playerID={'0'} />
-      <HexedMeadowClient gameID="gameid" playerID={'1'} /> */}
-      <MainLobby />
+      <HexedMeadowClient gameID="gameid" playerID={'0'} />
+      <HexedMeadowClient gameID="gameid" playerID={'1'} />
+      {/* <MainLobby /> */}
     </>
   )
 }
@@ -31,7 +31,7 @@ const HexedMeadowClient = Client({
   // multiplayer: Local(),
   // multiplayer: SocketIO({ server: 'http://localhost:8000' }),
   multiplayer: SocketIO({
-    server: 'https://hexed-meadow-server.herokuapp.com',
+    server: `https://${window.location.hostname}`,
   }),
   debug: false,
   enhancer:
@@ -44,8 +44,10 @@ const MainLobby = () => {
     <Lobby
       // gameServer={`http://localhost:8000`}
       // lobbyServer={`http://localhost:8000`}
-      gameServer={`https://hexed-meadow-server.herokuapp.com`}
-      lobbyServer={`https://hexed-meadow-server.herokuapp.com`}
+      // gameServer={`https://hexed-meadow-server.herokuapp.com`}
+      // lobbyServer={`https://hexed-meadow-server.herokuapp.com`}
+      gameServer={`https://${window.location.hostname}`}
+      lobbyServer={`https://${window.location.hostname}`}
       gameComponents={[{ game: HexedMeadow, board: Board }]}
       // debug={true}
     />
