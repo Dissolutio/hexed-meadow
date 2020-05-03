@@ -1,27 +1,27 @@
 html {
-  --blue: #034078;
-  --light-blue: #6d819c;
-  --dark-blue: #263959;
-  --red: #db2d20;
+  --black: #0e0b0b;
+  /* --red: #db2d20; */
+
+  --bee-yellow: #ffd50080;
+  --butterfly-purple: #ac4e82;
+
   --neon-orange: rgb(224, 150, 40);
   --neon-green: #bada55;
-  --black: #1f1919;
+
   --grass-green: RGB(149, 198, 35);
+  --forest-green: #37480d;
   --wood-brown: RGB(87, 51, 25);
   --water-blue: RGB(4, 67, 137);
-  --forest-green: #37480d;
-  --bee-yellow: RGB(255, 212, 0);
-  /* --butterfly-purple: #820263; */
-  --butterfly-purple: #ce049b;
 }
 body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  width: 100vw;
+  max-width: calc(100vw - 0.6rem);
   height: 100vh;
   background-color: var(--black);
   color: white;
+  overflow-x: hidden;
 }
 #lobby-view {
   padding: 0 !important;

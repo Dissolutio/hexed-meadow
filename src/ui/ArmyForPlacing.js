@@ -2,24 +2,21 @@ import React from 'react'
 import styled from 'styled-components'
 import { UnitIcon } from './UnitIcon'
 
-export const ArmyForPlacing = (props) => {
+export const ArmyForPlacing = ({ armyForPlacingProps }) => {
   const {
     playerID,
     currentPhase,
     confirmReady,
     availableUnits,
-    onClickUnit,
+    onClickPlacementUnit,
     activeUnitID,
-  } = props
+  } = armyForPlacingProps
   const [waiting, setWaiting] = React.useState(false)
 
   const selectedStyle = (unitID) => {
     if (activeUnitID === unitID) {
       return {
-        boxShadow: `0 0 5px rgba(81, 203, 238, 1)`,
-        padding: `3px 0px 3px 3px`,
-        margin: `5px 1px 3px 0px`,
-        border: `1px solid rgba(81, 203, 238, 1)`,
+        boxShadow: `0 0 2px var(--neon-green)`,
       }
     } else {
       return {}
@@ -64,7 +61,7 @@ export const ArmyForPlacing = (props) => {
             <li key={unit.unitID}>
               <button
                 style={selectedStyle(unit.unitID)}
-                onClick={() => onClickUnit(unit.unitID)}
+                onClick={() => onClickPlacementUnit(unit.unitID)}
               >
                 <UnitIcon
                   unit={unit}
@@ -85,16 +82,24 @@ export const ArmyForPlacing = (props) => {
 }
 const ArmyListStyle = styled.div`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: column nowrap;
   ${(props) =>
     props.playerID === '0'
       ? `
-      color: var(--bee-yellow);
-      `
+    color: var(--bee-yellow);
+    `
       : `
-      color: var(--butterfly-purple);
-      `}
+    color: var(--butterfly-purple);
+    `}
+  h2 {
+    font-size: 1.3rem;
+    margin: 0;
+    text-align: center;
+  }
   ul {
+    display: flex;
+    flex-flow: row wrap;
+    flex-grow: 1;
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -102,15 +107,34 @@ const ArmyListStyle = styled.div`
   button {
     display: flex;
     flex-flow: column nowrap;
+    justify-content: center;
+    align-content: center;
+    background: var(--black);
     width: 100%;
     height: 100%;
+    border: 0.1px solid
+      ${(props) =>
+        props.playerID === '0'
+          ? `
+    var(--bee-yellow);
+    `
+          : `
+    var(--butterfly-purple);
+    `};
   }
   img {
-    border-radius: 35%;
     width: auto;
-    height: 1.5rem;
+    height: 10rem;
   }
   span {
-    font-size: 0.3rem;
+    font-size: 0.5rem;
+    ${(props) =>
+      props.playerID === '0'
+        ? `
+    color: var(--bee-yellow);
+    `
+        : `
+    color: var(--butterfly-purple);
+    `}
   }
 `

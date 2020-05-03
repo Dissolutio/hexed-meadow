@@ -2,7 +2,7 @@ import { GridGenerator } from 'react-hexgrid'
 import { gameUnits } from './startingUnits'
 
 // HEXES MADE BY REACT-HEXGRID => Battlescape Map Hexes :)
-export const mapSize = 3
+export const mapSize = 2
 const basicHexes = GridGenerator.hexagon(mapSize)
 export const boardHexes = basicHexes.reduce(fillHexInfo, {})
 

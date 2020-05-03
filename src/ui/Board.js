@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
+import React, { useState, useEffect } from 'react'
 
-import { BoardContextProvider, useBoardContext } from './useBoardContext'
+import { useBoardContext } from './useBoardContext'
 
-import { TopConsole } from './TopConsole'
+import { Layout } from './Layout'
+import { LogoNavBar } from './LogoNavBar'
 import { MapDisplay } from './MapDisplay'
 import { DataReadout } from './DataReadout'
 import { ArmyForPlacing } from './ArmyForPlacing'
@@ -23,6 +23,12 @@ export const Board = (props) => {
     log,
     gameMetadata,
   } = props
+
+  const [boardState, dispatch] = useBoardContext()
+
+  useEffect(() => {
+    dispatch({ type: 'setPlayerID', payload: playerID })
+  }, [])
 
   const boardHexes = G.boardHexes
   const startZones = G.startZones
@@ -129,113 +135,33 @@ export const Board = (props) => {
     onClickBoardHex,
     onClickMapBackground,
   }
-
-  // const dataReadoutProps = {
-  //     currentPhase,
-  //     currentPlayer,
-  //     activePlayers,
-  //     numPlayers,
-  //     currentTurn,
-  //     errorMsg,
-  // <DataReadout
-  //     activeHex={boardHexes[activeHexID]}
-  //     dataReadoutProps={dataReadoutProps}
-  // />
-  // }
-
+  const armyForPlacingProps = {
+    playerID,
+    confirmReady,
+    currentPhase,
+    availableUnits,
+    onClickPlacementUnit,
+    activeUnitID,
+  }
+  const dataReadoutProps = {
+    currentPhase,
+    currentPlayer,
+    activePlayers,
+    numPlayers,
+    currentTurn,
+    errorMsg,
+    // <DataReadout
+    //     activeHex={boardHexes[activeHexID]}
+    //     dataReadoutProps={dataReadoutProps}
+    // />
+  }
   return (
-    <BoardContextProvider>
-      <LayoutFlexColumn>
-        <div className="top-console">
-          <TopConsole playerID={playerID} currentPhase={currentPhase} />
-        </div>
-        <MainDisplay className={`board-${playerID}`}>
-          <MapDisplay mapProps={mapProps} />
-        </MainDisplay>
-        <BottomConsole>
-          <ArmyForPlacing
-            playerID={playerID}
-            confirmReady={confirmReady}
-            currentPhase={currentPhase}
-            availableUnits={availableUnits}
-            onClickUnit={onClickPlacementUnit}
-            activeUnitID={activeUnitID}
-          />
-        </BottomConsole>
-      </LayoutFlexColumn>
-    </BoardContextProvider>
+    <Layout>
+      <LogoNavBar playerID={playerID} />
+      <MapDisplay mapProps={mapProps} />
+      <ArmyForPlacing armyForPlacingProps={armyForPlacingProps} />
+    </Layout>
   )
 }
-
-const LayoutFlexColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100vw;
-  height: 100vh;
-  padding: 0;
-  margin: 0;
-  .top-console {
-    /* position: fixed;
-    top: 0; */
-    height: 10%;
-    width: 100%;
-  }
-`
-const MainDisplay = styled.div`
-  height: 75%;
-  overflow: auto;
-  width: 100%;
-  ::-webkit-scrollbar {
-    width: 12px;
-  }
-  &::-webkit-scrollbar-track-piece {
-    border-radius: 10px;
-  }
-  &::-webkit-scrollbar-corner {
-    background: white;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-  }
-  &.board-0 {
-    background: radial-gradient(ellipse at top, var(--bee-yellow), transparent),
-      radial-gradient(ellipse at bottom, var(--black), transparent);
-    ::-webkit-scrollbar-track-piece {
-      /* box-shadow: inset 0 0 3px var(--bee-yellow); */
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--bee-yellow);
-    }
-  }
-  &.board-1 {
-    background: radial-gradient(
-        ellipse at top,
-        var(--butterfly-purple),
-        transparent
-      ),
-      radial-gradient(ellipse at bottom, var(--black), transparent);
-    ::-webkit-scrollbar-track-piece {
-      box-shadow: inset 0 0 5px var(--butterfly-purple);
-      background-color: white;
-      /* width: 0.5rem; */
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--butterfly-purple);
-    }
-  }
-`
-const BottomConsole = styled.div`
-  /* position: fixed;
-  bottom: 0; */
-  height: 15%;
-  width: 100%;
-  section.data-readout {
-    display: flex;
-    flex-flow: column wrap;
-    height: 100%;
-    color: var(--black);
-    font-size: 0.8rem;
-  }
-`
 
 export default Board

@@ -19,11 +19,13 @@ export function MapDisplay({ mapProps }) {
   } = mapProps
 
   return (
-    <HexSVGStyle onClick={onClickMapBackground}>
+    <HexSVGStyle onClick={onClickMapBackground} pID={playerID}>
       <HexGrid
         width="100%"
         // height="100%"
-        viewBox={`-7 -7 14 14`}
+        // for mapSize9 and height 100% width undefined
+        // viewBox={`-35 -21 56 70`}
+        viewBox={`-5 -3 10 10`}
       >
         <Layout
           size={{ x: `1`, y: `1` }}
@@ -63,7 +65,6 @@ const Hexes = (props) => {
 
   const boardHexesArr = Object.values(boardHexes)
   const startZone = startZones[playerID]
-  console.log('%c⧭', 'color: #00a3cc', currentPhase)
 
   function isStartZoneHex(hex) {
     return startZone.includes(hex.id)
@@ -104,19 +105,26 @@ const Hexes = (props) => {
 }
 
 const HexSVGStyle = styled.div`
-  color: var(--light-blue);
   g {
-    fill: var(--light-blue);
+    fill: var(--black);
   }
-  .selectedMapHex > g {
-    fill: var(--neon-green);
+  .selectedMapHex > g polygon {
+    stroke: var(
+      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
+    );
+    stroke-width: 0.1;
   }
-  .startZoneHex > g {
-    fill: var(--neon-green);
+  .startZoneHex > g polygon {
+    stroke: var(
+      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
+    );
+    stroke-width: 0.1;
   }
   svg g polygon {
-    stroke: var(--dark-blue);
-    stroke-width: 0.2;
+    stroke: var(
+      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
+    );
+    stroke-width: 0.01;
   }
   svg g polygon text {
     font-size: 0.1rem;
