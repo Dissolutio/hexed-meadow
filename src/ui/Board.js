@@ -24,10 +24,9 @@ export const Board = (props) => {
     gameMetadata,
   } = props
 
-  const [boardState, dispatch] = useBoardContext()
-
+  const { setPlayerID } = useBoardContext()
   useEffect(() => {
-    dispatch({ type: 'setPlayerID', payload: playerID })
+    setPlayerID(playerID)
   }, [])
 
   const boardHexes = G.boardHexes

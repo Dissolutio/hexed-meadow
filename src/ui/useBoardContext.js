@@ -16,10 +16,7 @@ function reducer(state, action) {
 
 const BoardContextProvider = (props) => {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const { playerID } = props
-  console.log('%c⧭', 'color: #aa00ff', playerID)
-  // dispatch({ type: 'setPlayerID', payload: props.playerID })
-
+  const { playerID } = state
   return (
     <BoardContext.Provider value={[state, dispatch]}>
       {props.children}
@@ -28,10 +25,15 @@ const BoardContextProvider = (props) => {
 }
 
 const useBoardContext = () => {
-  const [boardState, dispatch] = useContext(BoardContext)
+  const [state, dispatch] = useContext(BoardContext)
+
+  const { playerID } = state
+  const setPlayerID = (id) => {
+    dispatch({ type: 'setPlayerID', payload: id })
+  }
   return {
-    boardState,
-    dispatch,
+    playerID,
+    setPlayerID,
   }
 }
 

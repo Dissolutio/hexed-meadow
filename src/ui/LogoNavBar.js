@@ -1,11 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
+
+import { useBoardContext } from './useBoardContext'
 import { HamburgerMenuButton } from './HamburgerMenuButton'
 import beesBigLogo from '../assets/beesBigLogo.png'
 import butterfliesLogo from '../assets/butterfliesLogo.png'
 
 export const LogoNavBar = (props) => {
-  const { playerID } = props
+  const { playerID, setPlayerID } = useBoardContext()
   const TeamHeader = () => {
     if (playerID.toString() === '0') {
       return <TeamHeaderStyledImg src={beesBigLogo} />
@@ -13,6 +15,7 @@ export const LogoNavBar = (props) => {
     if (playerID.toString() === '1') {
       return <TeamHeaderStyledImg src={butterfliesLogo} />
     }
+    return null
   }
   return (
     <StyledTopConsole playerID={playerID}>

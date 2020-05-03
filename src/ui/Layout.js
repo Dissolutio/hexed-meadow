@@ -3,10 +3,7 @@ import styled from 'styled-components'
 import { useBoardContext } from './useBoardContext'
 
 export const Layout = ({ children }) => {
-  const { boardState, dispatch } = useBoardContext()
-  const { playerID } = boardState
-  console.log('%c⧭', 'color: #00a3cc', boardState)
-  console.log('%c⧭', 'color: #00e600', children)
+  const { playerID } = useBoardContext()
 
   const pClass = `board-${playerID}`
   return (
