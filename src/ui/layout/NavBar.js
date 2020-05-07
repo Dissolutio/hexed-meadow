@@ -7,7 +7,7 @@ import beesBigLogo from '../../assets/beesBigLogo.png'
 import butterfliesLogo from '../../assets/butterfliesLogo.png'
 
 export const NavBar = (props) => {
-  const { playerID, setPlayerID } = useUIContext()
+  const { playerID } = useUIContext()
   const TeamHeader = () => {
     if (playerID === '0') {
       return <TeamHeaderStyledImg src={beesBigLogo} />
@@ -18,13 +18,14 @@ export const NavBar = (props) => {
     return null
   }
   return (
-    <StyledTopConsole playerID={playerID}>
-      <TeamHeader />
-      <HamburgerMenuButton playerID={playerID} />
-    </StyledTopConsole>
+    <>
+      <StyledTopConsole playerID={playerID}>
+        <TeamHeader />
+        <HamburgerMenuButton playerID={playerID} />
+      </StyledTopConsole>
+    </>
   )
 }
-
 const StyledTopConsole = styled.div`
   display: flex;
   flex-flow: row nowrap;

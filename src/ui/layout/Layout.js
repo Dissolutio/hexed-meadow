@@ -1,30 +1,39 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useUIContext } from '../hooks/useUIContext'
+import { SlideMenu } from './SlideMenu'
 
 export const Layout = ({ children }) => {
   const { playerID } = useUIContext()
 
   const pClass = `board-${playerID}`
   return (
-    <LayoutContainer>
-      <LayoutTop>{children[0]}</LayoutTop>
-      <LayoutMiddle className={`${pClass}`}>{children[1]}</LayoutMiddle>
-      <LayoutBottom>{children[2]}</LayoutBottom>
-    </LayoutContainer>
+    <>
+      <LayoutContainer>
+        <LayoutTop>{children[0]}</LayoutTop>
+        <SlideMenu playerID={[playerID]} />
+        <LayoutMiddle className={`${pClass}`}>{children[1]}</LayoutMiddle>
+        <LayoutBottom>{children[2]}</LayoutBottom>
+      </LayoutContainer>
+    </>
   )
 }
 
 const LayoutContainer = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 99vh;
+  min-height: 99vh;
   padding: 0;
   margin: 0;
 `
 const LayoutTop = styled.div`
+  width: 100%;
   height: 10%;
+`
+const LayoutBottom = styled.div`
+  height: 15%;
   width: 100%;
 `
 const LayoutMiddle = styled.div`
@@ -70,16 +79,5 @@ const LayoutMiddle = styled.div`
     ::-webkit-scrollbar-thumb {
       background: var(--butterfly-purple);
     }
-  }
-`
-const LayoutBottom = styled.div`
-  height: 15%;
-  width: 100%;
-  section.data-readout {
-    display: flex;
-    flex-flow: column wrap;
-    height: 100%;
-    color: var(--black);
-    font-size: 0.8rem;
   }
 `

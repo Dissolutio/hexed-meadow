@@ -18,7 +18,14 @@ const Inner = styled.div`
   }
 `
 
-const visibleStyle = { height: 'auto', opacity: 1, overflow: 'visible' }
+const visibleStyle = {
+  height: 'auto',
+  opacity: 1,
+  overflow: 'visible',
+  // position: 'absolute',
+  // top: '0',
+  // left: '-1000px',
+}
 const hiddenStyle = { opacity: 0, height: 0, overflow: 'hidden' }
 
 function getElementHeight(ref) {
