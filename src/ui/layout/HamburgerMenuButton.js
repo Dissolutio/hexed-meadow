@@ -1,14 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useUIContext } from '../hooks/useUIContext'
 
-export const HamburgerMenuButton = ({
-  navbarState,
-  handleNavbar,
-  playerID,
-}) => {
+export const HamburgerMenuButton = () => {
+  const { playerID, menuOpen, toggleMenu } = useUIContext()
   return (
-    <Wrapper onClick={handleNavbar} pID={playerID}>
-      <div className={navbarState ? 'open' : ''}>
+    <Wrapper onClick={toggleMenu} pID={playerID}>
+      <div className={menuOpen ? 'open' : ''}>
         <span>&nbsp;</span>
         <span>&nbsp;</span>
         <span>&nbsp;</span>

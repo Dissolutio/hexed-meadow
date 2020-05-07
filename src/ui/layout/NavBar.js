@@ -1,18 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { useBoardContext } from './useBoardContext'
+import { useUIContext } from '../hooks/useUIContext'
 import { HamburgerMenuButton } from './HamburgerMenuButton'
-import beesBigLogo from '../assets/beesBigLogo.png'
-import butterfliesLogo from '../assets/butterfliesLogo.png'
+import beesBigLogo from '../../assets/beesBigLogo.png'
+import butterfliesLogo from '../../assets/butterfliesLogo.png'
 
-export const LogoNavBar = (props) => {
-  const { playerID, setPlayerID } = useBoardContext()
+export const NavBar = (props) => {
+  const { playerID, setPlayerID } = useUIContext()
   const TeamHeader = () => {
-    if (playerID.toString() === '0') {
+    if (playerID === '0') {
       return <TeamHeaderStyledImg src={beesBigLogo} />
     }
-    if (playerID.toString() === '1') {
+    if (playerID === '1') {
       return <TeamHeaderStyledImg src={butterfliesLogo} />
     }
     return null

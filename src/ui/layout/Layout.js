@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useBoardContext } from './useBoardContext'
+import { useUIContext } from '../hooks/useUIContext'
 
 export const Layout = ({ children }) => {
-  const { playerID } = useBoardContext()
+  const { playerID } = useUIContext()
 
   const pClass = `board-${playerID}`
   return (

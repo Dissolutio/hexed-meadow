@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 
 export const DataReadout = ({ activeHex, dataReadoutProps }) => {
   const {
@@ -22,3 +23,10 @@ export const DataReadout = ({ activeHex, dataReadoutProps }) => {
     </section>
   )
 }
+const Styles = styled.section`
+  display: flex;
+  flex-flow: column wrap;
+  height: 100%;
+  color: var(--black);
+  font-size: 0.8rem;
+`

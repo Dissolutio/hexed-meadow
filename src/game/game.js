@@ -1,6 +1,6 @@
 import { TurnOrder, PlayerView, Stage } from 'boardgame.io/core'
 import {
-  boardHexesWithPrePlacedUnits,
+  // boardHexesWithPrePlacedUnits,
   boardHexes,
   startZones,
   mapSize,
@@ -9,8 +9,8 @@ import { gameUnits, armyCards } from './startingUnits'
 import { rollD20Initiative } from './rollInitiative'
 
 const initialGameState = {
-  boardHexes: boardHexesWithPrePlacedUnits(),
-  // boardHexes,
+  // boardHexes: boardHexesWithPrePlacedUnits(),
+  boardHexes,
   startZones,
   armyCards,
   gameUnits,
@@ -31,6 +31,7 @@ export const HexedMeadow = {
   seed: 'random_string',
   phases: {
     placementPhase: {
+      start: true,
       moves: { placeUnit, confirmReady },
       onBegin: (G, ctx) => {
         ctx.events.setActivePlayers({ all: 'placingUnits' })
@@ -40,7 +41,6 @@ export const HexedMeadow = {
       next: 'mainGame',
     },
     mainGame: {
-      start: true,
       onBegin: (G, ctx) => {
         ctx.events.setActivePlayers({ all: 'placeOrderMarkers' })
         console.log('MAIN GAME BEGIN')

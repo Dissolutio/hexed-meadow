@@ -1,33 +1,19 @@
 import React, { useState, useEffect } from 'react'
 
-import { useBoardContext } from './useBoardContext'
+import { useUIContext } from './hooks/useUIContext'
 
-import { Layout } from './Layout'
-import { LogoNavBar } from './LogoNavBar'
+import { Layout } from './layout/Layout'
+import { NavBar } from './layout/NavBar'
 import { MapDisplay } from './MapDisplay'
 import { DataReadout } from './DataReadout'
 import { ArmyForPlacing } from './ArmyForPlacing'
 
-export const Board = (props) => {
-  const {
-    G,
-    ctx,
-    moves,
-    playerID,
-    gameID,
-    events,
-    reset,
-    redo,
-    undo,
-    step,
-    log,
-    gameMetadata,
-  } = props
+import { myInitialPlacementUnits } from '../game/startingUnits'
 
-  const { setPlayerID } = useBoardContext()
-  useEffect(() => {
-    setPlayerID(playerID)
-  }, [])
+export const Board = (props) => {
+  const { G, ctx, moves, playerID } = props
+
+  const { setPlayerID } = useUIContext()
 
   const boardHexes = G.boardHexes
   const startZones = G.startZones
@@ -40,69 +26,105 @@ export const Board = (props) => {
   const numPlayers = ctx.numPlayers
   const currentTurn = ctx.turn
   const { placeUnit, confirmReady } = moves
-  // computed
-  const startZone = startZones[playerID]
-  const myArmyCards = armyCards.filter((card) => card.playerID === playerID)
+  // COMPUTED
+  const myStartZone = startZones[playerID]
+  const myCards = armyCards.filter((card) => card.playerID === playerID)
+  const myUnits = Object.values(gameUnits).filter(
+    (unit) => unit.playerID === playerID
+  )
   // STATE
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
-  const [availableUnits, setAvailableUnits] = useState(() =>
-    initialAvailableUnits()
-  )
+  const [
+    availableUnitsForPlacement,
+    setAvailableUnitsForPlacement,
+  ] = useState(() => myInitialPlacementUnits(myCards, myUnits))
   const [errorMsg, setErrorMsg] = useState('')
+
+  useEffect(() => {
+    setPlayerID(playerID)
+  }, [playerID, setPlayerID])
 
   const selectedUnit = gameUnits[activeUnitID]
 
-  function initialAvailableUnits() {
-    const myUnits = Object.values(gameUnits).filter(
-      (unit) => unit.playerID === playerID
-    )
-    const unitsForPlacement = myUnits.map((gameUnit) => {
-      const armyCard = armyCards.find((card) => card.cardID === gameUnit.cardID)
-      return {
-        ...gameUnit,
-        name: armyCard.name,
-      }
-    })
-    return unitsForPlacement
-  }
-
   function onClickBoardHex(event, sourceHex) {
-    // Keep from causing onMapClick
+    // Do not propagate to background onClick
     event.stopPropagation()
 
     const hexID = sourceHex.id
-    const isInStartZone = startZone.includes(hexID)
-
-    //  No unit, select hex
-    if (!activeUnitID) {
-      console.log('SELECT HEX', activeUnitID)
-      setActiveHexID(hexID)
-      setErrorMsg('')
-      return
+    const isInStartZone = myStartZone.includes(hexID)
+    switch (currentPhase) {
+      case 'mainGame':
+        mainGameHandle()
+        break
+      case 'placementPhase':
+        placementHandle()
+        break
+      default:
+        placementHandle()
     }
-
-    // have unit, clicked in start zone, place unit
-    if (activeUnitID && isInStartZone) {
-      placeUnit(hexID, selectedUnit)
-      setAvailableUnits(
-        availableUnits.filter((unit) => unit.unitID !== activeUnitID)
-      )
-      setActiveUnitID('')
-      setErrorMsg('')
-      return
+    function placementHandle() {
+      //  No unit, select hex
+      if (!activeUnitID) {
+        console.log('SELECT HEX', activeUnitID)
+        setActiveHexID(hexID)
+        setErrorMsg('')
+        return
+      }
+      // have unit, clicked in start zone, place unit
+      if (activeUnitID && isInStartZone) {
+        placeUnit(hexID, selectedUnit)
+        setAvailableUnitsForPlacement(
+          availableUnitsForPlacement.filter(
+            (unit) => unit.unitID !== activeUnitID
+          )
+        )
+        setActiveUnitID('')
+        setErrorMsg('')
+        return
+      }
+      // have unit, clicked hex outside start zone, error
+      if (activeUnitID && !isInStartZone) {
+        console.log(
+          'CANNOT PLACE UNIT -- choose hex inside start zone',
+          activeUnitID
+        )
+        setErrorMsg(
+          'You must place units inside your start zone. Invalid hex selected.'
+        )
+        return
+      }
     }
-
-    // have unit, clicked hex outside start zone, error
-    if (activeUnitID && !isInStartZone) {
-      console.log(
-        'CANNOT PLACE UNIT -- choose hex inside start zone',
-        activeUnitID
-      )
-      setErrorMsg(
-        'You must place units inside your start zone. Invalid hex selected.'
-      )
-      return
+    function mainGameHandle() {
+      if (!activeUnitID) {
+        console.log('SELECT HEX', activeUnitID)
+        setActiveHexID(hexID)
+        setErrorMsg('')
+        return
+      }
+      // have unit, clicked in start zone, place unit
+      if (activeUnitID && isInStartZone) {
+        placeUnit(hexID, selectedUnit)
+        setAvailableUnitsForPlacement(
+          availableUnitsForPlacement.filter(
+            (unit) => unit.unitID !== activeUnitID
+          )
+        )
+        setActiveUnitID('')
+        setErrorMsg('')
+        return
+      }
+      // have unit, clicked hex outside start zone, error
+      if (activeUnitID && !isInStartZone) {
+        console.log(
+          'CANNOT PLACE UNIT -- choose hex inside start zone',
+          activeUnitID
+        )
+        setErrorMsg(
+          'You must place units inside your start zone. Invalid hex selected.'
+        )
+        return
+      }
     }
   }
 
@@ -138,7 +160,7 @@ export const Board = (props) => {
     playerID,
     confirmReady,
     currentPhase,
-    availableUnits,
+    availableUnits: availableUnitsForPlacement,
     onClickPlacementUnit,
     activeUnitID,
   }
@@ -156,7 +178,7 @@ export const Board = (props) => {
   }
   return (
     <Layout>
-      <LogoNavBar playerID={playerID} />
+      <NavBar playerID={playerID} />
       <MapDisplay mapProps={mapProps} />
       <ArmyForPlacing armyForPlacingProps={armyForPlacingProps} />
     </Layout>
