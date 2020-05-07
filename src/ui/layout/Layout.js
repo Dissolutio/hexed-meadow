@@ -30,15 +30,15 @@ const LayoutContainer = styled.div`
 `
 const LayoutTop = styled.div`
   width: 100%;
-  height: 10%;
+  height: 8vh;
 `
 const LayoutBottom = styled.div`
-  height: 15%;
   width: 100%;
+  min-height: 27vh;
 `
 const LayoutMiddle = styled.div`
-  width: 100vw;
-  height: 75%;
+  width: 100%;
+  height: 65vh;
   overflow: auto;
   ::-webkit-scrollbar {
     width: 0.5rem;
@@ -54,6 +54,7 @@ const LayoutMiddle = styled.div`
     border-radius: 10px;
   }
   &.board-0 {
+    --mainColor: var(--bee-yellow);
     background: radial-gradient(ellipse at top, var(--bee-yellow), transparent),
       radial-gradient(ellipse at bottom, var(--black), transparent);
     ::-webkit-scrollbar-track-piece {
@@ -65,6 +66,7 @@ const LayoutMiddle = styled.div`
     }
   }
   &.board-1 {
+    --mainColor: var(--butterfly-purple);
     background: radial-gradient(
         ellipse at top,
         var(--butterfly-purple),

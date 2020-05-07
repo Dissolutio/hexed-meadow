@@ -31,8 +31,8 @@ const StyledTopConsole = styled.div`
   flex-flow: row nowrap;
   justify-content: space-between;
   align-content: center;
-  max-width: 100vw;
-  height: 100%;
+  width: 100%;
+  height: auto;
   padding: 0.3rem;
   ${(props) =>
     props.playerID === '0'
@@ -43,9 +43,8 @@ const StyledTopConsole = styled.div`
       color: var(--butterfly-purple);
       `}
 `
+
 const TeamHeaderStyledImg = styled.img`
-  height: calc(100% - 0.6rem);
-  min-width: 100px;
-  max-width: 50%;
-  padding: 0.1rem 0 0.3rem 0;
+  height: 7vh;
+  width: auto;
 `

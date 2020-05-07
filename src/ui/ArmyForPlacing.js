@@ -1,8 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useBoardContext } from './hooks/useBoardContext'
 import { UnitIcon } from './UnitIcon'
 
 export const ArmyForPlacing = ({ armyForPlacingProps }) => {
+  const { activateDataReadout } = useBoardContext()
   const {
     playerID,
     currentPhase,
@@ -55,6 +57,7 @@ export const ArmyForPlacing = ({ armyForPlacingProps }) => {
   return (
     <ArmyListStyle playerID={playerID}>
       <h2>Place your units</h2>
+      <button onClick={activateDataReadout}>Data Readout</button>
       <ul>
         {availableUnits &&
           availableUnits.map((unit) => (
@@ -83,18 +86,14 @@ export const ArmyForPlacing = ({ armyForPlacingProps }) => {
 const ArmyListStyle = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  ${(props) =>
-    props.playerID === '0'
-      ? `
-    color: var(--bee-yellow);
-    `
-      : `
-    color: var(--butterfly-purple);
-    `}
+  color: var(--mainColor);
   h2 {
     font-size: 1.3rem;
     margin: 0;
     text-align: center;
+  }
+  button {
+    color: var(--mainColor);
   }
   ul {
     display: flex;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import { useUIContext } from './hooks/useUIContext'
+import { useBoardContext } from './hooks/useBoardContext'
 
 import { Layout } from './layout/Layout'
 import { NavBar } from './layout/NavBar'
@@ -12,8 +13,7 @@ import { myInitialPlacementUnits } from '../game/startingUnits'
 
 export const Board = (props) => {
   const { G, ctx, moves, playerID } = props
-
-  const { setPlayerID } = useUIContext()
+  const { topConsoleComponent, bottomConsoleComponent } = useBoardContext()
 
   const boardHexes = G.boardHexes
   const startZones = G.startZones
@@ -35,15 +35,14 @@ export const Board = (props) => {
   // STATE
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
-  const [
-    availableUnitsForPlacement,
-    setAvailableUnitsForPlacement,
-  ] = useState(() => myInitialPlacementUnits(myCards, myUnits))
+  const [availableUnitsForPlacement, setAvailableUnitsForPlacement] = useState(
+    myInitialPlacementUnits(myCards, myUnits)
+  )
   const [errorMsg, setErrorMsg] = useState('')
 
-  useEffect(() => {
-    setPlayerID(playerID)
-  }, [playerID, setPlayerID])
+  // useEffect(() => {
+  //   setPlayerID(playerID)
+  // }, [playerID, setPlayerID])
 
   const selectedUnit = gameUnits[activeUnitID]
 
@@ -176,11 +175,29 @@ export const Board = (props) => {
     //     dataReadoutProps={dataReadoutProps}
     // />
   }
+  const TopConsole = () => {
+    switch (topConsoleComponent) {
+      case 'NavBar':
+        return <NavBar playerID={playerID} />
+      default:
+        return null
+    }
+  }
+  const BottomConsole = () => {
+    switch (bottomConsoleComponent) {
+      case 'DataReadout':
+        return <DataReadout dataReadoutProps={dataReadoutProps} />
+      case 'PlacementControls':
+        return <ArmyForPlacing armyForPlacingProps={armyForPlacingProps} />
+      default:
+        return null
+    }
+  }
   return (
     <Layout>
-      <NavBar playerID={playerID} />
+      <TopConsole />
       <MapDisplay mapProps={mapProps} />
-      <ArmyForPlacing armyForPlacingProps={armyForPlacingProps} />
+      <BottomConsole />>
     </Layout>
   )
 }

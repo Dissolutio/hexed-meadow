@@ -4,7 +4,7 @@ const UIContext = React.createContext([{}, () => {}])
 
 export const UIContextProvider = (props) => {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [playerID, setPlayerID] = useState('')
+  const [playerID, setPlayerID] = useState(props.playerID || '')
   const UIState = {
     menuOpen,
     playerID,
@@ -22,18 +22,13 @@ export const UIContextProvider = (props) => {
 
 export const useUIContext = () => {
   const [UIState, setUIState] = useContext(UIContext)
-  const { menuOpen, playerID } = UIState
-  const { setMenuOpen, setPlayerID } = setUIState
 
   function toggleMenu() {
-    console.log('%c⧭', 'color: #ff0000', 'TOGLs')
-    setMenuOpen((s) => !s)
+    setUIState.setMenuOpen((s) => !s)
   }
   return {
-    menuOpen,
-    playerID,
+    ...UIState,
+    ...setUIState,
     toggleMenu,
-    setMenuOpen,
-    setPlayerID,
   }
 }

@@ -17,8 +17,7 @@ export const SlideMenu = ({ playerID }) => {
 }
 
 const MenuStyle = styled.div`
-  border: 1px solid red;
-  min-height: 98vh;
+  min-height: 40vh;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;

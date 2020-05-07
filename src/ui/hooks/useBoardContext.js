@@ -5,14 +5,22 @@ const BoardContext = React.createContext([{}, () => {}])
 const BoardContextProvider = (props) => {
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
+  const [topConsoleComponent, setTopConsoleComponent] = useState('NavBar')
+  const [bottomConsoleComponent, setBottomConsoleComponent] = useState(
+    'PlacementControls'
+  )
 
   const boardState = {
     activeHexID,
     activeUnitID,
+    topConsoleComponent,
+    bottomConsoleComponent,
   }
   const setBoardState = {
     setActiveHexID,
     setActiveUnitID,
+    setTopConsoleComponent,
+    setBottomConsoleComponent,
   }
 
   return (
@@ -24,15 +32,15 @@ const BoardContextProvider = (props) => {
 
 const useBoardContext = () => {
   const [boardState, setBoardState] = useContext(BoardContext)
-  const { activeHexID, activeUnitID } = boardState
-  const { setActiveHexID, setActiveUnitID } = setBoardState
-  // When user switches contest, we adjust the selected date to be within the contest dates
-
+  const activateDataReadout = () =>
+    setBoardState.setBottomConsoleComponent('DataReadout')
+  const activatePlacementControls = () =>
+    setBoardState.setBottomConsoleComponent('PlacementControls')
   return {
-    activeHexID,
-    setActiveHexID,
-    activeUnitID,
-    setActiveUnitID,
+    ...boardState,
+    ...setBoardState,
+    activatePlacementControls,
+    activateDataReadout,
   }
 }
 

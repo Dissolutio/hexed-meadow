@@ -1,7 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useBoardContext } from './hooks/useBoardContext'
 
 export const DataReadout = ({ activeHex, dataReadoutProps }) => {
+  const { activatePlacementControls } = useBoardContext()
+
   const {
     currentPhase,
     currentPlayer,
@@ -12,6 +15,7 @@ export const DataReadout = ({ activeHex, dataReadoutProps }) => {
 
   return (
     <section className="data-readout">
+      <button onClick={activatePlacementControls}>Placement Controls</button>
       <div>ActiveHex: {`${(activeHex && activeHex.id) || 'none'}`}</div>
       <div>
         Unit on Hex: {`${(activeHex && activeHex.occupyingUnitID) || 'none'}`}

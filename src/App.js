@@ -15,13 +15,13 @@ export const App = () => {
   return (
     <>
       {/* <MainLobby /> */}
-      <UIContextProvider>
+      <UIContextProvider playerID={'0'}>
         <BoardContextProvider>
           <HexedMeadowClient gameID="gameid" playerID={'0'} />
         </BoardContextProvider>
       </UIContextProvider>
       <hr />
-      <UIContextProvider>
+      <UIContextProvider playerID={'1'}>
         <BoardContextProvider>
           <HexedMeadowClient gameID="gameid" playerID={'1'} />
         </BoardContextProvider>
