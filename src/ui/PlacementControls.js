@@ -3,17 +3,17 @@ import styled from 'styled-components'
 import { useBoardContext } from './hooks/useBoardContext'
 import { UnitIcon } from './UnitIcon'
 
-export const ArmyForPlacing = ({ armyForPlacingProps }) => {
+export const PlacementControls = ({ placementControlsProps }) => {
   const { activateDataReadout } = useBoardContext()
   const {
     playerID,
+    playersReady,
     currentPhase,
     confirmReady,
     availableUnits,
     onClickPlacementUnit,
     activeUnitID,
-  } = armyForPlacingProps
-  const [waiting, setWaiting] = React.useState(false)
+  } = placementControlsProps
 
   const selectedStyle = (unitID) => {
     if (activeUnitID === unitID) {
@@ -24,6 +24,10 @@ export const ArmyForPlacing = ({ armyForPlacingProps }) => {
       return {}
     }
   }
+  const makeReady = () => {
+    confirmReady(playerID)
+  }
+
   if (currentPhase === 'mainGame') {
     return (
       <ArmyListStyle playerID={playerID}>
@@ -31,9 +35,10 @@ export const ArmyForPlacing = ({ armyForPlacingProps }) => {
       </ArmyListStyle>
     )
   }
-  if (waiting) {
+  if (playersReady[playerID] === true) {
     return (
       <ArmyListStyle playerID={playerID}>
+        <button onClick={activateDataReadout}>Data Readout</button>
         <p>Waiting for opponents to finish placing armies...</p>
       </ArmyListStyle>
     )
@@ -41,23 +46,18 @@ export const ArmyForPlacing = ({ armyForPlacingProps }) => {
   if (availableUnits.length === 0) {
     return (
       <ArmyListStyle playerID={playerID}>
+        <button onClick={activateDataReadout}>Data Readout</button>
         <p>Done placing your units?</p>
-        <button
-          onClick={() => {
-            confirmReady(playerID)
-            setWaiting(true)
-          }}
-        >
-          CONFIRM PLACEMENT
-        </button>
+        <button onClick={makeReady}>CONFIRM PLACEMENT</button>
       </ArmyListStyle>
     )
   }
 
   return (
     <ArmyListStyle playerID={playerID}>
-      <h2>Place your units</h2>
       <button onClick={activateDataReadout}>Data Readout</button>
+      <h2>Place your units below into your Start Zone</h2>
+      <p>Select a unit, then the start zone will glow.</p>
       <ul>
         {availableUnits &&
           availableUnits.map((unit) => (
@@ -71,7 +71,7 @@ export const ArmyForPlacing = ({ armyForPlacingProps }) => {
                   iconProps={{
                     x: '10',
                     y: '10',
-                    fontSize: '1rem',
+                    fontSize: '3rem',
                     transform: '',
                   }}
                 />
@@ -111,29 +111,12 @@ const ArmyListStyle = styled.div`
     background: var(--black);
     width: 100%;
     height: 100%;
-    border: 0.1px solid
-      ${(props) =>
-        props.playerID === '0'
-          ? `
-    var(--bee-yellow);
-    `
-          : `
-    var(--butterfly-purple);
-    `};
+    border: 0.1px solid var(--mainColor);
   }
   img {
     width: auto;
-    height: 10rem;
   }
   span {
-    font-size: 0.5rem;
-    ${(props) =>
-      props.playerID === '0'
-        ? `
-    color: var(--bee-yellow);
-    `
-        : `
-    color: var(--butterfly-purple);
-    `}
+    font-size: 1rem;
   }
 `

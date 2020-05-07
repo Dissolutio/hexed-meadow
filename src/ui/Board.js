@@ -7,7 +7,7 @@ import { Layout } from './layout/Layout'
 import { NavBar } from './layout/NavBar'
 import { MapDisplay } from './MapDisplay'
 import { DataReadout } from './DataReadout'
-import { ArmyForPlacing } from './ArmyForPlacing'
+import { PlacementControls } from './PlacementControls'
 
 import { myInitialPlacementUnits } from '../game/startingUnits'
 
@@ -20,6 +20,7 @@ export const Board = (props) => {
   const mapSize = G.mapSize
   const armyCards = G.armyCards
   const gameUnits = G.gameUnits
+  const playersReady = G.ready
   const currentPhase = ctx.phase
   const currentPlayer = ctx.currentPlayer
   const activePlayers = ctx.activePlayers
@@ -155,21 +156,25 @@ export const Board = (props) => {
     onClickBoardHex,
     onClickMapBackground,
   }
-  const armyForPlacingProps = {
+  const placementControlsProps = {
     playerID,
     confirmReady,
     currentPhase,
+    playersReady,
     availableUnits: availableUnitsForPlacement,
     onClickPlacementUnit,
     activeUnitID,
   }
   const dataReadoutProps = {
+    activeHexID,
+    activeUnitID,
     currentPhase,
     currentPlayer,
     activePlayers,
     numPlayers,
     currentTurn,
     errorMsg,
+    playersReady,
     // <DataReadout
     //     activeHex={boardHexes[activeHexID]}
     //     dataReadoutProps={dataReadoutProps}
@@ -188,7 +193,9 @@ export const Board = (props) => {
       case 'DataReadout':
         return <DataReadout dataReadoutProps={dataReadoutProps} />
       case 'PlacementControls':
-        return <ArmyForPlacing armyForPlacingProps={armyForPlacingProps} />
+        return (
+          <PlacementControls placementControlsProps={placementControlsProps} />
+        )
       default:
         return null
     }

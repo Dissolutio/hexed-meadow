@@ -9,7 +9,7 @@ export const Layout = ({ children }) => {
   const pClass = `board-${playerID}`
   return (
     <>
-      <LayoutContainer>
+      <LayoutContainer pID={playerID}>
         <LayoutTop>{children[0]}</LayoutTop>
         <SlideMenu playerID={[playerID]} />
         <LayoutMiddle className={`${pClass}`}>{children[1]}</LayoutMiddle>
@@ -27,6 +27,9 @@ const LayoutContainer = styled.div`
   min-height: 99vh;
   padding: 0;
   margin: 0;
+  --mainColor: ${(props) =>
+    props.pID === '0' ? `var(--bee-yellow)` : `var(--butterfly-purple)`};
+  color: --mainColor;
 `
 const LayoutTop = styled.div`
   width: 100%;
