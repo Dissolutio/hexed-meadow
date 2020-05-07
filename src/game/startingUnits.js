@@ -1,13 +1,13 @@
 import { hexedMeadowCards } from './hexedMeadowCards'
 
 // BEES
-const beestBuds = hexedMeadowCards['hm101']
-// const queenBee = hexedMeadowCards['hm102']
-// const spellingBeez = hexedMeadowCards['hm103']
+const beestyBoyz = hexedMeadowCards['hm101']
+const bSquad = hexedMeadowCards['hm102']
+const queenBae = hexedMeadowCards['hm103']
 // BUTTERFLIES
 const butterFries = hexedMeadowCards['hm201']
-// const mamaButterfly = hexedMeadowCards['hm202']
-// const butteryScarwings = hexedMeadowCards['hm203']
+const scarwings = hexedMeadowCards['hm202']
+const monarch = hexedMeadowCards['hm203']
 
 // MAKE STARTING ARMY CARDS
 export const armyCards = [
@@ -15,13 +15,33 @@ export const armyCards = [
   {
     playerID: '0',
     cardQuantity: 1,
-    ...beestBuds,
+    ...beestyBoyz,
+  },
+  {
+    playerID: '0',
+    cardQuantity: 1,
+    ...bSquad,
+  },
+  {
+    playerID: '0',
+    cardQuantity: 1,
+    ...queenBae,
   },
   // PLAYER 1
   {
     playerID: '1',
     cardQuantity: 1,
     ...butterFries,
+  },
+  {
+    playerID: '1',
+    cardQuantity: 1,
+    ...scarwings,
+  },
+  {
+    playerID: '1',
+    cardQuantity: 1,
+    ...monarch,
   },
 ]
 

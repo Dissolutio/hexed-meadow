@@ -102,6 +102,9 @@ const ArmyListStyle = styled.div`
     list-style-type: none;
     margin: 0;
     padding: 0;
+    li {
+      padding: 0.3rem;
+    }
   }
   button {
     display: flex;

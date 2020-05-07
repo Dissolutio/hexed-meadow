@@ -1,5 +1,12 @@
 import React from 'react'
-import { GiButterfly, GiBee } from 'react-icons/gi'
+import {
+  GiBee,
+  GiWaspSting,
+  GiCrown,
+  GiButterfly,
+  GiFairyWings,
+  GiWingedEmblem,
+} from 'react-icons/gi'
 
 export const playerIconColors = {
   0: 'var(--bee-yellow)',
@@ -29,15 +36,15 @@ export const UnitIcon = ({ unit, iconProps }) => {
     case 'hm101':
       return <GiBee {...gameIconProps} />
     case 'hm102':
-      return <GiBee {...gameIconProps} />
+      return <GiWaspSting {...gameIconProps} />
     case 'hm103':
-      return <GiBee {...gameIconProps} />
+      return <GiCrown {...gameIconProps} />
     case 'hm201':
       return <GiButterfly {...gameIconProps} />
     case 'hm202':
-      return <GiButterfly {...gameIconProps} />
+      return <GiFairyWings {...gameIconProps} />
     case 'hm203':
-      return <GiButterfly {...gameIconProps} />
+      return <GiWingedEmblem {...gameIconProps} />
     default:
       return null
   }
