@@ -3,22 +3,20 @@ import styled from 'styled-components'
 import useComponentSize from '@rehooks/component-size'
 
 import { useBoardContext } from './hooks/useBoardContext'
+import { usePlacementContext } from './hooks/usePlacementContext'
 
 import { HexGrid, Layout, Hexagon } from 'react-hexgrid'
 import { UnitIcon } from '../ui/UnitIcon'
 
 export const MapDisplay = () => {
   const { playerID, mapSize, onClickMapBackground } = useBoardContext()
+
   let ref = useRef(null)
   let { width, height } = useComponentSize(ref)
+
   return (
     <HexSVGStyle ref={ref} onClick={onClickMapBackground} pID={playerID}>
       <HexGrid
-        // height="100%"
-        // for mapSize9 and height 100% width undefined
-        // viewBox={`-35 -21 56 70`}
-        // width="100%"
-        // viewBox={`-5 -3 10 10`}
         viewBox={`
         ${(-width / 2) * (1 / 50)}
         ${(-height / 2) * (1 / 40)}
@@ -39,6 +37,8 @@ export const MapDisplay = () => {
 }
 
 const Hexes = (props) => {
+  const { onClickBoardHex_placement } = usePlacementContext()
+
   const {
     playerID,
     currentPhase,
@@ -47,9 +47,16 @@ const Hexes = (props) => {
     armyCards,
     activeHexID,
     activeUnitID,
-    onClickBoardHex,
+    onClickBoardHex_mainGame,
     startZones,
   } = useBoardContext()
+
+  const onClickBoardHex = (event, sourceHex) => {
+    if (currentPhase === 'placement')
+      return onClickBoardHex_placement(event, sourceHex)
+    if (currentPhase === 'mainGame')
+      return onClickBoardHex_mainGame(event, sourceHex)
+  }
 
   const boardHexesArr = Object.values(boardHexes)
   const startZone = startZones[playerID]
@@ -63,11 +70,13 @@ const Hexes = (props) => {
 
   function getUnitForHex(hex) {
     const unit = gameUnits[hex?.occupyingUnitID]
-    if (currentPhase === 'placementPhase' && unit?.playerID !== playerID) {
+    // hide opposing units during placement
+    if (currentPhase === 'placement' && unit?.playerID !== playerID) {
       return {}
     }
     return unit
   }
+
   function calcClassNames(hex) {
     if (activeUnitID && isStartZoneHex(hex)) {
       return 'startZoneHex'

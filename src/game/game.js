@@ -1,12 +1,13 @@
 import { TurnOrder, PlayerView, Stage } from 'boardgame.io/core'
 import {
-  // boardHexesWithPrePlacedUnits,
+  boardHexesWithPrePlacedUnits,
   boardHexes,
   startZones,
   mapSize,
 } from './mapGen'
 import { gameUnits, armyCards } from './startingUnits'
-import { rollD20Initiative } from './rollInitiative'
+
+import { placeUnitOnHex, confirmReady, rollInitiative } from './moves'
 
 const initialGameState = {
   // boardHexes: boardHexesWithPrePlacedUnits(),
@@ -16,6 +17,7 @@ const initialGameState = {
   gameUnits,
   mapSize,
   ready: { '0': false, '1': false },
+  initiative: {},
 }
 
 export const HexedMeadow = {
@@ -30,7 +32,7 @@ export const HexedMeadow = {
   },
   seed: 'random_string',
   phases: {
-    placementPhase: {
+    placement: {
       start: true,
       moves: { placeUnitOnHex, confirmReady },
       onBegin: (G, ctx) => {
@@ -42,9 +44,19 @@ export const HexedMeadow = {
     },
     mainGame: {
       onBegin: (G, ctx) => {
+        G.ready = initialGameState.ready
         ctx.events.setActivePlayers({ all: 'placeOrderMarkers' })
-        console.log('MAIN GAME BEGIN')
       },
+      turn: {
+        stages: {
+          placeOrderMarkers: {
+            moves: {
+              confirmReady,
+            },
+          },
+        },
+      },
+      order: TurnOrder.CUSTOM_FROM('initiative'),
     },
   },
   endIf: (G, ctx) => {},
@@ -52,14 +64,4 @@ export const HexedMeadow = {
     endGame: false,
   },
   playerView: PlayerView.STRIP_SECRETS,
-}
-
-function placeUnitOnHex(G, ctx, hexId, unit) {
-  G.boardHexes[hexId].occupyingUnitID = unit.unitID
-}
-function confirmReady(G, ctx, playerID) {
-  G.ready[playerID] = true
-}
-function rollInitiative(G, ctx) {
-  G.initiative = rollD20Initiative([...Array(ctx.numPlayers).keys()])
 }

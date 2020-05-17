@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useBoardContext } from './hooks/useBoardContext'
+import { usePlacementContext } from './hooks/usePlacementContext'
 import { useLayoutContext } from './hooks/useLayoutContext'
 import { UnitIcon } from './UnitIcon'
 
@@ -12,9 +13,8 @@ export const PlacementControls = ({ placementControlsProps }) => {
     currentPhase,
     confirmReady,
     activeUnitID,
-    availableUnitsForPlacement: availableUnitsForPlacement,
-    onClickPlacementUnit,
   } = useBoardContext()
+  const { placementUnits, onClickPlacementUnit } = usePlacementContext()
 
   const selectedStyle = (unitID) => {
     if (activeUnitID === unitID) {
@@ -44,7 +44,7 @@ export const PlacementControls = ({ placementControlsProps }) => {
       </ArmyListStyle>
     )
   }
-  if (availableUnitsForPlacement.length === 0) {
+  if (placementUnits.length === 0) {
     return (
       <ArmyListStyle playerID={playerID}>
         <button onClick={activateDataReadout}>Data Readout</button>
@@ -60,8 +60,8 @@ export const PlacementControls = ({ placementControlsProps }) => {
       <h2>Place your units below into your Start Zone</h2>
       <p>Select a unit, then the start zone will glow.</p>
       <ul>
-        {availableUnitsForPlacement &&
-          availableUnitsForPlacement.map((unit) => (
+        {placementUnits &&
+          placementUnits.map((unit) => (
             <li key={unit.unitID}>
               <button
                 style={selectedStyle(unit.unitID)}

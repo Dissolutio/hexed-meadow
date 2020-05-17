@@ -1,4 +1,5 @@
 import React from 'react'
+import { BrowserRouter } from 'react-router-dom'
 import { Client, Lobby } from 'boardgame.io/react'
 import { Local } from 'boardgame.io/multiplayer'
 import { SocketIO } from 'boardgame.io/multiplayer'
@@ -17,6 +18,13 @@ const devModes = {
   herokuDeployment: 'herokuDeployment',
 }
 export const App = () => {
+  return (
+    <BrowserRouter>
+      <EnvApp />
+    </BrowserRouter>
+  )
+}
+const EnvApp = () => {
   if (devMode === devModes.dev) {
     return <DevApp />
   }

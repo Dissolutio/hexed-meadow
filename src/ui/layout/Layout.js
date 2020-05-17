@@ -64,7 +64,6 @@ const LayoutTop = styled.div`
 const LayoutBottom = styled.div`
   width: 100%;
   min-height: 27vh;
-  overflow: scroll;
 `
 const LayoutMiddle = styled.div`
   width: 100%;

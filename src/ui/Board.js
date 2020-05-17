@@ -3,28 +3,32 @@ import React, { useState, useEffect } from 'react'
 import { BoardContextProvider } from './hooks/useBoardContext'
 import { UIContextProvider } from './hooks/useUIContext'
 import { LayoutContextProvider } from './hooks/useLayoutContext'
+import { PlacementContextProvider } from './hooks/usePlacementContext'
 
 import { Layout } from './layout/Layout'
 import { TopConsole } from './layout/TopConsole'
 import { BottomConsole } from './layout/BottomConsole'
 import { MapDisplay } from './MapDisplay'
 
-export const Board = ({ G, ctx, moves, playerID, ...props }) => {
+export const Board = (props) => {
+  const { G, ctx, moves, playerID } = props
   const gameContextProps = { G, ctx, moves, playerID }
 
   // Layout applies CSS to Children, the children are switches based on active string in LayoutContext
   return (
-    <UIContextProvider playerID={playerID}>
-      <BoardContextProvider {...gameContextProps}>
+    <BoardContextProvider {...gameContextProps}>
+      <UIContextProvider playerID={playerID}>
         <LayoutContextProvider>
-          <Layout>
-            <TopConsole />
-            <MapDisplay />
-            <BottomConsole />>
-          </Layout>
+          <PlacementContextProvider>
+            <Layout>
+              <TopConsole />
+              <MapDisplay />
+              <BottomConsole />>
+            </Layout>
+          </PlacementContextProvider>
         </LayoutContextProvider>
-      </BoardContextProvider>
-    </UIContextProvider>
+      </UIContextProvider>
+    </BoardContextProvider>
   )
 }
 
