@@ -11,13 +11,25 @@ import 'normalize.css'
 import './theme.css'
 
 // TOGGLE THIS TO DEVELOP/DEPLOY
-const devMode = 'herokuDeployment'
+const devMode = 'dev'
 const devModes = {
   dev: 'dev',
   devWithLocalServer: 'devWithLocalServer',
   herokuDeployment: 'herokuDeployment',
 }
 export const App = () => {
+  if (devMode === devModes.dev) {
+    return <DevApp />
+  }
+  if (devMode === devModes.devWithLocalServer) {
+    return <DevApp />
+  }
+  if (devMode === devModes.herokuDeployment) {
+    return <HerokuApp />
+  }
+}
+
+export const DevApp = () => {
   return (
     <BrowserRouter>
       <EnvApp />
