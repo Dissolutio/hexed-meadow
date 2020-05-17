@@ -1,65 +1,106 @@
 import React from 'react'
 import { Client, Lobby } from 'boardgame.io/react'
-// import { Local } from 'boardgame.io/multiplayer'
+import { Local } from 'boardgame.io/multiplayer'
 import { SocketIO } from 'boardgame.io/multiplayer'
 
-import { HexedMeadow } from './game/game'
-import { BoardContextProvider } from './ui/hooks/useBoardContext'
-import { UIContextProvider } from './ui/hooks/useUIContext'
 import Board from './ui/Board'
 
+import { HexedMeadow } from './game/game'
 import 'normalize.css'
 import './theme.css'
 
+// TOGGLE THIS TO DEVELOP/DEPLOY
+const devMode = 'herokuDeployment'
+const devModes = {
+  dev: 'dev',
+  devWithLocalServer: 'devWithLocalServer',
+  herokuDeployment: 'herokuDeployment',
+}
 export const App = () => {
+  if (devMode === devModes.dev) {
+    return <DevApp />
+  }
+  if (devMode === devModes.devWithLocalServer) {
+    return <DevApp />
+  }
+  if (devMode === devModes.herokuDeployment) {
+    return <HerokuApp />
+  }
+}
+
+export const DevApp = () => {
   return (
     <>
-      {/* <MainLobby /> */}
-      <UIContextProvider playerID={'0'}>
-        <BoardContextProvider>
-          <HexedMeadowClient gameID="gameid" playerID={'0'} />
-        </BoardContextProvider>
-      </UIContextProvider>
-      <hr />
-      <UIContextProvider playerID={'1'}>
-        <BoardContextProvider>
-          <HexedMeadowClient gameID="gameid" playerID={'1'} />
-        </BoardContextProvider>
-      </UIContextProvider>
+      <DevClient gameID="gameid" playerID={'0'} />
+      <DevClient gameID="gameid" playerID={'1'} />
     </>
-  )
-}
-// return <MainLobby />
-
-const HexedMeadowClient = Client({
-  game: HexedMeadow,
-  numPlayers: 2,
-  // loading: LoadingComponent,
-  board: Board,
-  // multiplayer: Local(),
-  // multiplayer: SocketIO({ server: 'http://localhost:8000' }),
-  multiplayer: SocketIO({
-    server: `https://${window.location.hostname}`,
-  }),
-  debug: false,
-  enhancer:
-    window.__REDUX_DEVTOOLS_EXTENSION__ &&
-    window.__REDUX_DEVTOOLS_EXTENSION__(),
-})
-
-const MainLobby = () => {
-  return (
-    <Lobby
-      // gameServer={`http://localhost:8000`}
-      // lobbyServer={`http://localhost:8000`}
-      gameServer={`https://${window.location.hostname}`}
-      lobbyServer={`https://${window.location.hostname}`}
-      gameComponents={[{ game: HexedMeadow, board: Board }]}
-      // debug={true}
-    />
   )
 }
 
 const LoadingComponent = (props) => {
   return <div>Connecting...</div>
+}
+
+const DevClient = Client({
+  game: HexedMeadow,
+  numPlayers: 2,
+  board: Board,
+  multiplayer: Local(),
+  debug: false,
+  loading: LoadingComponent,
+  enhancer:
+    window.__REDUX_DEVTOOLS_EXTENSION__ &&
+    window.__REDUX_DEVTOOLS_EXTENSION__(),
+})
+
+const DevLocalServerClient = Client({
+  game: HexedMeadow,
+  numPlayers: 2,
+  board: Board,
+  multiplayer: SocketIO({ server: 'http://localhost:8000' }),
+  debug: false,
+  loading: LoadingComponent,
+  enhancer:
+    window.__REDUX_DEVTOOLS_EXTENSION__ &&
+    window.__REDUX_DEVTOOLS_EXTENSION__(),
+})
+const DeployClient = Client({
+  game: HexedMeadow,
+  numPlayers: 2,
+  board: Board,
+  multiplayer: SocketIO({
+    server: `https://${window.location.hostname}`,
+  }),
+  debug: false,
+  loading: LoadingComponent,
+  enhancer:
+    window.__REDUX_DEVTOOLS_EXTENSION__ &&
+    window.__REDUX_DEVTOOLS_EXTENSION__(),
+})
+const HerokuApp = (props) => {
+  return (
+    <>
+      <DeployClient gameID="gameid" playerID={'0'} />
+      <DeployClient gameID="gameid" playerID={'1'} />
+    </>
+  )
+}
+const DevLocalServerLobby = () => {
+  return (
+    <Lobby
+      gameServer={`http://localhost:8000`}
+      lobbyServer={`http://localhost:8000`}
+      gameComponents={[{ game: HexedMeadow, board: Board }]}
+      debug={false}
+    />
+  )
+}
+const HerokuDeployedLobby = (params) => {
+  return (
+    <Lobby
+      gameServer={`https://${window.location.hostname}`}
+      lobbyServer={`https://${window.location.hostname}`}
+      gameComponents={[{ game: HexedMeadow, board: Board }]}
+    />
+  )
 }

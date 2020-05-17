@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 import { useUIContext } from '../hooks/useUIContext'
 import { SlideToggle } from '../utilities/SlideToggle'
@@ -9,8 +10,8 @@ export const SlideMenu = ({ playerID }) => {
   return (
     <SlideToggle isVisible={menuOpen}>
       <MenuStyle onClick={toggleMenu} playerID={playerID}>
-        <a href="/">Home</a>
-        <a href="/">Bogus Link</a>
+        <Link to="#">Home</Link>
+        <Link to="#">Bogus Link</Link>
       </MenuStyle>
     </SlideToggle>
   )

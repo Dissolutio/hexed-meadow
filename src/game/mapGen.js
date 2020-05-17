@@ -2,14 +2,14 @@ import { GridGenerator } from 'react-hexgrid'
 import { gameUnits } from './startingUnits'
 
 // HEXES MADE BY REACT-HEXGRID => Battlescape Map Hexes :)
-export const mapSize = 2
+export const mapSize = 3
 const basicHexes = GridGenerator.hexagon(mapSize)
 export const boardHexes = basicHexes.reduce(fillHexInfo, {})
 
 // MAKE SOME STARTZONES FOR 2 PLAYERS ON A SIMPLE MAP
 const boardHexesArr = Object.values(boardHexes)
-const P0StartHexesArr = boardHexesArr.filter((hex) => hex.r >= mapSize - 2)
-const P1StartHexesArr = boardHexesArr.filter((hex) => hex.r <= -(mapSize - 2))
+const P0StartHexesArr = boardHexesArr.filter((hex) => hex.r >= mapSize - 1)
+const P1StartHexesArr = boardHexesArr.filter((hex) => hex.r <= -(mapSize - 1))
 // const P2StartHexesArr = boardHexesArr.filter((hex) => hex.q >= mapSize - 2);
 // const P3StartHexesArr = boardHexesArr.filter((hex) => hex.q <= -(mapSize - 2));
 const P0StartZone = P0StartHexesArr.map((hex) => hex.id)

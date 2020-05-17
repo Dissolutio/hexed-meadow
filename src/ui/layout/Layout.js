@@ -9,7 +9,7 @@ export const Layout = ({ children }) => {
   const pClass = `board-${playerID}`
   return (
     <>
-      <LayoutContainer pID={playerID}>
+      <LayoutContainer pID={playerID} className={`${pClass}`}>
         <LayoutTop>{children[0]}</LayoutTop>
         <SlideMenu playerID={[playerID]} />
         <LayoutMiddle className={`${pClass}`}>{children[1]}</LayoutMiddle>
@@ -30,6 +30,32 @@ const LayoutContainer = styled.div`
   --mainColor: ${(props) =>
     props.pID === '0' ? `var(--bee-yellow)` : `var(--butterfly-purple)`};
   color: --mainColor;
+  &.board-0 {
+    background: radial-gradient(ellipse at top, var(--bee-yellow), transparent),
+      radial-gradient(ellipse at bottom, var(--black), transparent);
+    ::-webkit-scrollbar-track-piece {
+      box-shadow: inset 0 0 5px var(--bee-yellow);
+      width: 0.5rem;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--bee-yellow);
+    }
+  }
+  &.board-1 {
+    background: radial-gradient(
+        ellipse at top,
+        var(--butterfly-purple),
+        transparent
+      ),
+      radial-gradient(ellipse at bottom, var(--black), transparent);
+    ::-webkit-scrollbar-track-piece {
+      box-shadow: inset 0 0 5px var(--butterfly-purple);
+      width: 0.5rem;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--butterfly-purple);
+    }
+  }
 `
 const LayoutTop = styled.div`
   width: 100%;
@@ -38,6 +64,7 @@ const LayoutTop = styled.div`
 const LayoutBottom = styled.div`
   width: 100%;
   min-height: 27vh;
+  overflow: scroll;
 `
 const LayoutMiddle = styled.div`
   width: 100%;
@@ -55,34 +82,5 @@ const LayoutMiddle = styled.div`
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
-  }
-  &.board-0 {
-    --mainColor: var(--bee-yellow);
-    background: radial-gradient(ellipse at top, var(--bee-yellow), transparent),
-      radial-gradient(ellipse at bottom, var(--black), transparent);
-    ::-webkit-scrollbar-track-piece {
-      box-shadow: inset 0 0 5px var(--bee-yellow);
-      width: 0.5rem;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--bee-yellow);
-    }
-  }
-  &.board-1 {
-    --mainColor: var(--butterfly-purple);
-    background: radial-gradient(
-        ellipse at top,
-        var(--butterfly-purple),
-        transparent
-      ),
-      radial-gradient(ellipse at bottom, var(--black), transparent);
-    ::-webkit-scrollbar-track-piece {
-      box-shadow: inset 0 0 5px var(--butterfly-purple);
-      /* background-color: var(black); */
-      width: 0.5rem;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--butterfly-purple);
-    }
   }
 `

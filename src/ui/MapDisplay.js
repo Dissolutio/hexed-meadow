@@ -1,49 +1,37 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
-import { HexGrid, Layout, Hexagon, HexUtils } from 'react-hexgrid'
+import useComponentSize from '@rehooks/component-size'
+
+import { useBoardContext } from './hooks/useBoardContext'
+
+import { HexGrid, Layout, Hexagon } from 'react-hexgrid'
 import { UnitIcon } from '../ui/UnitIcon'
 
-export function MapDisplay({ mapProps }) {
-  const {
-    playerID,
-    currentPhase,
-    boardHexes,
-    startZones,
-    mapSize,
-    armyCards,
-    gameUnits,
-    activeHexID,
-    activeUnitID,
-    onClickBoardHex,
-    onClickMapBackground,
-  } = mapProps
-
+export const MapDisplay = () => {
+  const { playerID, mapSize, onClickMapBackground } = useBoardContext()
+  let ref = useRef(null)
+  let { width, height } = useComponentSize(ref)
   return (
-    <HexSVGStyle onClick={onClickMapBackground} pID={playerID}>
+    <HexSVGStyle ref={ref} onClick={onClickMapBackground} pID={playerID}>
       <HexGrid
-        width="100%"
         // height="100%"
         // for mapSize9 and height 100% width undefined
         // viewBox={`-35 -21 56 70`}
-        viewBox={`-5 -3 10 10`}
+        // width="100%"
+        // viewBox={`-5 -3 10 10`}
+        viewBox={`
+        ${(-width / 2) * (1 / 50)}
+        ${(-height / 2) * (1 / 40)}
+        ${width * (1 / 50)} 
+        ${height * (1 / 40)}`}
       >
         <Layout
-          size={{ x: `1`, y: `1` }}
+          size={{ x: `${3 / mapSize} `, y: `${3 / mapSize} ` }}
           flat={true}
           origin={{ x: 0, y: 0 }}
           spacing={1.01}
         >
-          <Hexes
-            playerID={playerID}
-            currentPhase={currentPhase}
-            boardHexes={boardHexes}
-            startZones={startZones}
-            gameUnits={gameUnits}
-            armyCards={armyCards}
-            activeHexID={activeHexID}
-            onClickBoardHex={onClickBoardHex}
-            activeUnitID={activeUnitID}
-          />
+          <Hexes />
         </Layout>
       </HexGrid>
     </HexSVGStyle>
@@ -61,7 +49,7 @@ const Hexes = (props) => {
     activeUnitID,
     onClickBoardHex,
     startZones,
-  } = props
+  } = useBoardContext()
 
   const boardHexesArr = Object.values(boardHexes)
   const startZone = startZones[playerID]
@@ -120,14 +108,12 @@ const HexSVGStyle = styled.div`
     );
     stroke-width: 0.1;
   }
+  /* REGULAR HEXES */
   svg g polygon {
     stroke: var(
       ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
     );
     stroke-width: 0.01;
-  }
-  svg g polygon text {
-    font-size: 0.1rem;
   }
   @media (hover: hover) {
     svg g:hover {

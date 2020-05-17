@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useLayoutContext } from './hooks/useLayoutContext'
 import { useBoardContext } from './hooks/useBoardContext'
 
 export const DataReadout = ({ activeHex, dataReadoutProps }) => {
-  const { activatePlacementControls } = useBoardContext()
+  const { activatePlacementControls } = useLayoutContext()
 
   const {
     activeHexID,
@@ -14,7 +15,7 @@ export const DataReadout = ({ activeHex, dataReadoutProps }) => {
     playersReady,
     numPlayers,
     currentTurn,
-  } = dataReadoutProps
+  } = useBoardContext()
 
   return (
     <section className="data-readout">

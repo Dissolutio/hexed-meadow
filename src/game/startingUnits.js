@@ -12,32 +12,32 @@ const monarch = hexedMeadowCards['hm203']
 // MAKE STARTING ARMY CARDS
 export const armyCards = [
   // PLAYER 0
-  {
-    playerID: '0',
-    cardQuantity: 1,
-    ...beestyBoyz,
-  },
-  {
-    playerID: '0',
-    cardQuantity: 1,
-    ...bSquad,
-  },
+  // {
+  //   playerID: '0',
+  //   cardQuantity: 1,
+  //   ...beestyBoyz,
+  // },
+  // {
+  //   playerID: '0',
+  //   cardQuantity: 1,
+  //   ...bSquad,
+  // },
   {
     playerID: '0',
     cardQuantity: 1,
     ...queenBae,
   },
   // PLAYER 1
-  {
-    playerID: '1',
-    cardQuantity: 1,
-    ...butterFries,
-  },
-  {
-    playerID: '1',
-    cardQuantity: 1,
-    ...scarwings,
-  },
+  // {
+  //   playerID: '1',
+  //   cardQuantity: 1,
+  //   ...butterFries,
+  // },
+  // {
+  //   playerID: '1',
+  //   cardQuantity: 1,
+  //   ...scarwings,
+  // },
   {
     playerID: '1',
     cardQuantity: 1,

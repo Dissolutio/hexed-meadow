@@ -6,7 +6,7 @@ import { HamburgerMenuButton } from './HamburgerMenuButton'
 import beesBigLogo from '../../assets/beesBigLogo.png'
 import butterfliesLogo from '../../assets/butterfliesLogo.png'
 
-export const NavBar = (props) => {
+export const NavBar = () => {
   const { playerID } = useUIContext()
   const TeamHeader = () => {
     if (playerID === '0') {

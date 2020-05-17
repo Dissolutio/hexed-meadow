@@ -26,13 +26,13 @@ export const HexedMeadow = {
     }
   },
   moves: {
-    placeUnit,
+    placeUnitOnHex,
   },
   seed: 'random_string',
   phases: {
     placementPhase: {
       start: true,
-      moves: { placeUnit, confirmReady },
+      moves: { placeUnitOnHex, confirmReady },
       onBegin: (G, ctx) => {
         ctx.events.setActivePlayers({ all: 'placingUnits' })
         console.log('PLACING ARMIES BEGIN')
@@ -54,7 +54,7 @@ export const HexedMeadow = {
   playerView: PlayerView.STRIP_SECRETS,
 }
 
-function placeUnit(G, ctx, hexId, unit) {
+function placeUnitOnHex(G, ctx, hexId, unit) {
   G.boardHexes[hexId].occupyingUnitID = unit.unitID
 }
 function confirmReady(G, ctx, playerID) {
