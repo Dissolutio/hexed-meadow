@@ -18,6 +18,13 @@ const devModes = {
   herokuDeployment: 'herokuDeployment',
 }
 export const App = () => {
+  return (
+    <BrowserRouter>
+      <EnvApp />
+    </BrowserRouter>
+  )
+}
+const EnvApp = () => {
   if (devMode === devModes.dev) {
     return <DevApp />
   }
