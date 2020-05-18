@@ -15,7 +15,7 @@ const BoardContextProvider = (props) => {
   const boardHexes = G.boardHexes
   const startZones = G.startZones
   const myStartZone = startZones[playerID]
-  const mapSize = G.mapSize
+  const hexMap = G.hexMap
   const armyCards = G.armyCards
   const myCards = armyCards.filter(belongsToPlayer)
   const gameUnits = G.gameUnits
@@ -45,7 +45,7 @@ const BoardContextProvider = (props) => {
         // G
         boardHexes,
         startZones,
-        mapSize,
+        hexMap,
         armyCards,
         gameUnits,
         playersReady,
@@ -76,52 +76,20 @@ const BoardContextProvider = (props) => {
 
 const useBoardContext = () => {
   const boardState = useContext(BoardContext)
-  const {
-    errorMsg,
-    setErrorMsg,
-    activeHexID,
-    setActiveHexID,
-    activeUnitID,
-    setActiveUnitID,
-  } = boardState
+  const { setErrorMsg, setActiveHexID, activeUnitID } = boardState
 
   function onClickBoardHex_mainGame(event, sourceHex) {
     event.stopPropagation() // no propagate to background onClick
     const hexID = sourceHex.id
-
     // no unit, select hex
     if (!activeUnitID) {
       console.log('SELECT HEX', activeUnitID)
       setActiveHexID(hexID)
       setErrorMsg('')
       return
-
-      // have unit, clicked valid hex
-      // if (activeUnitID && isInStartZone) {
-      //   placeUnitOnHex(hexID, selectedUnit)
-      //   setPlacementUnits(
-      //     placementUnits.filter(
-      //       (unit) => unit.unitID !== activeUnitID
-      //     )
-      //   )
-      //   setActiveUnitID('')
-      //   setErrorMsg('')
-      //   return
-      // }
-
-      // have unit, clicked invalid hex
-      // if (activeUnitID && !isInStartZone) {
-      //   console.log(
-      //     'CANNOT PLACE UNIT -- choose hex inside start zone',
-      //     activeUnitID
-      //   )
-      //   setErrorMsg(
-      //     'You must place units inside your start zone. Invalid hex selected.'
-      //   )
-      //   return
-      // }
     }
   }
+
   function onClickMapBackground() {
     console.log('MAP BG CLICKED')
     setActiveHexID('')

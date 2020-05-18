@@ -11,12 +11,14 @@ import 'normalize.css'
 import './theme.css'
 
 // TOGGLE THIS TO DEVELOP/DEPLOY
-const devMode = 'dev'
 const devModes = {
   dev: 'dev',
   devWithLocalServer: 'devWithLocalServer',
   herokuDeployment: 'herokuDeployment',
 }
+
+const devMode = devModes.dev
+
 export const App = () => {
   return (
     <BrowserRouter>
@@ -24,25 +26,7 @@ export const App = () => {
     </BrowserRouter>
   )
 }
-const EnvApp = () => {
-  if (devMode === devModes.dev) {
-    return <DevApp />
-  }
-  if (devMode === devModes.devWithLocalServer) {
-    return <DevApp />
-  }
-  if (devMode === devModes.herokuDeployment) {
-    return <HerokuApp />
-  }
-}
 
-export const DevApp = () => {
-  return (
-    <BrowserRouter>
-      <EnvApp />
-    </BrowserRouter>
-  )
-}
 const EnvApp = () => {
   if (devMode === devModes.dev) {
     return <DevApp />
@@ -91,6 +75,7 @@ const DevLocalServerClient = Client({
     window.__REDUX_DEVTOOLS_EXTENSION__ &&
     window.__REDUX_DEVTOOLS_EXTENSION__(),
 })
+
 const DeployClient = Client({
   game: HexedMeadow,
   numPlayers: 2,
@@ -104,6 +89,7 @@ const DeployClient = Client({
     window.__REDUX_DEVTOOLS_EXTENSION__ &&
     window.__REDUX_DEVTOOLS_EXTENSION__(),
 })
+
 const HerokuApp = (props) => {
   return (
     <>

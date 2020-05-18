@@ -9,22 +9,31 @@ import { HexGrid, Layout, Hexagon } from 'react-hexgrid'
 import { UnitIcon } from '../ui/UnitIcon'
 
 export const MapDisplay = () => {
-  const { playerID, mapSize, onClickMapBackground } = useBoardContext()
+  const { playerID, hexMap, onClickMapBackground } = useBoardContext()
 
   let ref = useRef(null)
   let { width, height } = useComponentSize(ref)
-
+  const longSide = width >= height ? width : height
   return (
     <HexSVGStyle ref={ref} onClick={onClickMapBackground} pID={playerID}>
       <HexGrid
+        width={`${width >= height ? 800 : 600}`}
+        height={`${width >= height ? 600 : 800}`}
+        // viewBox={`
+        // ${(-width / 2) * (1 / 50)}
+        // ${(-height / 2) * (1 / 40)}
+        // ${width * (1 / 50)}
+        // ${height * (1 / 40)}
+        // `}
         viewBox={`
-        ${(-width / 2) * (1 / 50)}
-        ${(-height / 2) * (1 / 40)}
-        ${width * (1 / 50)} 
-        ${height * (1 / 40)}`}
+    ${(-width / 2) * (1 / 50)}
+    ${(-height / 2) * (1 / 40)}
+    ${width * (1 / 50)}
+    ${height * (1 / 40)}
+    `}
       >
         <Layout
-          size={{ x: `${3 / mapSize} `, y: `${3 / mapSize} ` }}
+          size={{ x: `${hexMap.mapSize}`, y: `${hexMap.mapSize} ` }}
           flat={true}
           origin={{ x: 0, y: 0 }}
           spacing={1.01}
@@ -58,7 +67,6 @@ const Hexes = (props) => {
       return onClickBoardHex_mainGame(event, sourceHex)
   }
 
-  const boardHexesArr = Object.values(boardHexes)
   const startZone = startZones[playerID]
 
   function isStartZoneHex(hex) {
@@ -69,7 +77,9 @@ const Hexes = (props) => {
   }
 
   function getUnitForHex(hex) {
-    const unit = gameUnits[hex?.occupyingUnitID]
+    const unitID = hex?.occupyingUnitID
+    if (!unitID) return
+    const unit = gameUnits[unitID]
     // hide opposing units during placement
     if (currentPhase === 'placement' && unit?.playerID !== playerID) {
       return {}
@@ -86,7 +96,7 @@ const Hexes = (props) => {
     }
     return ''
   }
-  return boardHexesArr.map((hex, i) => {
+  return Object.values(boardHexes).map((hex, i) => {
     return (
       <Hexagon
         key={i}
@@ -94,8 +104,7 @@ const Hexes = (props) => {
         onClick={(e, source) => onClickBoardHex(e, source.props)}
         className={calcClassNames(hex)}
       >
-        {}
-        <UnitIcon unit={getUnitForHex(hex)} />
+        {getUnitForHex(hex) ? <UnitIcon unit={getUnitForHex(hex)} /> : null}
       </Hexagon>
     )
   })

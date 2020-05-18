@@ -9,6 +9,7 @@ export const DataReadout = ({ activeHex, dataReadoutProps }) => {
   const {
     activeHexID,
     activeUnitID,
+    boardHexes,
     currentPhase,
     currentPlayer,
     activePlayers,
@@ -23,7 +24,9 @@ export const DataReadout = ({ activeHex, dataReadoutProps }) => {
       <div>ActiveHex: {`${(activeHexID && activeHexID) || 'none'}`}</div>
       <div>
         Unit on Hex:{' '}
-        {`${(activeHexID && activeHexID.occupyingUnitID) || 'none'}`}
+        {`${
+          (activeHexID && boardHexes[activeHexID].occupyingUnitID) || 'none'
+        }`}
       </div>
       <div>Active Unit: {`${(activeUnitID && activeUnitID) || 'none'}`}</div>
       <div>currentPhase: "{currentPhase}"</div>

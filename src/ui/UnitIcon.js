@@ -7,6 +7,7 @@ import {
   GiFairyWings,
   GiWingedEmblem,
 } from 'react-icons/gi'
+import { useBoardContext } from './hooks/useBoardContext'
 
 export const playerIconColors = {
   0: 'var(--bee-yellow)',
@@ -14,12 +15,8 @@ export const playerIconColors = {
 }
 
 export const UnitIcon = ({ unit, iconProps }) => {
-  const {
-    x = '-0.55',
-    y = '-0.55',
-    fontSize = '0.07rem',
-    transform = 'translate(30, 0)',
-  } = iconProps ? iconProps : {}
+  const { hexMap } = useBoardContext()
+  const { x = '-2', y = '-2', fontSize = '0.2rem' } = iconProps ? iconProps : {}
   if (!unit) return null
   const playerColor = playerIconColors[unit?.playerID] ?? 'red'
 
@@ -29,7 +26,6 @@ export const UnitIcon = ({ unit, iconProps }) => {
     style: {
       fill: `${playerColor}`,
       fontSize,
-      transform,
     },
   }
   switch (unit.cardID) {

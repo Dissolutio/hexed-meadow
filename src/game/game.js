@@ -3,19 +3,19 @@ import {
   boardHexesWithPrePlacedUnits,
   boardHexes,
   startZones,
-  mapSize,
+  myTinyMap,
 } from './mapGen'
 import { gameUnits, armyCards } from './startingUnits'
 
 import { placeUnitOnHex, confirmReady, rollInitiative } from './moves'
 
 const initialGameState = {
-  // boardHexes: boardHexesWithPrePlacedUnits(),
-  boardHexes,
+  boardHexes: boardHexesWithPrePlacedUnits(),
+  // boardHexes,
   startZones,
   armyCards,
   gameUnits,
-  mapSize,
+  hexMap: myTinyMap,
   ready: { '0': false, '1': false },
   initiative: {},
 }
