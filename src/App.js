@@ -17,7 +17,13 @@ const devModes = {
   herokuDeployment: 'herokuDeployment',
 }
 
-const devMode = devModes.dev
+let devMode = devModes.herokuDeployment
+if (process.env.NODE_ENV === 'development') {
+  devMode = devModes.dev
+}
+if (process.env.NODE_ENV === 'production') {
+  devMode = devModes.herokuDeployment
+}
 
 export const App = () => {
   return (
