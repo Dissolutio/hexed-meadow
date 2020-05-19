@@ -4,6 +4,7 @@ import {
   boardHexes,
   startZones,
   myTinyMap,
+  mySmallMap,
 } from './mapGen'
 import { gameUnits, armyCards } from './startingUnits'
 

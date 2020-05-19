@@ -28,6 +28,7 @@ const hexMap = (mapSize) => {
   }
 }
 export const myTinyMap = hexMap(1)
+export const mySmallMap = hexMap(2)
 const basicHexes = GridGenerator.hexagon(myTinyMap.mapSize)
 export const boardHexes = basicHexes.reduce(fillHexInfo, {})
 function fillHexInfo(prev, curr) {

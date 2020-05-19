@@ -16,24 +16,9 @@ export const MapDisplay = () => {
   const longSide = width >= height ? width : height
   return (
     <HexSVGStyle ref={ref} onClick={onClickMapBackground} pID={playerID}>
-      <HexGrid
-        width={`${width >= height ? 800 : 600}`}
-        height={`${width >= height ? 600 : 800}`}
-        // viewBox={`
-        // ${(-width / 2) * (1 / 50)}
-        // ${(-height / 2) * (1 / 40)}
-        // ${width * (1 / 50)}
-        // ${height * (1 / 40)}
-        // `}
-        viewBox={`
-    ${(-width / 2) * (1 / 50)}
-    ${(-height / 2) * (1 / 40)}
-    ${width * (1 / 50)}
-    ${height * (1 / 40)}
-    `}
-      >
+      <HexGrid width="100%" height="100%" viewBox="-5 -5 10 10">
         <Layout
-          size={{ x: `${hexMap.mapSize}`, y: `${hexMap.mapSize} ` }}
+          size={{ x: `${hexMap.mapSize * 2}`, y: `${hexMap.mapSize * 2} ` }}
           flat={true}
           origin={{ x: 0, y: 0 }}
           spacing={1.01}
@@ -115,10 +100,16 @@ const HexSVGStyle = styled.div`
     fill: var(--black);
   }
   .selectedMapHex > g polygon {
+    /* 
     stroke: var(
       ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
     );
+    */
+    stroke: var(--neon-orange);
     stroke-width: 0.1;
+    @media screen and (min-width: 500px) {
+      stroke-width: 0.5;
+    }
   }
   .startZoneHex > g polygon {
     stroke: var(
