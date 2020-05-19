@@ -45,6 +45,8 @@ const Hexes = (props) => {
     startZones,
   } = useBoardContext()
 
+  const startZone = startZones[playerID]
+
   const onClickBoardHex = (event, sourceHex) => {
     if (currentPhase === 'placement')
       return onClickBoardHex_placement(event, sourceHex)
@@ -52,22 +54,22 @@ const Hexes = (props) => {
       return onClickBoardHex_mainGame(event, sourceHex)
   }
 
-  const startZone = startZones[playerID]
-
   function isStartZoneHex(hex) {
     return startZone.includes(hex.id)
   }
+
   function isActiveHex(hex) {
     return hex.id === activeHexID
   }
 
-  function getUnitForHex(hex) {
-    const unitID = hex?.occupyingUnitID
-    if (!unitID) return
+  function getUnitForHex(unitID) {
+    if (!unitID) {
+      return
+    }
     const unit = gameUnits[unitID]
-    // hide opposing units during placement
+    // don't return opponent-controlled units during placement
     if (currentPhase === 'placement' && unit?.playerID !== playerID) {
-      return {}
+      return
     }
     return unit
   }
@@ -81,7 +83,9 @@ const Hexes = (props) => {
     }
     return ''
   }
+
   return Object.values(boardHexes).map((hex, i) => {
+    const gameUnit = getUnitForHex(hex.occupyingUnitID)
     return (
       <Hexagon
         key={i}
@@ -89,16 +93,27 @@ const Hexes = (props) => {
         onClick={(e, source) => onClickBoardHex(e, source.props)}
         className={calcClassNames(hex)}
       >
-        {getUnitForHex(hex) ? <UnitIcon unit={getUnitForHex(hex)} /> : null}
+        {gameUnit ? <UnitIcon unit={gameUnit} /> : null}
       </Hexagon>
     )
   })
 }
 
 const HexSVGStyle = styled.div`
+  /* HEX FILL */
   g {
     fill: var(--black);
   }
+
+  /* REGULAR HEXES */
+  svg g polygon {
+    stroke: var(
+      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
+    );
+    stroke-width: 0.01;
+  }
+
+  /* SELECTED HEXES */
   .selectedMapHex > g polygon {
     /* 
     stroke: var(
@@ -111,19 +126,16 @@ const HexSVGStyle = styled.div`
       stroke-width: 0.5;
     }
   }
+
+  /* STARTZONE HEX */
   .startZoneHex > g polygon {
     stroke: var(
       ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
     );
     stroke-width: 0.1;
   }
-  /* REGULAR HEXES */
-  svg g polygon {
-    stroke: var(
-      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
-    );
-    stroke-width: 0.01;
-  }
+
+  /* HOVERED HEX */
   @media (hover: hover) {
     svg g:hover {
       fill: var(--neon-orange);

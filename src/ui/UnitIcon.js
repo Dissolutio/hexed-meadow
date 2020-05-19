@@ -16,10 +16,13 @@ export const playerIconColors = {
 
 export const UnitIcon = ({ unit, iconProps }) => {
   const { hexMap } = useBoardContext()
-  const { x = '-2', y = '-2', fontSize = '0.2rem' } = iconProps ? iconProps : {}
-  if (!unit) return null
-  const playerColor = playerIconColors[unit?.playerID] ?? 'red'
 
+  if (!unit) return null
+
+  const playerColor = playerIconColors[unit?.playerID] ?? 'red'
+  const x = iconProps?.x ?? '-1px'
+  const y = iconProps?.x ?? '-1px'
+  const fontSize = iconProps?.x ?? '2px'
   const gameIconProps = {
     x,
     y,
@@ -28,6 +31,7 @@ export const UnitIcon = ({ unit, iconProps }) => {
       fontSize,
     },
   }
+
   switch (unit.cardID) {
     case 'hm101':
       return <GiBee {...gameIconProps} />

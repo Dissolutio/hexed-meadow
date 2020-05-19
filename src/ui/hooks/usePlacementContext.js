@@ -5,6 +5,9 @@ const PlacementContext = React.createContext({})
 
 const PlacementContextProvider = ({ children }) => {
   const {
+    playerID,
+    boardHexes,
+    gameUnits,
     myUnits,
     myCards,
     activeUnitID,
@@ -21,13 +24,20 @@ const PlacementContextProvider = ({ children }) => {
   )
 
   function myInitialPlacementUnits() {
-    return myUnits.map((unit) => {
-      const armyCard = myCards.find((card) => card.cardID === unit.cardID)
-      return {
-        ...unit,
-        name: armyCard.name,
-      }
-    })
+    const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
+      .map((bH) => bH.occupyingUnitID)
+      .filter((id) => {
+        return id && gameUnits[id].playerID === playerID
+      })
+    return myUnits
+      .filter((unit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
+      .map((unit) => {
+        const armyCard = myCards.find((card) => card.cardID === unit.cardID)
+        return {
+          ...unit,
+          name: armyCard.name,
+        }
+      })
   }
   const placeAvailablePlacementUnit = (unit) => {
     const newState = placementUnits.filter((u) => {
@@ -53,7 +63,6 @@ const PlacementContextProvider = ({ children }) => {
 
     //  No unit, select hex
     if (!activeUnitID) {
-      console.log('SELECT HEX', activeUnitID)
       setActiveHexID(hexID)
       setErrorMsg('')
       return

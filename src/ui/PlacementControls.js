@@ -70,9 +70,8 @@ export const PlacementControls = ({ placementControlsProps }) => {
                 <UnitIcon
                   unit={unit}
                   iconProps={{
-                    x: '10',
-                    y: '10',
-                    fontSize: '3rem',
+                    x: '50',
+                    y: '50',
                     transform: '',
                   }}
                 />
