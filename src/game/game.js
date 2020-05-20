@@ -5,6 +5,7 @@ import {
   startZones,
   myTinyMap,
   mySmallMap,
+  myMediumMap,
 } from './mapGen'
 import { gameUnits, armyCards } from './startingUnits'
 

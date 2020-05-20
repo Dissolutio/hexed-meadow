@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import { useBoardContext } from './useBoardContext'
 
 const LayoutContext = React.createContext({})
 
@@ -6,6 +7,7 @@ const LayoutContextProvider = ({ children }) => {
   const layoutComponents = {
     navbar: 'NavBar',
     placementArmy: 'PlacementControls',
+    placeOrderMarkers: 'PlaceOrderMarkers',
     dataReadout: 'DataReadout',
   }
   const [topConsoleComponent, setTopConsoleComponent] = useState(
@@ -38,11 +40,20 @@ const useLayoutContext = () => {
     setTopConsoleComponent,
     setBottomConsoleComponent,
   } = useContext(LayoutContext)
+  const { currentPhase } = useBoardContext()
+
+  // if (currentPhase === 'mainGame') {
+  //   activatePlaceOrderMarkers()
+  // }
 
   const activateDataReadout = () =>
     setBottomConsoleComponent(layoutComponents.dataReadout)
+
   const activatePlacementControls = () =>
     setBottomConsoleComponent(layoutComponents.placementArmy)
+
+  const activatePlaceOrderMarkers = () =>
+    setBottomConsoleComponent(layoutComponents.placeOrderMarkers)
 
   return {
     layoutComponents,
@@ -52,6 +63,7 @@ const useLayoutContext = () => {
     setBottomConsoleComponent,
     activatePlacementControls,
     activateDataReadout,
+    activatePlaceOrderMarkers,
   }
 }
 

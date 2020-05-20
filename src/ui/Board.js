@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
 import { BoardContextProvider } from './hooks/useBoardContext'
 import { UIContextProvider } from './hooks/useUIContext'
@@ -8,10 +8,11 @@ import { PlacementContextProvider } from './hooks/usePlacementContext'
 import { Layout } from './layout/Layout'
 import { TopConsole } from './layout/TopConsole'
 import { BottomConsole } from './layout/BottomConsole'
-import { MapDisplay } from './MapDisplay'
+import { MapDisplay } from './hexmap/MapDisplay'
 
 export const Board = (props) => {
   const { G, ctx, moves, playerID } = props
+  console.log('%c⧭', 'color: #807160', props)
   const gameContextProps = { G, ctx, moves, playerID }
 
   // Layout applies CSS to Children, the children are switches based on active string in LayoutContext

@@ -1,8 +1,8 @@
 import React from 'react'
 import { useLayoutContext } from '../hooks/useLayoutContext'
-import { useBoardContext } from '../hooks/useBoardContext'
 import { DataReadout } from '../DataReadout'
 import { PlacementControls } from '../PlacementControls'
+import { PlaceOrderMarkers } from '../PlaceOrderMarkers'
 
 export const BottomConsole = () => {
   const { layoutComponents, bottomConsoleComponent } = useLayoutContext()
@@ -11,6 +11,8 @@ export const BottomConsole = () => {
       return <DataReadout />
     case layoutComponents.placementArmy:
       return <PlacementControls />
+    case layoutComponents.placeOrderMarkers:
+      return <PlaceOrderMarkers />
     default:
       return null
   }

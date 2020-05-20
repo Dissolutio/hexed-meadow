@@ -1,29 +1,32 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
+
 import { useBoardContext } from './hooks/useBoardContext'
 import { usePlacementContext } from './hooks/usePlacementContext'
 import { useLayoutContext } from './hooks/useLayoutContext'
+
 import { UnitIcon } from './UnitIcon'
 
-export const PlacementControls = () => {
-  const { activateDataReadout, activatePlaceOrderMarkers } = useLayoutContext()
-  const { placementUnits, onClickPlacementUnit } = usePlacementContext()
+export const PlaceOrderMarkers = () => {
+  const { activateDataReadout } = useLayoutContext()
   const {
     playerID,
     playersReady,
-    currentPhase,
     confirmReady,
-    activeUnitID,
+    activeGameCardID,
+    setActiveGameCardID,
+    myCards,
   } = useBoardContext()
 
-  useEffect(() => {
-    if (currentPhase === 'mainGame') {
-      activatePlaceOrderMarkers()
-    }
-  }, [currentPhase])
+  const [myOrderMarkers, setMyOrderMarkers] = useState({
+    '1': null,
+    '2': null,
+    '3': null,
+    X: null,
+  })
 
-  const selectedStyle = (unitID) => {
-    if (activeUnitID === unitID) {
+  const selectedStyle = (gameCardID) => {
+    if (activeGameCardID === gameCardID) {
       return {
         boxShadow: `0 0 2px var(--neon-green)`,
       }
@@ -31,53 +34,48 @@ export const PlacementControls = () => {
       return {}
     }
   }
+
   const makeReady = () => {
     confirmReady(playerID)
   }
-
   if (playersReady[playerID] === true) {
     return (
       <ArmyListStyle playerID={playerID}>
         <button onClick={activateDataReadout}>Data Readout</button>
-        <p>Waiting for opponents to finish placing armies...</p>
+        <p>Waiting for opponents to finish placing order markers...</p>
       </ArmyListStyle>
     )
   }
-  if (placementUnits.length === 0) {
+  if (
+    myOrderMarkers['1'] &&
+    myOrderMarkers['2'] &&
+    myOrderMarkers['3'] &&
+    myOrderMarkers['X']
+  ) {
     return (
       <ArmyListStyle playerID={playerID}>
         <button onClick={activateDataReadout}>Data Readout</button>
-        <p>Done placing your units?</p>
-        <button onClick={makeReady}>CONFIRM PLACEMENT</button>
+        <p>Done placing your order markers?</p>
+        <button onClick={makeReady}>CONFIRM DONE</button>
       </ArmyListStyle>
     )
   }
 
   return (
     <ArmyListStyle playerID={playerID}>
-      <button onClick={activateDataReadout}>Data Readout</button>
-      <h2>Place your units below into your Start Zone</h2>
-      <p>Select a unit, then the start zone will glow.</p>
+      <h2>Place your Order Markers:</h2>
+      <p>Select a marker, then select the card to place it on.</p>
       <ul>
-        {placementUnits &&
-          placementUnits.map((unit) => (
-            <li key={unit.unitID}>
-              <button
-                style={selectedStyle(unit.unitID)}
-                onClick={() => onClickPlacementUnit(unit.unitID)}
-              >
-                <UnitIcon
-                  unit={unit}
-                  iconProps={{
-                    x: '50',
-                    y: '50',
-                    transform: '',
-                  }}
-                />
-                <span>{unit.name}</span>
-              </button>
-            </li>
-          ))}
+        {myCards.map((card) => (
+          <li key={card.gameCardID}>
+            <button
+              style={selectedStyle(card.gameCardID)}
+              onClick={() => setActiveGameCardID(card.gameCardID)}
+            >
+              <span>{card.name}</span>
+            </button>
+          </li>
+        ))}
       </ul>
     </ArmyListStyle>
   )

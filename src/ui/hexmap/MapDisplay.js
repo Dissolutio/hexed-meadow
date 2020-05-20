@@ -2,11 +2,11 @@ import React, { useRef } from 'react'
 import styled from 'styled-components'
 import useComponentSize from '@rehooks/component-size'
 
-import { useBoardContext } from './hooks/useBoardContext'
-import { usePlacementContext } from './hooks/usePlacementContext'
+import { useBoardContext } from '../hooks/useBoardContext'
+import { usePlacementContext } from '../hooks/usePlacementContext'
 
 import { HexGrid, Layout, Hexagon } from 'react-hexgrid'
-import { UnitIcon } from '../ui/UnitIcon'
+import { UnitIcon } from '../UnitIcon'
 
 export const MapDisplay = () => {
   const { playerID, hexMap, onClickMapBackground } = useBoardContext()
@@ -30,7 +30,7 @@ export const MapDisplay = () => {
   )
 }
 
-const Hexes = (props) => {
+const Hexes = () => {
   const { onClickBoardHex_placement } = usePlacementContext()
 
   const {

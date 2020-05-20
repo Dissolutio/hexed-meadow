@@ -10,7 +10,7 @@ const scarwings = hexedMeadowCards['hm202']
 const monarch = hexedMeadowCards['hm203']
 
 // MAKE STARTING ARMY CARDS
-export const armyCards = [
+const startingArmyCards = [
   // PLAYER 0
   // {
   //   playerID: '0',
@@ -44,6 +44,13 @@ export const armyCards = [
     ...monarch,
   },
 ]
+export const armyCards = startingArmyCards.map((card) => {
+  let uniquifier = 0
+  function makeGameCardID(card) {
+    return `p${card.playerID}cID${card.cardID}n${uniquifier++}`
+  }
+  return { ...card, gameCardID: makeGameCardID(card) }
+})
 
 //  MAKE STARTING UNITS
 export const gameUnits = cardsToUnits(armyCards)
@@ -75,14 +82,4 @@ function cardsToUnits(cards) {
       ...unitsFromCard,
     }
   }, {})
-}
-
-export function myInitialPlacementUnits(playerCards, playerUnits) {
-  return playerUnits.map((unit) => {
-    const armyCard = playerCards.find((card) => card.cardID === unit.cardID)
-    return {
-      ...unit,
-      name: armyCard.name,
-    }
-  })
 }

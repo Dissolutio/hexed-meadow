@@ -10,6 +10,7 @@ const BoardContextProvider = (props) => {
   // BOARD STATE
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
+  const [activeGameCardID, setActiveGameCardID] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   // GAME STATE
   const boardHexes = G.boardHexes
@@ -67,6 +68,8 @@ const BoardContextProvider = (props) => {
         setActiveHexID,
         activeUnitID,
         setActiveUnitID,
+        activeGameCardID,
+        setActiveGameCardID,
       }}
     >
       {props.children}

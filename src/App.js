@@ -10,13 +10,13 @@ import { HexedMeadow } from './game/game'
 import 'normalize.css'
 import './theme.css'
 
-// TOGGLE THIS TO DEVELOP/DEPLOY
 const devModes = {
   dev: 'dev',
   devWithLocalServer: 'devWithLocalServer',
   herokuDeployment: 'herokuDeployment',
 }
 
+// TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
 let devMode = devModes.herokuDeployment
 if (process.env.NODE_ENV === 'development') {
   devMode = devModes.dev
@@ -38,7 +38,7 @@ const EnvApp = () => {
     return <DevApp />
   }
   if (devMode === devModes.devWithLocalServer) {
-    return <DevApp />
+    return <DevAppWithLocalServer />
   }
   if (devMode === devModes.herokuDeployment) {
     return <HerokuApp />
@@ -50,6 +50,15 @@ export const DevApp = () => {
     <>
       <DevClient gameID="gameid" playerID={'0'} />
       <DevClient gameID="gameid" playerID={'1'} />
+    </>
+  )
+}
+
+export const DevAppWithLocalServer = () => {
+  return (
+    <>
+      <DevLocalServerClient gameID="gameid" playerID={'0'} />
+      <DevLocalServerClient gameID="gameid" playerID={'1'} />
     </>
   )
 }
