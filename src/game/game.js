@@ -1,23 +1,27 @@
 import { TurnOrder, PlayerView, Stage } from 'boardgame.io/core'
 import {
-  boardHexesWithPrePlacedUnits,
-  boardHexes,
-  startZones,
   myTinyMap,
   mySmallMap,
   myMediumMap,
+  myLargeMap,
+  myHugeMap,
 } from './mapGen'
 import { gameUnits, armyCards } from './startingUnits'
 
 import { placeUnitOnHex, confirmReady, rollInitiative } from './moves'
 
+// const map = { ...myTinyMap }
+// const map = { ...mySmallMap }
+// const map = { ...myMediumMap }
+const map = { ...myLargeMap }
+
 const initialGameState = {
-  boardHexes: boardHexesWithPrePlacedUnits(),
-  // boardHexes,
-  startZones,
+  boardHexes: map.boardHexes,
+  // boardHexes: map.boardHexesWithPrePlacedUnits,
+  startZones: map.startZones,
   armyCards,
   gameUnits,
-  hexMap: myTinyMap,
+  hexMap: map.hexMap,
   ready: { '0': false, '1': false },
   initiative: {},
 }

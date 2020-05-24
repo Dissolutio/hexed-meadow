@@ -10,15 +10,26 @@ import { UnitIcon } from '../UnitIcon'
 
 export const MapDisplay = () => {
   const { playerID, hexMap, onClickMapBackground } = useBoardContext()
-
   let ref = useRef(null)
   let { width, height } = useComponentSize(ref)
-  const longSide = width >= height ? width : height
+  const phi = 3
+  const Xo = -2 * phi * hexMap.mapSize
+  const Yo = -2 * phi * hexMap.mapSize
+  const Xt = 4 * phi * hexMap.mapSize
+  const Yt = 4 * phi * hexMap.mapSize
+  console.log('%c⧭', 'color: #997326', `${Xo} ${Yo} ${Xt} ${Yt}`)
+
   return (
     <HexSVGStyle ref={ref} onClick={onClickMapBackground} pID={playerID}>
-      <HexGrid width="100%" height="100%" viewBox="-5 -5 10 10">
+      <HexGrid
+        // width="500px"
+        // height="500px"
+        width={`${(100 * hexMap.mapSize) / 5}%`}
+        height={`${(100 * hexMap.mapSize) / 5}%`}
+        viewBox={`${Xo} ${Yo} ${Xt} ${Yt}`}
+      >
         <Layout
-          size={{ x: `${hexMap.mapSize * 2}`, y: `${hexMap.mapSize * 2} ` }}
+          size={{ x: `${hexMap.mapSize / 2}`, y: `${hexMap.mapSize / 2}` }}
           flat={true}
           origin={{ x: 0, y: 0 }}
           spacing={1.01}
@@ -123,7 +134,7 @@ const HexSVGStyle = styled.div`
     stroke: var(--neon-orange);
     stroke-width: 0.1;
     @media screen and (min-width: 500px) {
-      stroke-width: 0.5;
+      stroke-width: 0.3;
     }
   }
 

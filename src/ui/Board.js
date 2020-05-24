@@ -12,7 +12,6 @@ import { MapDisplay } from './hexmap/MapDisplay'
 
 export const Board = (props) => {
   const { G, ctx, moves, playerID } = props
-  console.log('%c⧭', 'color: #807160', props)
   const gameContextProps = { G, ctx, moves, playerID }
 
   // Layout applies CSS to Children, the children are switches based on active string in LayoutContext

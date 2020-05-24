@@ -16,13 +16,14 @@ export const playerIconColors = {
 
 export const UnitIcon = ({ unit, iconProps }) => {
   const { hexMap } = useBoardContext()
-
   if (!unit) return null
 
+  const iconSize = hexMap.mapSize
+  const iconShift = hexMap.mapSize / -2
+  const x = iconProps?.x ?? `${iconShift}px`
+  const y = iconProps?.x ?? `${iconShift}px`
+  const fontSize = iconProps?.x ?? `${iconSize}px`
   const playerColor = playerIconColors[unit?.playerID] ?? 'red'
-  const x = iconProps?.x ?? '-1px'
-  const y = iconProps?.x ?? '-1px'
-  const fontSize = iconProps?.x ?? '2px'
   const gameIconProps = {
     x,
     y,
