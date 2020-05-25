@@ -34,7 +34,7 @@ const Wrapper = styled.div`
   flex-flow: column nowrap;
   justify-content: center;
   margin: auto 1rem;
-  /* max-height: 50%; */
+  max-height: 50%;
   border: var(--thickness) solid
     var(
       ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}

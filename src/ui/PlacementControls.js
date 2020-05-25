@@ -10,14 +10,14 @@ export const PlacementControls = () => {
   const { placementUnits, onClickPlacementUnit } = usePlacementContext()
   const {
     playerID,
-    playersReady,
+    placementReady,
     currentPhase,
     confirmReady,
     activeUnitID,
   } = useBoardContext()
 
   useEffect(() => {
-    if (currentPhase === 'mainGame') {
+    if (currentPhase === 'placeOrderMarkers') {
       activatePlaceOrderMarkers()
     }
   }, [currentPhase])
@@ -35,7 +35,7 @@ export const PlacementControls = () => {
     confirmReady(playerID)
   }
 
-  if (playersReady[playerID] === true) {
+  if (placementReady[playerID] === true) {
     return (
       <ArmyListStyle playerID={playerID}>
         <button onClick={activateDataReadout}>Data Readout</button>

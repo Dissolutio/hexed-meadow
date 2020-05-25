@@ -1,32 +1,41 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import { useBoardContext } from './hooks/useBoardContext'
-import { usePlacementContext } from './hooks/usePlacementContext'
 import { useLayoutContext } from './hooks/useLayoutContext'
 
-import { UnitIcon } from './UnitIcon'
-
 export const PlaceOrderMarkers = () => {
-  const { activateDataReadout } = useLayoutContext()
+  const { activateDataReadout, activateRollingInitiative } = useLayoutContext()
   const {
     playerID,
-    playersReady,
-    confirmReady,
-    activeGameCardID,
-    setActiveGameCardID,
+    currentPhase,
+    orderMarkersReady,
     myCards,
+    myOrderMarkers,
+    confirmReady,
+    placeOrderMarker,
   } = useBoardContext()
 
-  const [myOrderMarkers, setMyOrderMarkers] = useState({
-    '1': null,
-    '2': null,
-    '3': null,
-    X: null,
-  })
+  useEffect(() => {
+    if (currentPhase === 'rollingInitiative') {
+      activateRollingInitiative()
+    }
+  }, [currentPhase])
 
-  const selectedStyle = (gameCardID) => {
-    if (activeGameCardID === gameCardID) {
+  const [activeMarker, setActiveMarker] = useState('')
+
+  const selectOrderMarker = (orderMarker) => {
+    console.log('%c⧭', 'color: #994d75', orderMarker)
+    setActiveMarker(orderMarker)
+  }
+  const selectCard = (gameCardID) => {
+    if (!activeMarker) return
+    if (activeMarker) {
+      placeOrderMarker(playerID, activeMarker, gameCardID)
+    }
+  }
+  const selectedStyle = (orderMarker) => {
+    if (activeMarker === orderMarker) {
       return {
         boxShadow: `0 0 2px var(--neon-green)`,
       }
@@ -38,7 +47,7 @@ export const PlaceOrderMarkers = () => {
   const makeReady = () => {
     confirmReady(playerID)
   }
-  if (playersReady[playerID] === true) {
+  if (orderMarkersReady[playerID] === true) {
     return (
       <ArmyListStyle playerID={playerID}>
         <button onClick={activateDataReadout}>Data Readout</button>
@@ -46,12 +55,7 @@ export const PlaceOrderMarkers = () => {
       </ArmyListStyle>
     )
   }
-  if (
-    myOrderMarkers['1'] &&
-    myOrderMarkers['2'] &&
-    myOrderMarkers['3'] &&
-    myOrderMarkers['X']
-  ) {
+  if (!Object.values(myOrderMarkers).some((om) => om === null)) {
     return (
       <ArmyListStyle playerID={playerID}>
         <button onClick={activateDataReadout}>Data Readout</button>
@@ -64,13 +68,25 @@ export const PlaceOrderMarkers = () => {
   return (
     <ArmyListStyle playerID={playerID}>
       <h2>Place your Order Markers:</h2>
-      <p>Select a marker, then select the card to place it on.</p>
+      <ul>
+        {Object.keys(myOrderMarkers)
+          .filter((om) => myOrderMarkers[om] === null)
+          .map((om) => (
+            <li
+              key={om}
+              onClick={() => selectOrderMarker(om)}
+              style={selectedStyle(om)}
+            >
+              {om}
+            </li>
+          ))}
+      </ul>
       <ul>
         {myCards.map((card) => (
           <li key={card.gameCardID}>
             <button
               style={selectedStyle(card.gameCardID)}
-              onClick={() => setActiveGameCardID(card.gameCardID)}
+              onClick={() => selectCard(card.gameCardID)}
             >
               <span>{card.name}</span>
             </button>

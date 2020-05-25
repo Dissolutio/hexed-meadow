@@ -1,19 +1,16 @@
-import { TurnOrder, PlayerView, Stage } from 'boardgame.io/core'
-import {
-  myTinyMap,
-  mySmallMap,
-  myMediumMap,
-  myLargeMap,
-  myHugeMap,
-} from './mapGen'
+import { TurnOrder, PlayerView, ActivePlayers, Stage } from 'boardgame.io/core'
+import { makeHexagonShapedMap } from './mapGen'
 import { gameUnits, armyCards } from './startingUnits'
+import { rollD20Initiative } from './rollInitiative'
+import { initialPlayerState, prePlacedOrderMarkers } from './playerState'
+import {
+  placeUnitOnHex,
+  confirmReady,
+  placeOrderMarker,
+  flipOrderMarker,
+} from './moves'
 
-import { placeUnitOnHex, confirmReady, rollInitiative } from './moves'
-
-// const map = { ...myTinyMap }
-// const map = { ...mySmallMap }
-// const map = { ...myMediumMap }
-const map = { ...myLargeMap }
+const map = makeHexagonShapedMap(2)
 
 const initialGameState = {
   boardHexes: map.boardHexes,
@@ -22,8 +19,12 @@ const initialGameState = {
   armyCards,
   gameUnits,
   hexMap: map.hexMap,
-  ready: { '0': false, '1': false },
-  initiative: {},
+  placementReady: { '0': false, '1': false },
+  orderMarkersReady: { '0': false, '1': false },
+  initiativeReady: { '0': false, '1': false },
+  initiative: null,
+  // players: initialPlayerState,
+  players: prePlacedOrderMarkers,
 }
 
 export const HexedMeadow = {
@@ -43,26 +44,47 @@ export const HexedMeadow = {
       moves: { placeUnitOnHex, confirmReady },
       onBegin: (G, ctx) => {
         ctx.events.setActivePlayers({ all: 'placingUnits' })
-        console.log('PLACING ARMIES BEGIN')
       },
-      endIf: (G) => G.ready['0'] && G.ready['1'],
-      next: 'mainGame',
+      endIf: (G) => G.placementReady['0'] && G.placementReady['1'],
+      next: 'placeOrderMarkers',
     },
-    mainGame: {
+    placeOrderMarkers: {
+      onBegin: (G, ctx) => {
+        G.ready = { '0': false, '1': false }
+        G.players = initialPlayerState
+        ctx.events.setActivePlayers({ all: 'placeOrderMarkers' })
+        console.log('%c⧭', 'color: #eeff00', G.ready)
+      },
+      endIf: (G) => G.orderMarkersReady['0'] && G.orderMarkersReady['1'],
+      moves: {
+        placeOrderMarker,
+        confirmReady,
+      },
+      next: 'rollingInitiative',
+    },
+    rollingInitiative: {
+      moves: { confirmReady },
       onBegin: (G, ctx) => {
         G.ready = initialGameState.ready
-        ctx.events.setActivePlayers({ all: 'placeOrderMarkers' })
+        G.initiative = rollD20Initiative([...Array(ctx.numPlayers).keys()])
+        ctx.events.setActivePlayers({ all: 'rollingInitiative' })
+      },
+      endIf: (G) => G.initiativeReady['0'] && G.initiativeReady['1'],
+      next: 'orderMarker1',
+    },
+    // ACTUALLY TAKING A TURN
+    orderMarker1: {
+      moves: { flipOrderMarker },
+      onBegin: (G, ctx) => {
+        if (G.initiative === null) {
+          G.initiative = rollD20Initiative([...Array(ctx.numPlayers).keys()])
+        }
+        G.ready = initialGameState.ready
       },
       turn: {
-        stages: {
-          placeOrderMarkers: {
-            moves: {
-              confirmReady,
-            },
-          },
-        },
+        order: TurnOrder.CUSTOM_FROM('initiative'),
+        activePlayers: ActivePlayers.ALL,
       },
-      order: TurnOrder.CUSTOM_FROM('initiative'),
     },
   },
   endIf: (G, ctx) => {},

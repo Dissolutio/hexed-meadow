@@ -6,7 +6,7 @@ const BoardContextProvider = (props) => {
   const { G, ctx, moves, playerID } = props
 
   // MOVES
-  const { placeUnitOnHex, confirmReady } = moves
+  const { placeUnitOnHex, confirmReady, placeOrderMarker } = moves
   // BOARD STATE
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
@@ -21,13 +21,19 @@ const BoardContextProvider = (props) => {
   const myCards = armyCards.filter(belongsToPlayer)
   const gameUnits = G.gameUnits
   const myUnits = Object.values(gameUnits).filter(belongsToPlayer)
-  const playersReady = G.ready
+  const placementReady = G.placementReady
+  const orderMarkersReady = G.orderMarkersReady
+  const initiativeReady = G.initiativeReady
+  const initiative = G.initiative
   // CTX STATE
   const currentPhase = ctx.phase
   const currentPlayer = ctx.currentPlayer
   const activePlayers = ctx.activePlayers
+  const myCurrentStage = activePlayers[playerID]
   const numPlayers = ctx.numPlayers
   const currentTurn = ctx.turn
+  // PLAYER STATE
+  const myOrderMarkers = G.players[playerID].orderMarkers
 
   function belongsToPlayer(i) {
     return i.playerID === playerID
@@ -43,19 +49,28 @@ const BoardContextProvider = (props) => {
         // MOVES
         placeUnitOnHex,
         confirmReady,
+        placeOrderMarker,
         // G
         boardHexes,
         startZones,
         hexMap,
         armyCards,
         gameUnits,
-        playersReady,
+        placementReady,
+        orderMarkersReady,
+        initiativeReady,
+        initiative,
         // CTX
+        ctx,
         currentPhase,
+        activePlayers,
+        myCurrentStage,
         currentPlayer,
         activePlayers,
         numPlayers,
         currentTurn,
+        // PLAYER STATE
+        myOrderMarkers,
         // COMPUTED
         myStartZone,
         myCards,
@@ -94,7 +109,6 @@ const useBoardContext = () => {
   }
 
   function onClickMapBackground() {
-    console.log('MAP BG CLICKED')
     setActiveHexID('')
   }
 

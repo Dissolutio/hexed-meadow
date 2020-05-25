@@ -1,22 +1,39 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { useBoardContext } from './useBoardContext'
 
 const LayoutContext = React.createContext({})
 
 const LayoutContextProvider = ({ children }) => {
   const layoutComponents = {
+    // TOP CONSOLE
     navbar: 'NavBar',
+    // BOTTOM CONSOLE
     placementArmy: 'PlacementControls',
     placeOrderMarkers: 'PlaceOrderMarkers',
     dataReadout: 'DataReadout',
+    rollingInitiative: 'RollingInitiative',
+    myTurnUI: 'MyTurnUI',
   }
+  const { currentPhase } = useBoardContext()
   const [topConsoleComponent, setTopConsoleComponent] = useState(
     layoutComponents.navbar
   )
   const [bottomConsoleComponent, setBottomConsoleComponent] = useState(
-    layoutComponents.placementArmy
+    initialBottomConsole()
   )
 
+  function initialBottomConsole() {
+    if (currentPhase === 'placement') {
+      return layoutComponents.placementArmy
+    }
+    if (currentPhase === 'placeOrderMarkers') {
+      return layoutComponents.placeOrderMarkers
+    }
+    if (currentPhase === 'rollingInitiative') {
+      return layoutComponents.rollingInitiative
+    }
+    return layoutComponents.myTurnUI
+  }
   return (
     <LayoutContext.Provider
       value={{
@@ -40,11 +57,6 @@ const useLayoutContext = () => {
     setTopConsoleComponent,
     setBottomConsoleComponent,
   } = useContext(LayoutContext)
-  const { currentPhase } = useBoardContext()
-
-  // if (currentPhase === 'mainGame') {
-  //   activatePlaceOrderMarkers()
-  // }
 
   const activateDataReadout = () =>
     setBottomConsoleComponent(layoutComponents.dataReadout)
@@ -55,6 +67,12 @@ const useLayoutContext = () => {
   const activatePlaceOrderMarkers = () =>
     setBottomConsoleComponent(layoutComponents.placeOrderMarkers)
 
+  const activateRollingInitiative = () =>
+    setBottomConsoleComponent(layoutComponents.rollingInitiative)
+
+  const activateMyTurnUI = () =>
+    setBottomConsoleComponent(layoutComponents.myTurnUI)
+
   return {
     layoutComponents,
     topConsoleComponent,
@@ -64,6 +82,8 @@ const useLayoutContext = () => {
     activatePlacementControls,
     activateDataReadout,
     activatePlaceOrderMarkers,
+    activateRollingInitiative,
+    activateMyTurnUI,
   }
 }
 
