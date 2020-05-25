@@ -24,12 +24,13 @@ const BoardContextProvider = (props) => {
   const placementReady = G.placementReady
   const orderMarkersReady = G.orderMarkersReady
   const initiativeReady = G.initiativeReady
+  const orderMarker1Ready = G.orderMarker1Ready
   const initiative = G.initiative
   // CTX STATE
   const currentPhase = ctx.phase
   const currentPlayer = ctx.currentPlayer
   const activePlayers = ctx.activePlayers
-  const myCurrentStage = activePlayers[playerID]
+  const myCurrentStage = activePlayers?.[playerID] || null
   const numPlayers = ctx.numPlayers
   const currentTurn = ctx.turn
   // PLAYER STATE
@@ -59,6 +60,7 @@ const BoardContextProvider = (props) => {
         placementReady,
         orderMarkersReady,
         initiativeReady,
+        orderMarker1Ready,
         initiative,
         // CTX
         ctx,
@@ -66,7 +68,6 @@ const BoardContextProvider = (props) => {
         activePlayers,
         myCurrentStage,
         currentPlayer,
-        activePlayers,
         numPlayers,
         currentTurn,
         // PLAYER STATE

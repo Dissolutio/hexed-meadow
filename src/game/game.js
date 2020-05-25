@@ -22,6 +22,7 @@ const initialGameState = {
   placementReady: { '0': false, '1': false },
   orderMarkersReady: { '0': false, '1': false },
   initiativeReady: { '0': false, '1': false },
+  orderMarker1Ready: { '0': false, '1': false },
   initiative: null,
   // players: initialPlayerState,
   players: prePlacedOrderMarkers,
@@ -79,11 +80,11 @@ export const HexedMeadow = {
         if (G.initiative === null) {
           G.initiative = rollD20Initiative([...Array(ctx.numPlayers).keys()])
         }
-        G.ready = initialGameState.ready
+        const key = ctx.currentPlayer
+        ctx.events.setActivePlayers({ [key]: 'moving1' })
       },
       turn: {
         order: TurnOrder.CUSTOM_FROM('initiative'),
-        activePlayers: ActivePlayers.ALL,
       },
     },
   },
