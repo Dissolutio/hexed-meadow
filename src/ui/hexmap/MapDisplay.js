@@ -1,9 +1,6 @@
 import React from 'react'
-import styled from 'styled-components'
 
 import { useBoardContext } from '../hooks/useBoardContext'
-import { usePlacementContext } from '../hooks/usePlacementContext'
-
 import { HexGrid, Layout } from 'react-hexgrid'
 import { MapHexes, HexSVGStyle } from './MapHexes'
 

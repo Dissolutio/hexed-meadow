@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { useBoardContext } from './useBoardContext'
-
+import { phaseNames } from '../../game/constants'
 const LayoutContext = React.createContext({})
 
 const LayoutContextProvider = ({ children }) => {
@@ -11,7 +11,6 @@ const LayoutContextProvider = ({ children }) => {
     placementArmy: 'PlacementControls',
     placeOrderMarkers: 'PlaceOrderMarkers',
     dataReadout: 'DataReadout',
-    rollingInitiative: 'RollingInitiative',
     myTurnUI: 'MyTurnUI',
   }
   const { currentPhase } = useBoardContext()
@@ -23,14 +22,14 @@ const LayoutContextProvider = ({ children }) => {
   )
 
   function initialBottomConsole() {
-    if (currentPhase === 'placement') {
+    if (currentPhase === phaseNames.placement) {
       return layoutComponents.placementArmy
     }
-    if (currentPhase === 'placeOrderMarkers') {
+    if (currentPhase === phaseNames.placeOrderMarkers) {
       return layoutComponents.placeOrderMarkers
     }
-    if (currentPhase === 'rollingInitiative') {
-      return layoutComponents.rollingInitiative
+    if (currentPhase === phaseNames.roundOfPlay) {
+      return layoutComponents.myTurnUI
     }
     return layoutComponents.myTurnUI
   }
@@ -67,9 +66,6 @@ const useLayoutContext = () => {
   const activatePlaceOrderMarkers = () =>
     setBottomConsoleComponent(layoutComponents.placeOrderMarkers)
 
-  const activateRollingInitiative = () =>
-    setBottomConsoleComponent(layoutComponents.rollingInitiative)
-
   const activateMyTurnUI = () =>
     setBottomConsoleComponent(layoutComponents.myTurnUI)
 
@@ -82,7 +78,6 @@ const useLayoutContext = () => {
     activatePlacementControls,
     activateDataReadout,
     activatePlaceOrderMarkers,
-    activateRollingInitiative,
     activateMyTurnUI,
   }
 }

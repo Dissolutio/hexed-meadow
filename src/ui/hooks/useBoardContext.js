@@ -23,8 +23,6 @@ const BoardContextProvider = (props) => {
   const myUnits = Object.values(gameUnits).filter(belongsToPlayer)
   const placementReady = G.placementReady
   const orderMarkersReady = G.orderMarkersReady
-  const initiativeReady = G.initiativeReady
-  const orderMarker1Ready = G.orderMarker1Ready
   const initiative = G.initiative
   // CTX STATE
   const currentPhase = ctx.phase
@@ -59,8 +57,6 @@ const BoardContextProvider = (props) => {
         gameUnits,
         placementReady,
         orderMarkersReady,
-        initiativeReady,
-        orderMarker1Ready,
         initiative,
         // CTX
         ctx,

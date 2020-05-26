@@ -12,8 +12,6 @@ export const DataReadout = ({ activeHex, dataReadoutProps }) => {
     boardHexes,
     currentPhase,
     currentPlayer,
-    activePlayers,
-    playersReady,
     numPlayers,
     currentTurn,
   } = useBoardContext()
@@ -21,7 +19,7 @@ export const DataReadout = ({ activeHex, dataReadoutProps }) => {
   return (
     <section className="data-readout">
       <button onClick={activatePlacementControls}>Placement Controls</button>
-      <div>ActiveHex: {`${(activeHexID && activeHexID) || 'none'}`}</div>
+      <div>ActiveHex: {activeHexID}</div>
       <div>
         Unit on Hex:{' '}
         {`${
@@ -33,10 +31,6 @@ export const DataReadout = ({ activeHex, dataReadoutProps }) => {
       <div>currentPlayer: {currentPlayer}</div>
       <div>numPlayers: {numPlayers}</div>
       <div>currentTurn: {currentTurn}</div>
-      <div>
-        playersReady: 0: {playersReady['0'].toString()}, 1:{' '}
-        {playersReady['1'].toString()}
-      </div>
     </section>
   )
 }
