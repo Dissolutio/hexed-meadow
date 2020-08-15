@@ -10,6 +10,7 @@
 		"workbench.colorCustomizations": {
 			"editorCursor.foreground": "#ffff00",
 			"terminalCursor.foreground": "#ffff00"
-		}
+		},
+		"editor.formatOnSave": true
 	}
 }
