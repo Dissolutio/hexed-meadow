@@ -47,7 +47,7 @@ const startingArmyCards = [
 export const armyCards = startingArmyCards.map((card) => {
   let uniquifier = 0
   function makeGameCardID(card) {
-    return `p${card.playerID}cID${card.cardID}n${uniquifier++}`
+    return `p${card.playerID}_${card.cardID}_${uniquifier++}`
   }
   return { ...card, gameCardID: makeGameCardID(card) }
 })
