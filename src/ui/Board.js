@@ -23,7 +23,7 @@ export const Board = (props) => {
             <Layout>
               <TopConsole />
               <MapDisplay />
-              <BottomConsole />>
+              <BottomConsole />
             </Layout>
           </PlacementContextProvider>
         </LayoutContextProvider>
