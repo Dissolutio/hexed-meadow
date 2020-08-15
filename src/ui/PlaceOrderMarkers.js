@@ -20,13 +20,13 @@ export const PlaceOrderMarkers = () => {
   const [activeMarker, setActiveMarker] = useState('')
 
   const selectOrderMarker = (orderMarker) => {
-    console.log('%c⧭', 'color: #994d75', orderMarker)
     setActiveMarker(orderMarker)
   }
   const selectCard = (gameCardID) => {
     if (!activeMarker) return
     if (activeMarker) {
       placeOrderMarker(playerID, activeMarker, gameCardID)
+      console.log(`placed OM ${activeMarker} -> gameCardID:`, gameCardID)
     }
   }
   const selectedStyle = (orderMarker) => {

@@ -3,23 +3,22 @@ import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import { useUIContext } from '../hooks/useUIContext'
-import { SlideToggle } from '../utilities/SlideToggle'
 
 export const SlideMenu = ({ playerID }) => {
   const { menuOpen, toggleMenu } = useUIContext()
   return (
-    <SlideToggle isVisible={menuOpen}>
-      <MenuStyle onClick={toggleMenu} playerID={playerID}>
-        <Link to="#">Home</Link>
-        <Link to="#">Bogus Link</Link>
-      </MenuStyle>
-    </SlideToggle>
+    <MenuStyle onClick={toggleMenu} menuOpen={menuOpen} playerID={playerID}>
+      <Link to="#">Home</Link>
+      <Link to="#">Bogus Link</Link>
+    </MenuStyle>
   )
 }
 
 const MenuStyle = styled.div`
+  display: ${(props) => (props.menuOpen ? 'flex' : 'none')};
+  position: fixed;
+  width: 100%;
   min-height: 40vh;
-  display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-content: center;
