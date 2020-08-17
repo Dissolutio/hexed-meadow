@@ -1,18 +1,26 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { useUIContext } from '../hooks/useUIContext'
 import { SlideMenu } from './SlideMenu'
+import { useWindowDimensions } from '../hooks/useWindowDimensions'
 
 export const Layout = ({ children }) => {
   const { playerID } = useUIContext()
-
   const pClass = `board-${playerID}`
+  const { windowDimensions, viewportSize } = useWindowDimensions()
+  console.log(`Layout -> viewportSize`, viewportSize)
+
   return (
     <>
       <LayoutContainer pID={playerID} className={`${pClass}`}>
         <LayoutTop>{children[0]}</LayoutTop>
         <SlideMenu playerID={[playerID]} />
-        <LayoutMiddle className={`${pClass}`}>{children[1]}</LayoutMiddle>
+        <LayoutMiddle
+          windowDimensions={windowDimensions}
+          className={`${pClass}`}
+        >
+          {children[1]}
+        </LayoutMiddle>
         <LayoutBottom>{children[2]}</LayoutBottom>
       </LayoutContainer>
     </>

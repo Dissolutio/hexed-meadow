@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { useBoardContext } from './hooks/useBoardContext'
 import { useLayoutContext } from './hooks/useLayoutContext'
@@ -6,7 +6,6 @@ import { UnitIcon } from './UnitIcon'
 import { ArmyListStyle } from './layout/StyledComponents'
 
 export const MyTurnUI = () => {
-  const { activateDataReadout } = useLayoutContext()
   const {
     playerID,
     myCards,
@@ -24,7 +23,7 @@ export const MyTurnUI = () => {
 
   return (
     <ArmyListStyle playerID={playerID}>
-      <button onClick={activateDataReadout}>Data Readout</button>
+      
       <ul>
         {myCards.map((card) => (
           <li key={card.gameCardID}>
