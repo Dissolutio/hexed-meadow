@@ -17,13 +17,13 @@ const devModes = {
 }
 
 // TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
-let devMode = devModes.herokuDeployment
-if (process.env.NODE_ENV === 'development') {
-  devMode = devModes.dev
-}
-if (process.env.NODE_ENV === 'production') {
-  devMode = devModes.herokuDeployment
-}
+let devMode = devModes.dev
+// if (process.env.NODE_ENV === 'development') {
+//   devMode = devModes.dev
+// }
+// if (process.env.NODE_ENV === 'production') {
+//   devMode = devModes.herokuDeployment
+// }
 
 export const App = () => {
   return (
