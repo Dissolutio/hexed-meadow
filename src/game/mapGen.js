@@ -23,7 +23,7 @@ export function makeHexagonShapedMap(mapSize) {
       hexCountHeight,
       // FLAT TOP
       hexGridLayout: 'flat',
-      hexHeight: Math.sqrt(3),
+      hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
       hexWidth: 2,
       // POINTY TOP
       // hexGridLayout: 'pointy',

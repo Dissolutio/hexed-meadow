@@ -57,7 +57,7 @@ export const HexedMeadow = {
     },
     placeOrderMarkers: {
       onBegin: (G, ctx) => {
-        G.players = initialPlayerState
+        G.players = { ...G.players, ...initialPlayerState }
         ctx.events.setActivePlayers({ all: 'placeOrderMarkers' })
       },
       endIf: (G) => G.orderMarkersReady['0'] && G.orderMarkersReady['1'],

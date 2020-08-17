@@ -12,7 +12,6 @@ function rollsToInitiative(prev, curr, i, arr) {
   if (tiedRolls.length >= 2) {
     const tiedPlayers = tiedRolls.map((rollObj) => rollObj.playerID)
     const newRollsForTiedPlayers = genRolls(tiedPlayers)
-    console.log('newRollsForTiedPlayers', newRollsForTiedPlayers)
     const initiativeFromTieBreaker = newRollsForTiedPlayers.reduce(
       rollsToInitiative,
       []
@@ -40,8 +39,7 @@ function highToLow(a, b) {
     return 1
   }
 }
-function rollDie(sides) {
-  if (!sides) sides = 6
+function rollDie(sides = 6) {
   return 1 + Math.floor(Math.random() * sides)
 }
 function rollDice(number, sides) {
