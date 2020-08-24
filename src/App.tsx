@@ -75,8 +75,8 @@ const DevClient = Client({
   debug: false,
   loading: LoadingComponent,
   enhancer:
-    window.__REDUX_DEVTOOLS_EXTENSION__ &&
-    window.__REDUX_DEVTOOLS_EXTENSION__(),
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__(),
 })
 
 const DevLocalServerClient = Client({
@@ -87,8 +87,8 @@ const DevLocalServerClient = Client({
   debug: false,
   loading: LoadingComponent,
   enhancer:
-    window.__REDUX_DEVTOOLS_EXTENSION__ &&
-    window.__REDUX_DEVTOOLS_EXTENSION__(),
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__(),
 })
 
 const DeployClient = Client({
@@ -101,8 +101,8 @@ const DeployClient = Client({
   debug: false,
   loading: LoadingComponent,
   enhancer:
-    window.__REDUX_DEVTOOLS_EXTENSION__ &&
-    window.__REDUX_DEVTOOLS_EXTENSION__(),
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__(),
 })
 
 const HerokuApp = (props) => {
