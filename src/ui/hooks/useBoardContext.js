@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import { phaseNames } from 'game/constants'
 
 const BoardContext = React.createContext({})
 
@@ -24,6 +25,10 @@ const BoardContextProvider = (props) => {
   const placementReady = G.placementReady
   const orderMarkersReady = G.orderMarkersReady
   const initiative = G.initiative
+  const currentTurnGameCardID = G.currentTurnGameCardID
+  const currentTurnGameCard = G.armyCards.find(
+    (armyCard) => armyCard.gameCardID === currentTurnGameCardID
+  )
   // CTX STATE
   const currentPhase = ctx.phase
   const currentPlayer = ctx.currentPlayer
@@ -31,6 +36,13 @@ const BoardContextProvider = (props) => {
   const myCurrentStage = activePlayers?.[playerID] || null
   const numPlayers = ctx.numPlayers
   const currentTurn = ctx.turn
+  const isTurnPhase = currentPhase === 'roundOfPlay'
+  // SELECTORS
+  const getBoardHexForUnitID = (unitID) => {
+    return Object.values(boardHexes).find((boardHex) => {
+      return boardHex?.occupyingUnitID === unitID
+    })
+  }
   // PLAYER STATE
   const myOrderMarkers = G.players[playerID].orderMarkers
 
@@ -38,7 +50,7 @@ const BoardContextProvider = (props) => {
     return i.playerID === playerID
   }
 
-  const selectedUnit = gameUnits[activeUnitID]
+  const activeUnit = gameUnits[activeUnitID]
 
   return (
     <BoardContext.Provider
@@ -66,13 +78,18 @@ const BoardContextProvider = (props) => {
         currentPlayer,
         numPlayers,
         currentTurn,
+        isTurnPhase,
         // PLAYER STATE
         myOrderMarkers,
         // COMPUTED
         myStartZone,
         myCards,
         myUnits,
-        selectedUnit,
+        activeUnit,
+        currentTurnGameCard,
+        currentTurnGameCardID,
+        // SELECTORS
+        getBoardHexForUnitID,
         // BOARD STATE
         errorMsg,
         setErrorMsg,
@@ -91,19 +108,7 @@ const BoardContextProvider = (props) => {
 
 const useBoardContext = () => {
   const boardState = useContext(BoardContext)
-  const { setErrorMsg, setActiveHexID, activeUnitID } = boardState
-
-  function onClickBoardHex_mainGame(event, sourceHex) {
-    event.stopPropagation() // no propagate to background onClick
-    const hexID = sourceHex.id
-    // no unit, select hex
-    if (!activeUnitID) {
-      console.log('SELECT HEX', activeUnitID)
-      setActiveHexID(hexID)
-      setErrorMsg('')
-      return
-    }
-  }
+  const { setActiveHexID } = boardState
 
   function onClickMapBackground() {
     setActiveHexID('')
@@ -111,7 +116,6 @@ const useBoardContext = () => {
 
   return {
     ...boardState,
-    onClickBoardHex_mainGame,
     onClickMapBackground,
   }
 }

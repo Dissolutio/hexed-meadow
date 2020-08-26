@@ -6,6 +6,7 @@ import { MapHexes, HexSVGStyle } from './MapHexes'
 
 export const MapDisplay = () => {
   const { playerID, hexMap, onClickMapBackground } = useBoardContext()
+
   const phi = hexMap.hexWidth
   const Xo = -2 * phi * hexMap.mapSize
   const Yo = -2 * phi * hexMap.mapSize
@@ -27,7 +28,7 @@ export const MapDisplay = () => {
           size={{ x: `${hexMap.hexHeight}`, y: `${hexMap.hexHeight}` }}
           flat={false}
           origin={{ x: 0, y: 0 }}
-          spacing={1.01}
+          spacing={1.05}
         >
           <MapHexes />
         </Layout>

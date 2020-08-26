@@ -39,8 +39,8 @@ const monarch = {
 const startingArmyCards = [
   // PLAYER 0
   queenBae,
-  // beestyBoyz,
-  // bSquad,
+  beestyBoyz,
+  bSquad,
 
   // PLAYER 1
   monarch,
@@ -69,12 +69,13 @@ function cardsToUnits(cards) {
     const numFigures = parseInt(card.figures) * card.cardQuantity
     const figuresArr = Array.apply({}, Array(numFigures))
     // FIGURES => UNITS
-    const unitsFromCard = figuresArr.reduce((unitsResult, figure, i, arr) => {
+    const unitsFromCard = figuresArr.reduce((unitsResult) => {
       const unitID = makeUnitID(card.playerID)
       const newGameUnit = {
         unitID,
         cardID: card.cardID,
         playerID: card.playerID,
+        gameCardID: card.gameCardID,
       }
       return {
         ...unitsResult,

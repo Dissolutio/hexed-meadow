@@ -16,7 +16,7 @@ const PlacementContextProvider = ({ children }) => {
     placeUnitOnHex,
     setActiveUnitID,
     myStartZone,
-    selectedUnit,
+    activeUnit,
   } = useBoardContext()
 
   const [placementUnits, setPlacementUnits] = useState(
@@ -69,8 +69,8 @@ const PlacementContextProvider = ({ children }) => {
     }
     // have unit, clicked in start zone, place unit
     if (activeUnitID && isInStartZone) {
-      placeUnitOnHex(hexID, selectedUnit)
-      placeAvailablePlacementUnit(selectedUnit)
+      placeUnitOnHex(hexID, activeUnit)
+      placeAvailablePlacementUnit(activeUnit)
       setActiveUnitID('')
       setErrorMsg('')
       return

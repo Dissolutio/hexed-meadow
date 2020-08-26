@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react'
-import styled from 'styled-components'
-import { useBoardContext } from './hooks/useBoardContext'
-import { usePlacementContext } from './hooks/usePlacementContext'
-import { useLayoutContext } from './hooks/useLayoutContext'
+import {
+  useBoardContext,
+  usePlacementContext,
+  useLayoutContext,
+  useUIContext,
+} from 'ui/hooks'
 import { UnitIcon } from './UnitIcon'
-import { ArmyListStyle } from './layout/StyledComponents'
+import { ArmyListStyle } from './layout/ArmyListStyle'
 
 export const PlacementControls = () => {
   const { activateDataReadout, activatePlaceOrderMarkers } = useLayoutContext()
   const { placementUnits, onClickPlacementUnit } = usePlacementContext()
+  const { playerColor } = useUIContext()
   const {
     playerID,
     placementReady,
@@ -38,7 +41,7 @@ export const PlacementControls = () => {
 
   if (placementReady[playerID] === true) {
     return (
-      <ArmyListStyle playerID={playerID}>
+      <ArmyListStyle playerColor={playerColor}>
         <button onClick={activateDataReadout}>Data Readout</button>
         <p>Waiting for opponents to finish placing armies...</p>
       </ArmyListStyle>
@@ -46,7 +49,7 @@ export const PlacementControls = () => {
   }
   if (placementUnits.length === 0) {
     return (
-      <ArmyListStyle playerID={playerID}>
+      <ArmyListStyle playerColor={playerColor}>
         <button onClick={activateDataReadout}>Data Readout</button>
         <p>Done placing your units?</p>
         <button onClick={makeReady}>CONFIRM PLACEMENT</button>
@@ -55,7 +58,7 @@ export const PlacementControls = () => {
   }
 
   return (
-    <ArmyListStyle playerID={playerID}>
+    <ArmyListStyle playerColor={playerColor}>
       <button onClick={activateDataReadout}>Data Readout</button>
       <h2>Place your units below into your Start Zone</h2>
       <p>Select a unit, then the start zone will glow.</p>

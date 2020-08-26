@@ -1,14 +1,14 @@
 import React from 'react'
-import { useLayoutContext } from '../hooks/useLayoutContext'
+import { useLayoutContext } from 'ui/hooks/useLayoutContext'
 
-import { NavBar } from './NavBar'
+import { AppNavbar } from './AppNavbar'
 
 export const TopConsole = () => {
   const { layoutComponents, topConsoleComponent } = useLayoutContext()
 
   switch (topConsoleComponent) {
     case layoutComponents.navbar:
-      return <NavBar />
+      return <AppNavbar />
     default:
       return null
   }

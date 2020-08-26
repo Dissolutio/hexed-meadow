@@ -20,10 +20,19 @@ export const useUIContext = () => {
   function toggleMenu() {
     setMenuOpen((s) => !s)
   }
+  const playerColor = (playerID) => {
+    if (playerID === '0') {
+      return 'var(--bee-yellow)'
+    }
+    if (playerID === '1') {
+      return 'var(--butterfly-purple)'
+    }
+  }
 
   return {
     menuOpen,
     playerID,
+    playerColor: playerColor(playerID),
     setMenuOpen,
     setPlayerID,
     toggleMenu,

@@ -1,7 +1,7 @@
 html {
   --black: #0e0b0b;
   /* --red: #db2d20; */
-
+  --pinkish-white: hsl(330, 100%, 98%);
   --bee-yellow: #ffd50080;
   --butterfly-purple: #ac4e82;
 

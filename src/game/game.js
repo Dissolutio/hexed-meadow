@@ -41,7 +41,18 @@ export const HexedMeadow = {
         const initiativeRoll = rollD20Initiative([
           ...Array(ctx.numPlayers).keys(),
         ])
+        const firstPlayerID = initiativeRoll[0]
+        const firstPlayersFirstOrderMarkerGameCardID =
+          G.players[firstPlayerID].orderMarkers['0']
+
         G.initiative = initiativeRoll
+        G.currentOrderMarker = G.currentTurnGameCardID = armyCards.find(
+          (armyCard) => {
+            return (
+              armyCard.gameCardID === firstPlayersFirstOrderMarkerGameCardID
+            )
+          }
+        ).gameCardID
       },
       turn: {
         order: TurnOrder.CUSTOM_FROM('initiative'),

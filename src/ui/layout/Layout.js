@@ -1,20 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { useUIContext } from '../hooks/useUIContext'
-import { SlideMenu } from './SlideMenu'
 import { useWindowDimensions } from '../hooks/useWindowDimensions'
 
 export const Layout = ({ children }) => {
-  const { playerID } = useUIContext()
+  const { playerID, playerColor } = useUIContext()
   const pClass = `board-${playerID}`
   const { windowDimensions, viewportSize } = useWindowDimensions()
-  console.log(`Layout -> viewportSize`, viewportSize)
 
   return (
     <>
-      <LayoutContainer pID={playerID} className={`${pClass}`}>
+      <LayoutContainer playerColor={playerColor} className={`${pClass}`}>
         <LayoutTop>{children[0]}</LayoutTop>
-        <SlideMenu playerID={[playerID]} />
         <LayoutMiddle
           windowDimensions={windowDimensions}
           className={`${pClass}`}
@@ -36,26 +33,17 @@ const LayoutContainer = styled.div`
   padding: 0;
   margin: 0;
   overflow: hidden;
-  --mainColor: ${(props) =>
-    props.pID === '0' ? `var(--bee-yellow)` : `var(--butterfly-purple)`};
-
-  color: --mainColor;
-  &.board-0 {
-    background: radial-gradient(ellipse at top, var(--bee-yellow), transparent),
-      radial-gradient(ellipse at bottom, var(--black), transparent);
-  }
-  &.board-1 {
-    background: radial-gradient(
-        ellipse at top,
-        var(--butterfly-purple),
-        transparent
-      ),
-      radial-gradient(ellipse at bottom, var(--black), transparent);
-  }
+  color: ${(props) => props.playerColor};
+  background: radial-gradient(
+      ellipse at top,
+      ${(props) => props.playerColor},
+      transparent
+    ),
+    radial-gradient(ellipse at bottom, var(--black), transparent);
 `
 const LayoutTop = styled.div`
   width: 100%;
-  height: 8vh;
+  height: 5vh;
   background: var(--black);
 `
 const LayoutBottom = styled.div`
@@ -74,29 +62,14 @@ const LayoutMiddle = styled.div`
   }
   &::-webkit-scrollbar-track-piece {
     border-radius: 10px;
+    box-shadow: inset 0 0 5px ${(props) => props.playerColor};
+    width: 0.5rem;
   }
   &::-webkit-scrollbar-corner {
     background: var(--black);
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
-  }
-  &.board-0 {
-    ::-webkit-scrollbar-track-piece {
-      box-shadow: inset 0 0 5px var(--bee-yellow);
-      width: 0.5rem;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--bee-yellow);
-    }
-  }
-  &.board-1 {
-    ::-webkit-scrollbar-track-piece {
-      box-shadow: inset 0 0 5px var(--butterfly-purple);
-      width: 0.5rem;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--butterfly-purple);
-    }
+    background: ${(props) => props.playerColor};
   }
 `

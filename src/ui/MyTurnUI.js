@@ -1,35 +1,55 @@
 import React from 'react'
+import Button from 'react-bootstrap/Button'
+import Container from 'react-bootstrap/Container'
 
-import { useBoardContext } from './hooks/useBoardContext'
-import { useLayoutContext } from './hooks/useLayoutContext'
+import {
+  useBoardContext,
+  useLayoutContext,
+  useUIContext,
+  useTurnContext,
+} from 'ui/hooks'
 import { UnitIcon } from './UnitIcon'
-import { ArmyListStyle } from './layout/StyledComponents'
+import { ArmyListStyle } from './layout/ArmyListStyle'
 
 export const MyTurnUI = () => {
   const {
     playerID,
+    activeUnit,
+    activeUnitID,
+    setActiveUnitID,
+    currentTurnGameCardID,
+    currentTurnGameCard,
     myCards,
     activeGameCardID,
     setActiveGameCardID,
   } = useBoardContext()
+  const { playerColor } = useUIContext()
+  const {
+    onClickUnit__turn,
+    onSelectCard__turn,
+    selectedGameCard,
+    selectedGameCardID,
+  } = useTurnContext()
+  console.log(`MyTurnUI -> currentTurnGameCardID`, currentTurnGameCardID)
+  console.log(`MyTurnUI -> currentTurnGameCard`, currentTurnGameCard)
+  console.log(`MyTurnUI -> selectedGameCard`, selectedGameCard)
+  console.log(`MyTurnUI -> selectedGameCardID`, selectedGameCardID)
 
   const selectedStyle = (gameCardID) => {
-    return gameCardID === activeGameCardID
+    return gameCardID === selectedGameCardID
       ? {
-          boxShadow: `0 0 2px var(--neon-green)`,
+          boxShadow: `1px 1px 2px var(--neon-green)`,
         }
       : {}
   }
-
   return (
-    <ArmyListStyle playerID={playerID}>
-      
+    <ArmyListStyle playerColor={playerColor}>
       <ul>
         {myCards.map((card) => (
           <li key={card.gameCardID}>
             <button
               style={selectedStyle(card.gameCardID)}
-              onClick={() => setActiveGameCardID(card.cardID)}
+              onClick={() => onSelectCard__turn(card.gameCardID)}
             >
               <UnitIcon
                 card={card}

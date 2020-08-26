@@ -1,15 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { useBoardContext } from '../hooks/useBoardContext'
-import { usePlacementContext } from '../hooks/usePlacementContext'
+import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 
 import { Hexagon } from 'react-hexgrid'
-import { UnitIcon } from '../UnitIcon'
+import { UnitIcon } from 'ui/UnitIcon'
+import { phaseNames } from 'game/constants'
 
 export const MapHexes = () => {
-  const { onClickBoardHex_placement } = usePlacementContext()
-
   const {
     playerID,
     currentPhase,
@@ -17,17 +15,18 @@ export const MapHexes = () => {
     gameUnits,
     activeHexID,
     activeUnitID,
-    onClickBoardHex_mainGame,
     startZones,
   } = useBoardContext()
+  const { onClickBoardHex_placement } = usePlacementContext()
+  const { onClickBoardHex__turn } = useTurnContext()
 
   const startZone = startZones[playerID]
 
   const onClickBoardHex = (event, sourceHex) => {
-    if (currentPhase === 'placement')
+    if (currentPhase === phaseNames.placement)
       return onClickBoardHex_placement(event, sourceHex)
-    if (currentPhase === 'mainGame')
-      return onClickBoardHex_mainGame(event, sourceHex)
+    if (currentPhase === phaseNames.roundOfPlay)
+      return onClickBoardHex__turn(event, sourceHex)
   }
 
   function isStartZoneHex(hex) {

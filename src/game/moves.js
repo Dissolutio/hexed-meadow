@@ -1,5 +1,5 @@
 export function placeUnitOnHex(G, ctx, hexId, unit) {
-  G.boardHexes[hexId].occupyingUnitID = unit.unitID
+  G.boardHexes[hexId].occupyingUnitID = unit?.unitID ?? ''
 }
 export function confirmReady(G, ctx, playerID) {
   if (ctx.phase === 'placement') {

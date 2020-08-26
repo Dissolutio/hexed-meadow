@@ -1,15 +1,12 @@
-import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
-
-import { useBoardContext } from './hooks/useBoardContext'
-import { useLayoutContext } from './hooks/useLayoutContext'
-import { ArmyListStyle } from './layout/StyledComponents'
+import React, { useState } from 'react'
+import { useBoardContext, useLayoutContext, useUIContext } from 'ui/hooks'
+import { ArmyListStyle } from 'ui/layout/ArmyListStyle'
 
 export const PlaceOrderMarkers = () => {
   const { activateDataReadout } = useLayoutContext()
+  const { playerColor } = useUIContext()
   const {
     playerID,
-    currentPhase,
     orderMarkersReady,
     myCards,
     myOrderMarkers,
@@ -26,7 +23,6 @@ export const PlaceOrderMarkers = () => {
     if (!activeMarker) return
     if (activeMarker) {
       placeOrderMarker(playerID, activeMarker, gameCardID)
-      console.log(`placed OM ${activeMarker} -> gameCardID:`, gameCardID)
     }
   }
   const selectedStyle = (orderMarker) => {
@@ -44,7 +40,7 @@ export const PlaceOrderMarkers = () => {
   }
   if (orderMarkersReady[playerID] === true) {
     return (
-      <ArmyListStyle playerID={playerID}>
+      <ArmyListStyle playerColor={playerColor}>
         <button onClick={activateDataReadout}>Data Readout</button>
         <p>Waiting for opponents to finish placing order markers...</p>
       </ArmyListStyle>
@@ -52,7 +48,7 @@ export const PlaceOrderMarkers = () => {
   }
   if (!Object.values(myOrderMarkers).some((om) => om === null)) {
     return (
-      <ArmyListStyle playerID={playerID}>
+      <ArmyListStyle playerColor={playerColor}>
         <button onClick={activateDataReadout}>Data Readout</button>
         <p>Done placing your order markers?</p>
         <button onClick={makeReady}>CONFIRM DONE</button>
@@ -61,7 +57,7 @@ export const PlaceOrderMarkers = () => {
   }
 
   return (
-    <ArmyListStyle playerID={playerID}>
+    <ArmyListStyle playerColor={playerColor}>
       <h2>Place your Order Markers:</h2>
       <ul>
         {Object.keys(myOrderMarkers)

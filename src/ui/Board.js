@@ -1,10 +1,12 @@
 import React from 'react'
 
-import { BoardContextProvider } from './hooks/useBoardContext'
-import { UIContextProvider } from './hooks/useUIContext'
-import { LayoutContextProvider } from './hooks/useLayoutContext'
-import { PlacementContextProvider } from './hooks/usePlacementContext'
-
+import {
+  BoardContextProvider,
+  UIContextProvider,
+  LayoutContextProvider,
+  PlacementContextProvider,
+  TurnContextProvider,
+} from 'ui/hooks'
 import { Layout } from './layout/Layout'
 import { TopConsole } from './layout/TopConsole'
 import { BottomConsole } from './layout/BottomConsole'
@@ -20,11 +22,13 @@ export const Board = (props) => {
       <UIContextProvider playerID={playerID}>
         <LayoutContextProvider>
           <PlacementContextProvider>
-            <Layout>
-              <TopConsole />
-              <MapDisplay />
-              <BottomConsole />
-            </Layout>
+            <TurnContextProvider>
+              <Layout>
+                <TopConsole />
+                <MapDisplay />
+                <BottomConsole />
+              </Layout>
+            </TurnContextProvider>
           </PlacementContextProvider>
         </LayoutContextProvider>
       </UIContextProvider>
