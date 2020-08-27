@@ -20,6 +20,7 @@ module.exports = {
   rules: {
     rules: {
       'react/jsx-filename-extension': [1, { allow: 'allow' }],
+      "semi": false,
     },
   },
 }
