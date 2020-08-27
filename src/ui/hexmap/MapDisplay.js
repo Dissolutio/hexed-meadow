@@ -16,14 +16,16 @@ export const MapDisplay = () => {
   return (
     <HexSVGStyle onClick={onClickMapBackground} pID={playerID}>
       <HexGrid
-        width="500px"
-        height="500px"
+        // width="500px"
+        // height="500px"
+        // viewBox={`0 0 360 360`}
+        //
         // width={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
         // height={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
-        // width={`100%`}
-        // height={`auto`}
+        //
+        width={`100%`}
+        height={`100%`}
         viewBox={`${Xo} ${Yo} ${Xt} ${Yt}`}
-        // viewBox={`0 0 360 360`}
       >
         <Layout
           size={{ x: `${hexMap.hexHeight}`, y: `${hexMap.hexHeight}` }}
