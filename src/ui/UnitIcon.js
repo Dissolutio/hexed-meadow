@@ -6,6 +6,7 @@ import {
   GiButterfly,
   GiFairyWings,
   GiWingedEmblem,
+  GiSpiderAlt,
 } from 'react-icons/gi'
 import { useBoardContext } from './hooks/useBoardContext'
 
@@ -19,27 +20,23 @@ export const UnitIcon = ({ unit, iconProps, card }) => {
   if (!(unit || card)) return null
   let iconCardID
   let iconPlayerID
-  if (card)
-    if (card) {
-      iconCardID = card.cardID
-      iconPlayerID = card.playerID
-    }
+  if (card) {
+    iconCardID = card.cardID
+    iconPlayerID = card.playerID
+  }
   if (unit) {
     iconCardID = unit.cardID
     iconPlayerID = unit.playerID
   }
   const iconSize = hexMap.mapSize
   const iconShift = hexMap.mapSize / -2
-  const x = iconProps?.x ?? `${iconShift}px`
-  const y = iconProps?.x ?? `${iconShift}px`
-  const fontSize = iconProps?.x ?? `${iconSize}px`
-  const playerColor = playerIconColors[iconPlayerID]
+
   const gameIconProps = {
-    x,
-    y,
+    x: iconProps?.x ?? `${iconShift}px`,
+    y: iconProps?.x ?? `${iconShift}px`,
     style: {
-      fill: `${playerColor}`,
-      fontSize,
+      fill: `${playerIconColors[iconPlayerID]}`,
+      fontSize: iconProps?.x ?? `${iconSize}px`,
     },
   }
 

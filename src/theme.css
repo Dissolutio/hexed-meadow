@@ -22,7 +22,7 @@ body {
   /* mobile viewport bug fix */
   min-height: -webkit-fill-available;
   max-width: -webkit-fill-available;
-  background-color: var(--black);
+  background-color: var(--black) !important;
   color: white;
   overflow-x: hidden;
 }
