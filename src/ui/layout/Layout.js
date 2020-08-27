@@ -49,7 +49,7 @@ const LayoutTop = styled.div`
 const LayoutBottom = styled.div`
   width: 100%;
   background: var(--black);
-  min-height: 27vh;
+  min-height: 30vh;
   overflow: auto;
 `
 const LayoutMiddle = styled.div`

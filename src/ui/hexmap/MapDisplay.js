@@ -12,6 +12,7 @@ export const MapDisplay = () => {
   const Yo = -2 * phi * hexMap.mapSize
   const Xt = 4 * phi * hexMap.mapSize
   const Yt = 4 * phi * hexMap.mapSize
+  const computedViewBox = `${Xo} ${Yo} ${Xt} ${Yt}`
 
   return (
     <HexSVGStyle onClick={onClickMapBackground} pID={playerID}>
@@ -22,10 +23,11 @@ export const MapDisplay = () => {
         //
         // width={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
         // height={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
+        // no viewbox
         //
         width={`100%`}
         height={`100%`}
-        viewBox={`${Xo} ${Yo} ${Xt} ${Yt}`}
+        viewBox={computedViewBox}
       >
         <Layout
           size={{ x: `${hexMap.hexHeight}`, y: `${hexMap.hexHeight}` }}
