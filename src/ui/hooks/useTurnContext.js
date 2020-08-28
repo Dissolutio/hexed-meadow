@@ -5,18 +5,12 @@ const TurnContext = React.createContext({})
 
 export const TurnContextProvider = ({ children }) => {
   const {
-    boardHexes,
-    gameUnits,
     armyCards,
-    playerID,
-    myUnits,
-    myCards,
     activeUnit,
     getBoardHexForUnitID,
     placeUnitOnHex,
     activeUnitID,
     setActiveUnitID,
-    activeHexID,
     setActiveHexID,
     setErrorMsg,
   } = useBoardContext()
@@ -56,20 +50,17 @@ export const TurnContextProvider = ({ children }) => {
     event.stopPropagation()
 
     const hexID = sourceHex.id
-    console.log(`functiononClickBoardHex__turn -> sourceHex.id`, sourceHex.id)
     // hex has unit who is ready to move, select unit
-
+    // ??
     //  No unit, select hex
     if (!activeUnitID) {
       setActiveHexID(hexID)
-      console.log(`Before / After`, activeUnitID, ',', hexID)
       setErrorMsg('')
       return
     }
     // place unit
     if (activeUnitID) {
       const oldHex = getBoardHexForUnitID(activeUnitID)
-      console.log(`functiononClickBoardHex__turn -> oldHex`, oldHex)
       placeUnitOnHex(hexID, activeUnit)
       setActiveUnitID('')
       setErrorMsg('')
@@ -83,6 +74,11 @@ export const TurnContextProvider = ({ children }) => {
       return
     }
   }
+  function onClickMapBackground__turn() {
+    console.log('BG CLICK')
+    setSelectedGameCardID('')
+    setActiveHexID('')
+  }
 
   return (
     <TurnContext.Provider
@@ -91,6 +87,7 @@ export const TurnContextProvider = ({ children }) => {
         onClickBoardHex__turn,
         onClickUnit__turn,
         onSelectCard__turn,
+        onClickMapBackground__turn,
         selectedGameCardID,
         selectedGameCard,
       }}

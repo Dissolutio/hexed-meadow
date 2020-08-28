@@ -75,6 +75,7 @@ export const MapHexes = () => {
 }
 
 export const HexSVGStyle = styled.div`
+  height: 100%;
   /* HEX FILL */
   g {
     fill: var(--black);

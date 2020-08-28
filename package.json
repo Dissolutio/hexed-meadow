@@ -22,7 +22,8 @@
     "react-scripts": "^3.4.3",
     "redux": "^4.0.5",
     "styled-components": "^5.1.0",
-    "tslib": "^2.0.1"
+    "tslib": "^2.0.1",
+    "use-onclickoutside": "^0.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -30,7 +31,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "serverdev": "node -r esm server.js",
-    "format": "prettier --write 'src/*/*.js'"
+    "format": "prettier --write 'src/*/*.js'",
+    "servertsc": "tsc src/game/*.ts"
   },
   "eslintConfig": {
     "extends": "react-app"

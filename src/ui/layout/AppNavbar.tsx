@@ -56,25 +56,22 @@ export const AppNavbar = () => {
       </Navbar.Toggle>
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link as={Link} to="/about">
-            Features
+          <Nav.Link as={Link} to="/team0">
+            Bees
           </Nav.Link>
-          <Nav.Link as={Link} to="/about">
-            About
+          <Nav.Link as={Link} to="/team1">
+            Butterflies
           </Nav.Link>
-          <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-            <NavDropdown.Item as={Link} to="/about">
-              Action
+          <NavDropdown title="Opponents" id="collasible-nav-dropdown">
+            <NavDropdown.Item as={Link} to="/team0">
+              Bees
             </NavDropdown.Item>
-            <NavDropdown.Item as={Link} to="/about">
-              Another action
-            </NavDropdown.Item>
-            <NavDropdown.Item as={Link} to="/about">
-              Something
+            <NavDropdown.Item as={Link} to="/team1">
+              Butterflies
             </NavDropdown.Item>
             <NavDropdown.Divider />
-            <NavDropdown.Item as={Link} to="/about">
-              Separated link
+            <NavDropdown.Item as={Link} to="/">
+              Homepage
             </NavDropdown.Item>
           </NavDropdown>
         </Nav>

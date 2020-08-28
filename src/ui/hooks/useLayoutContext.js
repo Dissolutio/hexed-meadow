@@ -18,10 +18,12 @@ const LayoutContextProvider = ({ children }) => {
     layoutComponents.navbar
   )
   const [bottomConsoleComponent, setBottomConsoleComponent] = useState(
-    initialBottomConsole()
+    setBottomConsole()
   )
-
-  function initialBottomConsole() {
+  useEffect(() => {
+    setBottomConsoleComponent(setBottomConsole())
+  }, [currentPhase])
+  function setBottomConsole() {
     if (currentPhase === phaseNames.placement) {
       return layoutComponents.placementArmy
     }

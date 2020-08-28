@@ -47,13 +47,22 @@ const LayoutTop = styled.div`
   background: var(--black);
 `
 const LayoutBottom = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
   width: 100%;
-  background: var(--black);
   min-height: 30vh;
-  overflow: auto;
+  background: var(--black);
+  padding: 5px;
+  margin: 0;
 `
 const LayoutMiddle = styled.div`
   width: 100%;
+  @media screen and (min-width: 900px) {
+    box-sizing: content-box;
+    width: 50%;
+    padding-left: 20%;
+    padding-right: 20%;
+  }
   height: 65vh;
   overflow: auto;
   ::-webkit-scrollbar {

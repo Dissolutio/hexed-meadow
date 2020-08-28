@@ -14,6 +14,7 @@ export const PlaceOrderMarkers = () => {
     placeOrderMarker,
   } = useBoardContext()
 
+  console.log(`PlaceOrderMarkers -> myOrderMarkers`, myOrderMarkers)
   const [activeMarker, setActiveMarker] = useState('')
 
   const selectOrderMarker = (orderMarker) => {
@@ -38,6 +39,8 @@ export const PlaceOrderMarkers = () => {
   const makeReady = () => {
     confirmReady(playerID)
   }
+  const areAllOMsAssigned = !Object.values(myOrderMarkers).some((om) => om === '')
+
   if (orderMarkersReady[playerID] === true) {
     return (
       <ArmyListStyle playerColor={playerColor}>
@@ -46,7 +49,7 @@ export const PlaceOrderMarkers = () => {
       </ArmyListStyle>
     )
   }
-  if (!Object.values(myOrderMarkers).some((om) => om === null)) {
+  if (areAllOMsAssigned) {
     return (
       <ArmyListStyle playerColor={playerColor}>
         <button onClick={activateDataReadout}>Data Readout</button>
@@ -61,7 +64,7 @@ export const PlaceOrderMarkers = () => {
       <h2>Place your Order Markers:</h2>
       <ul>
         {Object.keys(myOrderMarkers)
-          .filter((om) => myOrderMarkers[om] === null)
+          .filter((om) => myOrderMarkers[om] === '')
           .map((om) => (
             <li
               key={om}

@@ -6,7 +6,7 @@ const mount = require('koa-mount')
 const HexedMeadow = require('./src/game/game').HexedMeadow
 
 const server = Server({ games: [HexedMeadow] })
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 8000
 const frontEndAppBuildPath = path.resolve(__dirname, './build')
 
 // Serve the build directory

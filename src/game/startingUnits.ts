@@ -39,8 +39,8 @@ const monarch = {
 const startingArmyCards = [
   // PLAYER 0
   queenBae,
-  beestyBoyz,
-  bSquad,
+  // beestyBoyz,
+  // bSquad,
 
   // PLAYER 1
   monarch,

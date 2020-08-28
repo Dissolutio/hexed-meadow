@@ -6,11 +6,11 @@ import { initialPlayerState, prePlacedOrderMarkers } from './playerState'
 import { placeUnitOnHex, confirmReady, placeOrderMarker } from './moves'
 import { phaseNames } from './constants'
 
-const map = makeHexagonShapedMap(2)
+const map = makeHexagonShapedMap(1)
 const initialGameState = {
   hexMap: map.hexMap,
-  // boardHexes: map.boardHexes,
-  boardHexes: map.boardHexesWithPrePlacedUnits,
+  boardHexes: map.boardHexes,
+  // boardHexes: map.boardHexesWithPrePlacedUnits,
   startZones: map.startZones,
   armyCards,
   gameUnits,
@@ -18,8 +18,8 @@ const initialGameState = {
   initiative: null,
   placementReady: { '0': false, '1': false },
   orderMarkersReady: { '0': false, '1': false },
-  // players: initialPlayerState,
-  players: prePlacedOrderMarkers,
+  players: initialPlayerState,
+  // players: prePlacedOrderMarkers,
   // secret: {},
 }
 
@@ -36,7 +36,6 @@ export const HexedMeadow = {
   seed: 'random_string',
   phases: {
     roundOfPlay: {
-      start: true,
       onBegin: (G, ctx) => {
         const initiativeRoll = rollD20Initiative([
           ...Array(ctx.numPlayers).keys(),
@@ -59,6 +58,7 @@ export const HexedMeadow = {
       },
     },
     placement: {
+      start: true,
       moves: { placeUnitOnHex, confirmReady },
       onBegin: (G, ctx) => {
         ctx.events.setActivePlayers({ all: 'placingUnits' })

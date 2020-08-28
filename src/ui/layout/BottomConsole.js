@@ -9,12 +9,10 @@ import { MyTurnUI } from '../MyTurnUI'
 export const BottomConsole = () => {
   const { layoutComponents, bottomConsoleComponent } = useLayoutContext()
   return (
-    <Wrapper>
-      <CurrentDisplay
-        layoutComponents={layoutComponents}
-        bottomConsoleComponent={bottomConsoleComponent}
-      />
-    </Wrapper>
+    <CurrentDisplay
+      layoutComponents={layoutComponents}
+      bottomConsoleComponent={bottomConsoleComponent}
+    />
   )
 }
 
@@ -35,31 +33,3 @@ export const CurrentDisplay = ({
       return null
   }
 }
-const Wrapper = styled.div`
-  box-sizing: content-box;
-  display: flex;
-  flex-flow: column nowrap;
-  height: 100%;
-  padding: 5px;
-  margin: 0;
-`
-const NavIconBar = () => {
-  return (
-    <StyledIconBarWrapper>
-      <NavIcon></NavIcon>
-    </StyledIconBarWrapper>
-  )
-}
-const StyledIconBarWrapper = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  padding: 0;
-  margin: 0;
-  justify-content: start;
-  align-items: stretch;
-`
-const NavIcon = styled.div`
-  height: 50px;
-  width: 50px;
-  background-color: yellow;
-`

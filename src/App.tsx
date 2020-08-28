@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import { Client, Lobby } from 'boardgame.io/react'
 import { Local } from 'boardgame.io/multiplayer'
 import { SocketIO } from 'boardgame.io/multiplayer'
@@ -17,13 +17,10 @@ const devModes = {
 }
 
 // TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
-let devMode = devModes.dev
-// if (process.env.NODE_ENV === 'development') {
-//   devMode = devModes.dev
-// }
-// if (process.env.NODE_ENV === 'production') {
-//   devMode = devModes.herokuDeployment
-// }
+let devMode = devModes.devWithLocalServer
+if (process.env.NODE_ENV === 'production') {
+  devMode = devModes.herokuDeployment
+}
 
 export const App = () => {
   return (
@@ -47,19 +44,35 @@ const EnvApp = () => {
 
 export const DevApp = () => {
   return (
-    <>
-      <DevClient gameID="gameid" playerID={'0'} />
-      <DevClient gameID="gameid" playerID={'1'} />
-    </>
+    <Switch>
+      <Route exact path="/">
+        <Link to="/team0">Bees!</Link>
+        <Link to="/team1">Butterflies!</Link>
+      </Route>
+      <Route exact path="/team0">
+        <DevClient gameID="gameid" playerID={'0'} />
+      </Route>
+      <Route exact path="/team1">
+        <DevClient gameID="gameid" playerID={'1'} />
+      </Route>
+    </Switch>
   )
 }
 
 export const DevAppWithLocalServer = () => {
   return (
-    <>
-      <DevLocalServerClient gameID="gameid" playerID={'0'} />
-      <DevLocalServerClient gameID="gameid" playerID={'1'} />
-    </>
+    <Switch>
+      <Route exact path="/">
+        <Link to="/team0">Bees!</Link>
+        <Link to="/team1">Butterflies!</Link>
+      </Route>
+      <Route exact path="/team0">
+        <DevLocalServerClient gameID="gameid" playerID={'0'} />
+      </Route>
+      <Route exact path="/team1">
+        <DevLocalServerClient gameID="gameid" playerID={'1'} />
+      </Route>
+    </Switch>
   )
 }
 
@@ -72,7 +85,7 @@ const DevClient = Client({
   numPlayers: 2,
   board: Board,
   multiplayer: Local(),
-  debug: false,
+  debug: true,
   loading: LoadingComponent,
   enhancer:
     (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
@@ -84,7 +97,7 @@ const DevLocalServerClient = Client({
   numPlayers: 2,
   board: Board,
   multiplayer: SocketIO({ server: 'http://localhost:8000' }),
-  debug: false,
+  debug: true,
   loading: LoadingComponent,
   enhancer:
     (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
@@ -107,10 +120,18 @@ const DeployClient = Client({
 
 const HerokuApp = (props) => {
   return (
-    <>
-      <DeployClient gameID="gameid" playerID={'0'} />
-      <DeployClient gameID="gameid" playerID={'1'} />
-    </>
+    <Switch>
+      <Route exact path="/">
+        <Link to="/team0">Bees!</Link>
+        <Link to="/team1">Butterflies!</Link>
+      </Route>
+      <Route exact path="/team0">
+        <DeployClient gameID="gameid" playerID={'0'} />
+      </Route>
+      <Route exact path="/team1">
+        <DeployClient gameID="gameid" playerID={'1'} />
+      </Route>
+    </Switch>
   )
 }
 const DevLocalServerLobby = () => {

@@ -10,13 +10,14 @@ const PlacementContextProvider = ({ children }) => {
     gameUnits,
     myUnits,
     myCards,
+    myStartZone,
     activeUnitID,
+    setActiveUnitID,
+    activeUnit,
+    activeHexID,
     setActiveHexID,
     setErrorMsg,
     placeUnitOnHex,
-    setActiveUnitID,
-    myStartZone,
-    activeUnit,
   } = useBoardContext()
 
   const [placementUnits, setPlacementUnits] = useState(
@@ -83,6 +84,12 @@ const PlacementContextProvider = ({ children }) => {
       return
     }
   }
+  const onClickMapBackground__placement = () => {
+    if (activeHexID) {
+      setActiveHexID('')
+    }
+  }
+
   return (
     <PlacementContext.Provider
       value={{
@@ -90,8 +97,9 @@ const PlacementContextProvider = ({ children }) => {
         placementUnits,
         setPlacementUnits,
         placeAvailablePlacementUnit,
-        onClickBoardHex_placement,
         onClickPlacementUnit,
+        onClickBoardHex_placement,
+        onClickMapBackground__placement,
       }}
     >
       {children}

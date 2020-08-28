@@ -36,7 +36,6 @@ const BoardContextProvider = (props) => {
   const myCurrentStage = activePlayers?.[playerID] || null
   const numPlayers = ctx.numPlayers
   const currentTurn = ctx.turn
-  const isTurnPhase = currentPhase === 'roundOfPlay'
   // SELECTORS
   const getBoardHexForUnitID = (unitID) => {
     return Object.values(boardHexes).find((boardHex) => {
@@ -46,6 +45,9 @@ const BoardContextProvider = (props) => {
   // PLAYER STATE
   const myOrderMarkers = G.players[playerID].orderMarkers
 
+  const isOrderMarkerPhase = currentPhase === phaseNames.placeOrderMarkers
+  const isPlacementPhase = currentPhase === phaseNames.placement
+  const isTurnPhase = currentPhase === phaseNames.roundOfPlay
   function belongsToPlayer(i) {
     return i.playerID === playerID
   }
@@ -78,7 +80,6 @@ const BoardContextProvider = (props) => {
         currentPlayer,
         numPlayers,
         currentTurn,
-        isTurnPhase,
         // PLAYER STATE
         myOrderMarkers,
         // COMPUTED
@@ -88,6 +89,9 @@ const BoardContextProvider = (props) => {
         activeUnit,
         currentTurnGameCard,
         currentTurnGameCardID,
+        isPlacementPhase,
+        isOrderMarkerPhase,
+        isTurnPhase,
         // SELECTORS
         getBoardHexForUnitID,
         // BOARD STATE
@@ -108,16 +112,7 @@ const BoardContextProvider = (props) => {
 
 const useBoardContext = () => {
   const boardState = useContext(BoardContext)
-  const { setActiveHexID } = boardState
-
-  function onClickMapBackground() {
-    setActiveHexID('')
-  }
-
-  return {
-    ...boardState,
-    onClickMapBackground,
-  }
+  return boardState
 }
 
 export { BoardContextProvider, useBoardContext }

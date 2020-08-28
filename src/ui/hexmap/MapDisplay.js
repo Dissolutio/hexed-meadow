@@ -1,11 +1,23 @@
 import React from 'react'
 
-import { useBoardContext } from '../hooks/useBoardContext'
 import { HexGrid, Layout } from 'react-hexgrid'
 import { MapHexes, HexSVGStyle } from './MapHexes'
+import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 
 export const MapDisplay = () => {
-  const { playerID, hexMap, onClickMapBackground } = useBoardContext()
+  const { playerID, hexMap, isPlacementPhase, isTurnPhase } = useBoardContext()
+  const { onClickMapBackground__turn } = useTurnContext()
+  const { onClickMapBackground__placement } = usePlacementContext()
+
+  const handleClickMapBackground = () => {
+    if (isPlacementPhase) {
+      return onClickMapBackground__placement()
+    }
+    if (isTurnPhase) {
+      console.log(`handleClickMapBackground -> isTurnPhase`, isTurnPhase)
+      return onClickMapBackground__turn()
+    }
+  }
 
   const phi = hexMap.hexWidth
   const Xo = -2 * phi * hexMap.mapSize
@@ -15,7 +27,7 @@ export const MapDisplay = () => {
   const computedViewBox = `${Xo} ${Yo} ${Xt} ${Yt}`
 
   return (
-    <HexSVGStyle onClick={onClickMapBackground} pID={playerID}>
+    <HexSVGStyle onClick={handleClickMapBackground} pID={playerID}>
       <HexGrid
         // width="500px"
         // height="500px"
