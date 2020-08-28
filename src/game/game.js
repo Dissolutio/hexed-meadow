@@ -1,25 +1,31 @@
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
-import { makeHexagonShapedMap } from './mapGen'
+import { makeHexagonMap, makePrePlacedHexagonMap } from './mapGen'
 import { gameUnits, armyCards } from './startingUnits'
 import { rollD20Initiative } from './rollInitiative'
 import { initialPlayerState, prePlacedOrderMarkers } from './playerState'
 import { placeUnitOnHex, confirmReady, placeOrderMarker } from './moves'
 import { phaseNames } from './constants'
 
-const map = makeHexagonShapedMap(1)
+/*
+// TOGGLE DEV MODE
+const isDevMode = false
+*/
+const isDevMode = true
+
+const map = isDevMode ? makePrePlacedHexagonMap(2) : makeHexagonMap(1)
+const players = isDevMode ? prePlacedOrderMarkers : initialPlayerState
+
 const initialGameState = {
-  hexMap: map.hexMap,
-  boardHexes: map.boardHexes,
-  // boardHexes: map.boardHexesWithPrePlacedUnits,
-  startZones: map.startZones,
   armyCards,
   gameUnits,
-  currentRound: 1,
+  players,
+  hexMap: map.hexMap,
+  boardHexes: map.boardHexes,
+  startZones: map.startZones,
   initiative: null,
-  placementReady: { '0': false, '1': false },
-  orderMarkersReady: { '0': false, '1': false },
-  players: initialPlayerState,
-  // players: prePlacedOrderMarkers,
+  currentRound: 1,
+  placementReady: { '0': isDevMode, '1': isDevMode },
+  orderMarkersReady: { '0': isDevMode, '1': isDevMode },
   // secret: {},
 }
 
@@ -36,6 +42,7 @@ export const HexedMeadow = {
   seed: 'random_string',
   phases: {
     roundOfPlay: {
+      start: isDevMode ? true : false,
       onBegin: (G, ctx) => {
         const initiativeRoll = rollD20Initiative([
           ...Array(ctx.numPlayers).keys(),
@@ -58,7 +65,7 @@ export const HexedMeadow = {
       },
     },
     placement: {
-      start: true,
+      start: isDevMode ? false : true,
       moves: { placeUnitOnHex, confirmReady },
       onBegin: (G, ctx) => {
         ctx.events.setActivePlayers({ all: 'placingUnits' })

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useUIContext } from '../hooks/useUIContext'
-import { useWindowDimensions } from '../hooks/useWindowDimensions'
+import { useUIContext } from 'ui/hooks/useUIContext'
+import { useWindowDimensions } from 'ui/hooks/useWindowDimensions'
 
 export const Layout = ({ children }) => {
   const { playerID, playerColor } = useUIContext()

@@ -17,7 +17,8 @@ const devModes = {
 }
 
 // TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
-let devMode = devModes.devWithLocalServer
+let devMode = devModes.dev
+// let devMode = devModes.devWithLocalServer
 if (process.env.NODE_ENV === 'production') {
   devMode = devModes.herokuDeployment
 }
@@ -44,18 +45,10 @@ const EnvApp = () => {
 
 export const DevApp = () => {
   return (
-    <Switch>
-      <Route exact path="/">
-        <Link to="/team0">Bees!</Link>
-        <Link to="/team1">Butterflies!</Link>
-      </Route>
-      <Route exact path="/team0">
-        <DevClient gameID="gameid" playerID={'0'} />
-      </Route>
-      <Route exact path="/team1">
-        <DevClient gameID="gameid" playerID={'1'} />
-      </Route>
-    </Switch>
+    <>
+      <DevClient gameID="gameid" playerID={'0'} />
+      <DevClient gameID="gameid" playerID={'1'} />
+    </>
   )
 }
 
@@ -85,7 +78,7 @@ const DevClient = Client({
   numPlayers: 2,
   board: Board,
   multiplayer: Local(),
-  debug: true,
+  debug: false,
   loading: LoadingComponent,
   enhancer:
     (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
