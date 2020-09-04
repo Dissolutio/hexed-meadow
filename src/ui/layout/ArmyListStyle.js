@@ -4,14 +4,14 @@ import styled from 'styled-components'
 export const ArmyListStyle = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  color: ${(props) => props.playerColor};
+  color: ${(props) => props.theme.playerColors[props.playerID]};
   h2 {
     font-size: 1.3rem;
     margin: 0;
     text-align: center;
   }
   button {
-    color: ${(props) => props.playerColor};
+    color: ${(props) => props.theme.playerColors[props.playerID]};
   }
   ul {
     display: flex;
@@ -32,8 +32,8 @@ export const ArmyListStyle = styled.div`
     background: var(--black);
     width: 100%;
     height: 100%;
-    color: ${(props) => props.playerColor};
-    border: 0.1px solid ${(props) => props.playerColor};
+    color: ${(props) => props.theme.playerColors[props.playerID]};
+    border: 0.1px solid ${(props) => props.theme.playerColors[props.playerID]};
   }
   img {
     width: auto;

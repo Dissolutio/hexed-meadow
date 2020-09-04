@@ -1,50 +1,32 @@
-import React, { useState, useRef } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import Overlay from 'react-bootstrap/Overlay'
-import Popover from 'react-bootstrap/Popover'
-import useOnClickOutside from 'use-onclickoutside'
 
-import { useBoardContext, useUIContext, useTurnContext } from 'ui/hooks'
+import { useBoardContext, useTurnContext } from 'ui/hooks'
 import { UnitIcon } from './UnitIcon'
+import { hexagonsHeroPatternDataUrl } from 'ui/layout/hexagonsHeroPatternDataUrl'
+import { playerColorUrlEncoded } from './theme/theme'
 
 export const MyTurnUI = () => {
-  const { myCards } = useBoardContext()
-  const { playerColor } = useUIContext()
-  const { selectedGameCardID } = useTurnContext()
-  const [focusedCardID, setFocusedCardID] = React.useState('')
-  const [target, setTarget] = useState(null)
-  const ref = useRef(null)
+  const { playerID, myCards } = useBoardContext()
+  const { selectedGameCardID, onSelectCard__turn } = useTurnContext()
+  const hexagonBgDataUrl = hexagonsHeroPatternDataUrl({
+    color: playerColorUrlEncoded(playerID),
+    opacity: 0.05,
+  })
 
   const handleArmyCardClick = ({ event = null, gameCardID = '' }) => {
-    if (gameCardID === focusedCardID) {
-      setFocusedCardID('')
+    if (gameCardID === selectedGameCardID) {
+      onSelectCard__turn('')
     } else {
-      setFocusedCardID(gameCardID)
-      setTarget(document.getElementById(`mtui-${gameCardID}`))
+      onSelectCard__turn(gameCardID)
     }
   }
-  useOnClickOutside(ref, handleArmyCardClick)
-
-  const selectedStyle = (gameCardID) => {
+  const isCurrentSelectedCard = (gameCardID) => {
     return gameCardID === selectedGameCardID
-      ? {
-          boxShadow: `1px 1px 2px var(--neon-green), 1px 1px 2px var(--neon-green) inset`,
-        }
-      : {}
-  }
-  const popover = () => {
-    return (
-      <Popover style={{ width: '100%' }}>
-        <Popover.Title as="h3">Popover bottom</Popover.Title>
-        <Popover.Content>
-          <strong>Holy guacamole!</strong> Check this info.
-        </Popover.Content>
-      </Popover>
-    )
   }
   return (
-    <StyledWrapper playerColor={playerColor}>
-      <PlayerCardsStyledUL ref={ref}>
+    <StyledWrapper playerID={playerID}>
+      <PlayerCardsStyledUL>
         {myCards.map((card) => (
           <PlayerCardStyledLi
             onClick={(e) =>
@@ -52,8 +34,9 @@ export const MyTurnUI = () => {
             }
             id={`mtui-${card.gameCardID}`}
             key={card.gameCardID}
-            playerColor={playerColor}
-            style={{ ...selectedStyle(card.gameCardID) }}
+            playerID={playerID}
+            bg={hexagonBgDataUrl}
+            isCurrentSelectedCard={isCurrentSelectedCard(card.gameCardID)}
           >
             <UnitIcon
               card={card}
@@ -64,15 +47,6 @@ export const MyTurnUI = () => {
               }}
             />
             <div>{card.name}</div>
-            <Overlay
-              show={Boolean(focusedCardID)}
-              target={target}
-              placement="bottom-start"
-              container={ref.current}
-              containerPadding={20}
-            >
-              {popover()}
-            </Overlay>
           </PlayerCardStyledLi>
         ))}
       </PlayerCardsStyledUL>
@@ -82,7 +56,7 @@ export const MyTurnUI = () => {
 const StyledWrapper = styled.div`
   width: 100%;
   height: 100%;
-  color: ${(props) => props.playerColor};
+  color: ${(props) => props.theme.playerColors[props.playerID]};
   button {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4),
       0 1px 0 rgba(255, 255, 255, 0.2) inset;
@@ -90,7 +64,7 @@ const StyledWrapper = styled.div`
 `
 const PlayerCardsStyledUL = styled.ul`
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: column nowrap;
   flex-grow: 1;
   list-style-type: none;
   margin: 0;
@@ -105,8 +79,12 @@ const PlayerCardStyledLi = styled.li`
   flex-flow: column nowrap;
   justify-content: center;
   align-content: center;
-  color: ${(props) => props.playerColor};
-  border: 0.1px solid ${(props) => props.playerColor};
-  color: ${(props) => props.playerColor};
-  background-color: var(--black);
+  color: ${(props) => props.theme.playerColors[props.playerID]};
+  border: 0.1px solid ${(props) => props.theme.playerColors[props.playerID]};
+  color: ${(props) => props.theme.playerColors[props.playerID]};
+  background-image: url("${(props) => props.bg}");
+  box-shadow: ${(props) =>
+    props.isCurrentSelectedCard
+      ? `1px 1px 2px var(--white), 1px 1px 2px var(--white) inset`
+      : `none`};
 `

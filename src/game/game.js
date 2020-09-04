@@ -3,7 +3,6 @@ import { makeHexagonMap, makePrePlacedHexagonMap } from './mapGen'
 import { gameUnits, armyCards } from './startingUnits'
 import { rollD20Initiative } from './rollInitiative'
 import { initialPlayerState, prePlacedOrderMarkers } from './playerState'
-import { placeUnitOnHex, confirmReady, placeOrderMarker } from './moves'
 import { phaseNames } from './constants'
 
 /*
@@ -41,39 +40,29 @@ export const HexedMeadow = {
   },
   seed: 'random_string',
   phases: {
-    roundOfPlay: {
+    [phaseNames.roundOfPlay]: {
       start: isDevMode ? true : false,
       onBegin: (G, ctx) => {
         const initiativeRoll = rollD20Initiative([
           ...Array(ctx.numPlayers).keys(),
         ])
-        const firstPlayerID = initiativeRoll[0]
-        const firstPlayersFirstOrderMarkerGameCardID =
-          G.players[firstPlayerID].orderMarkers['0']
-
         G.initiative = initiativeRoll
-        G.currentOrderMarker = G.currentTurnGameCardID = armyCards.find(
-          (armyCard) => {
-            return (
-              armyCard.gameCardID === firstPlayersFirstOrderMarkerGameCardID
-            )
-          }
-        ).gameCardID
+        G.currentOrderMarker = '0'
       },
       turn: {
         order: TurnOrder.CUSTOM_FROM('initiative'),
       },
     },
-    placement: {
+    [phaseNames.placement]: {
       start: isDevMode ? false : true,
-      moves: { placeUnitOnHex, confirmReady },
+      moves: { placeUnitOnHex, confirmPlacementReady },
       onBegin: (G, ctx) => {
         ctx.events.setActivePlayers({ all: 'placingUnits' })
       },
       endIf: (G) => G.placementReady['0'] && G.placementReady['1'],
       next: phaseNames.placeOrderMarkers,
     },
-    placeOrderMarkers: {
+    [phaseNames.placeOrderMarkers]: {
       onBegin: (G, ctx) => {
         G.players = { ...G.players, ...initialPlayerState }
         ctx.events.setActivePlayers({ all: 'placeOrderMarkers' })
@@ -81,7 +70,7 @@ export const HexedMeadow = {
       endIf: (G) => G.orderMarkersReady['0'] && G.orderMarkersReady['1'],
       moves: {
         placeOrderMarker,
-        confirmReady,
+        confirmOrderMarkersReady,
       },
       next: phaseNames.roundOfPlay,
     },
@@ -91,4 +80,17 @@ export const HexedMeadow = {
     endGame: false,
   },
   playerView: PlayerView.STRIP_SECRETS,
+}
+
+function placeUnitOnHex(G, ctx, hexId, unit) {
+  G.boardHexes[hexId].occupyingUnitID = unit?.unitID ?? ''
+}
+function confirmPlacementReady(G, ctx, { playerID }) {
+  G.placementReady[playerID] = true
+}
+function placeOrderMarker(G, ctx, { playerID, orderMarker, gameCardID }) {
+  G.players[playerID].orderMarkers[orderMarker] = gameCardID
+}
+function confirmOrderMarkersReady(G, ctx, { playerID }) {
+  G.orderMarkersReady[playerID] = true
 }

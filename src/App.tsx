@@ -56,8 +56,8 @@ export const DevAppWithLocalServer = () => {
   return (
     <Switch>
       <Route exact path="/">
-        <Link to="/team0">Bees!</Link>
-        <Link to="/team1">Butterflies!</Link>
+        <Link to="/bees">Bees!</Link>
+        <Link to="/butterflies">Butterflies!</Link>
       </Route>
       <Route exact path="/team0">
         <DevLocalServerClient gameID="gameid" playerID={'0'} />

@@ -6,7 +6,10 @@ import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 
 export const MapDisplay = () => {
   const { playerID, hexMap, isPlacementPhase, isTurnPhase } = useBoardContext()
-  const { onClickMapBackground__turn } = useTurnContext()
+  const {
+    onClickMapBackground__turn,
+    boardHexesToHighlight_selectedUnits,
+  } = useTurnContext()
   const { onClickMapBackground__placement } = usePlacementContext()
 
   const handleClickMapBackground = () => {
@@ -14,17 +17,18 @@ export const MapDisplay = () => {
       return onClickMapBackground__placement()
     }
     if (isTurnPhase) {
-      console.log(`handleClickMapBackground -> isTurnPhase`, isTurnPhase)
       return onClickMapBackground__turn()
     }
   }
 
-  const phi = hexMap.hexWidth
-  const Xo = -2 * phi * hexMap.mapSize
-  const Yo = -2 * phi * hexMap.mapSize
-  const Xt = 4 * phi * hexMap.mapSize
-  const Yt = 4 * phi * hexMap.mapSize
-  const computedViewBox = `${Xo} ${Yo} ${Xt} ${Yt}`
+  const computedViewBox = () => {
+    const phi = hexMap.hexWidth
+    const Xo = -2 * phi * hexMap.mapSize
+    const Yo = -2 * phi * hexMap.mapSize
+    const Xt = 4 * phi * hexMap.mapSize
+    const Yt = 4 * phi * hexMap.mapSize
+    return `${Xo} ${Yo} ${Xt} ${Yt}`
+  }
 
   return (
     <HexSVGStyle onClick={handleClickMapBackground} pID={playerID}>
@@ -39,7 +43,7 @@ export const MapDisplay = () => {
         //
         width={`100%`}
         height={`100%`}
-        viewBox={computedViewBox}
+        viewBox={computedViewBox()}
       >
         <Layout
           size={{ x: `${hexMap.hexHeight}`, y: `${hexMap.hexHeight}` }}

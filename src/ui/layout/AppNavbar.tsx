@@ -5,14 +5,16 @@ import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import NavDropdown from 'react-bootstrap/NavDropdown'
 
-import { useUIContext } from 'ui/hooks/useUIContext'
+import { useBoardContext } from 'ui/hooks'
 import beesBigLogo from 'assets/beesBigLogo.png'
 import butterfliesLogo from 'assets/butterfliesLogo.png'
 
 export const AppNavbar = () => {
-  const { playerID, playerColor } = useUIContext()
+  const boardState: any = useBoardContext()
+  const playerID = boardState?.playerID
+
   return (
-    <StyledTopConsole playerColor={playerColor} collapseOnSelect expand="lg">
+    <StyledTopConsole collapseOnSelect expand="lg" playerID={playerID}>
       <Navbar.Brand href="#home">
         <PlayerTeamLogo
           playerID={playerID}
@@ -23,36 +25,13 @@ export const AppNavbar = () => {
         aria-controls="responsive-navbar-nav"
         label="Toggle navigation"
       >
-        <span>
+        <StyledSpan playerID={playerID}>
           <svg viewBox="0 0 100 70" width="20" height="20">
-            <rect
-              width="100"
-              height="10"
-              rx="8"
-              fill={playerColor}
-              strokeWidth="1"
-              stroke={playerColor}
-            />
-            <rect
-              y="30"
-              width="100"
-              height="10"
-              rx="8"
-              fill={playerColor}
-              strokeWidth="1"
-              stroke={playerColor}
-            />
-            <rect
-              y="60"
-              width="100"
-              height="10"
-              rx="8"
-              fill={playerColor}
-              strokeWidth="1"
-              stroke={playerColor}
-            />
+            <rect width="100" height="10" rx="8" strokeWidth="1" />
+            <rect y="30" width="100" height="10" rx="8" strokeWidth="1" />
+            <rect y="60" width="100" height="10" rx="8" strokeWidth="1" />
           </svg>
-        </span>
+        </StyledSpan>
       </Navbar.Toggle>
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mr-auto">
@@ -80,30 +59,34 @@ export const AppNavbar = () => {
   )
 }
 
-const StyledTopConsole = styled(({ playerColor, ...rest }) => (
+const StyledTopConsole = styled(({ playerID, ...rest }) => (
   <Navbar {...rest} />
 ))`
   background-color: var(--black);
   padding: 4px 16px 0px 16px;
-  & button:focus {
-    outline: 2px solid --pinkish-white;
-  }
+  & button:focus,
   & button:hover {
-    outline: 2x solid --pinkish-white;
+    outline: 2px solid --white-btn-outline;
   }
   a {
-    color: ${(props) => props.playerColor} !important ;
+    color: ${(props) => props.theme.playerColors[props.playerID]} !important ;
   }
   .navbar-toggler {
-    color: ${(props) => props.playerColor} !important ;
-    border-color: ${(props) => props.playerColor} !important ;
+    color: ${(props) => props.theme.playerColors[props.playerID]} !important ;
+    border-color: ${(props) =>
+      props.theme.playerColors[props.playerID]} !important ;
     padding: 0.25rem;
   }
   .dropdown-menu {
     background-color: var(--black);
   }
 `
-
+const StyledSpan = styled.span`
+  svg rect {
+    fill: ${(props) => props.theme.playerColors[props.playerID]};
+    stroke: ${(props) => props.theme.playerColors[props.playerID]};
+  }
+`
 const PlayerTeamLogo = ({ playerID, ...rest }) => {
   if (playerID === '0') {
     return (

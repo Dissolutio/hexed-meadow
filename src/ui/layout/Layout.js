@@ -1,23 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useUIContext } from 'ui/hooks/useUIContext'
-import { useWindowDimensions } from 'ui/hooks/useWindowDimensions'
+import { controuLinesBG } from './controuLinesBG'
 
 export const Layout = ({ children }) => {
-  const { playerID, playerColor } = useUIContext()
-  const pClass = `board-${playerID}`
-  const { windowDimensions, viewportSize } = useWindowDimensions()
-
+  const { playerColor, playerColorUrlEncoded } = useUIContext()
+  const bgSvg = controuLinesBG(playerColorUrlEncoded)
   return (
     <>
-      <LayoutContainer playerColor={playerColor} className={`${pClass}`}>
+      <LayoutContainer bg={bgSvg} playerColor={playerColor}>
         <LayoutTop>{children[0]}</LayoutTop>
-        <LayoutMiddle
-          windowDimensions={windowDimensions}
-          className={`${pClass}`}
-        >
-          {children[1]}
-        </LayoutMiddle>
+        <LayoutMiddle playerColor={playerColor}>{children[1]}</LayoutMiddle>
         <LayoutBottom>{children[2]}</LayoutBottom>
       </LayoutContainer>
     </>
@@ -34,12 +27,8 @@ const LayoutContainer = styled.div`
   margin: 0;
   overflow: hidden;
   color: ${(props) => props.playerColor};
-  background: radial-gradient(
-      ellipse at top,
-      ${(props) => props.playerColor},
-      transparent
-    ),
-    radial-gradient(ellipse at bottom, var(--black), transparent);
+  background-color: var(--gunmetal);
+  background-image: url("${(props) => props.bg}");
 `
 const LayoutTop = styled.div`
   width: 100%;
@@ -65,6 +54,7 @@ const LayoutMiddle = styled.div`
   }
   height: 65vh;
   overflow: auto;
+
   ::-webkit-scrollbar {
     width: 0.5rem;
     background: var(--black);

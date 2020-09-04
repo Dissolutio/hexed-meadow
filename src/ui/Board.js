@@ -1,4 +1,5 @@
 import React from 'react'
+import { ThemeProvider } from 'styled-components'
 
 import {
   BoardContextProvider,
@@ -11,6 +12,7 @@ import { Layout } from './layout/Layout'
 import { TopConsole } from './layout/TopConsole'
 import { BottomConsole } from './layout/BottomConsole'
 import { MapDisplay } from './hexmap/MapDisplay'
+import { theme } from 'ui/theme/theme'
 
 export const Board = (props) => {
   const { G, ctx, moves, playerID } = props
@@ -18,21 +20,23 @@ export const Board = (props) => {
 
   // Layout applies CSS to Children, the children are switches based on active string in LayoutContext
   return (
-    <BoardContextProvider {...gameContextProps}>
-      <UIContextProvider playerID={playerID}>
-        <LayoutContextProvider>
-          <PlacementContextProvider>
-            <TurnContextProvider>
-              <Layout>
-                <TopConsole />
-                <MapDisplay />
-                <BottomConsole />
-              </Layout>
-            </TurnContextProvider>
-          </PlacementContextProvider>
-        </LayoutContextProvider>
-      </UIContextProvider>
-    </BoardContextProvider>
+    <ThemeProvider theme={theme}>
+      <BoardContextProvider {...gameContextProps}>
+        <UIContextProvider playerID={playerID}>
+          <LayoutContextProvider>
+            <PlacementContextProvider>
+              <TurnContextProvider>
+                <Layout>
+                  <TopConsole />
+                  <MapDisplay />
+                  <BottomConsole />
+                </Layout>
+              </TurnContextProvider>
+            </PlacementContextProvider>
+          </LayoutContextProvider>
+        </UIContextProvider>
+      </BoardContextProvider>
+    </ThemeProvider>
   )
 }
 

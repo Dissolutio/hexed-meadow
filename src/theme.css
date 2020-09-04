@@ -1,17 +1,18 @@
 html {
+  /* THEME */
   --black: #0e0b0b;
-  /* --red: #db2d20; */
-  --pinkish-white: hsl(330, 100%, 98%);
-  --bee-yellow: #ffd50080;
-  --butterfly-purple: #ac4e82;
-
-  --neon-orange: rgb(224, 150, 40);
+  --gunmetal: #22333b;
+  --bee-yellow: #ffd500;
+  --butterfly-purple: #fc65b8;
+  /* UTILITY */
+  --white-btn-outline: #fff5fa;
+  --neon-orange: #e09628;
   --neon-green: #bada55;
-
-  --grass-green: RGB(149, 198, 35);
+  /* UNUSED */
+  --grass-green: #95c623;
   --forest-green: #37480d;
-  --wood-brown: RGB(87, 51, 25);
-  --water-blue: RGB(4, 67, 137);
+  --wood-brown: #573319;
+  --water-blue: #044389;
 }
 body {
   box-sizing: border-box;

@@ -5,7 +5,10 @@ const TurnContext = React.createContext({})
 
 export const TurnContextProvider = ({ children }) => {
   const {
+    boardHexes,
     armyCards,
+    isMyTurn,
+    currentTurnGameCardID,
     activeUnit,
     getBoardHexForUnitID,
     placeUnitOnHex,
@@ -15,13 +18,19 @@ export const TurnContextProvider = ({ children }) => {
     setErrorMsg,
   } = useBoardContext()
   const [selectedGameCardID, setSelectedGameCardID] = useState(
-    initialSelectedCardID
+    initialSelectedCardID()
   )
+
   function initialSelectedCardID() {
-    // TODO lookup card for current order marker and default select that card, most actions of "going" back will go back to it being selected
+    if (isMyTurn) {
+      return currentTurnGameCardID
+    }
     return ''
   }
-
+  const selectedGameCard = Object.values(armyCards).find(
+    (armyCard) => armyCard.gameCardID === selectedGameCardID
+  )
+  // const boardHexesToHighlight_selectedUnits =
   function onSelectCard__turn(gameCardID) {
     if (gameCardID === selectedGameCardID) {
       setSelectedGameCardID('')
@@ -29,13 +38,7 @@ export const TurnContextProvider = ({ children }) => {
       setSelectedGameCardID(gameCardID)
     }
   }
-
-  const selectedGameCard = Object.values(armyCards).find(
-    (armyCard) => armyCard.gameCardID === selectedGameCardID
-  )
-
-  function onClickUnit__turn(unitID) {
-    console.log(`functiononClickUnit__turn -> unitID`, unitID)
+  function selectMapUnit(unitID) {
     // either deselect unit, or select unit and deselect active hex
     if (unitID === activeUnitID) {
       setActiveUnitID('')
@@ -44,14 +47,14 @@ export const TurnContextProvider = ({ children }) => {
       setActiveHexID('')
     }
   }
-
   function onClickBoardHex__turn(event, sourceHex) {
     // Do not propagate to background onClick
     event.stopPropagation()
-
+    const boardHex = boardHexes
     const hexID = sourceHex.id
     // hex has unit who is ready to move, select unit
     // ??
+
     //  No unit, select hex
     if (!activeUnitID) {
       setActiveHexID(hexID)
@@ -75,7 +78,6 @@ export const TurnContextProvider = ({ children }) => {
     }
   }
   function onClickMapBackground__turn() {
-    console.log('BG CLICK')
     setSelectedGameCardID('')
     setActiveHexID('')
   }
@@ -85,7 +87,6 @@ export const TurnContextProvider = ({ children }) => {
       value={{
         // TURN STATE
         onClickBoardHex__turn,
-        onClickUnit__turn,
         onSelectCard__turn,
         onClickMapBackground__turn,
         selectedGameCardID,

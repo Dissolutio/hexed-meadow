@@ -7,7 +7,12 @@ const BoardContextProvider = (props) => {
   const { G, ctx, moves, playerID } = props
 
   // MOVES
-  const { placeUnitOnHex, confirmReady, placeOrderMarker } = moves
+  const {
+    placeUnitOnHex,
+    confirmPlacementReady,
+    confirmOrderMarkersReady,
+    placeOrderMarker,
+  } = moves
   // BOARD STATE
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
@@ -25,10 +30,17 @@ const BoardContextProvider = (props) => {
   const placementReady = G.placementReady
   const orderMarkersReady = G.orderMarkersReady
   const initiative = G.initiative
-  const currentTurnGameCardID = G.currentTurnGameCardID
+  // TODO WIP
+  const firstPlayerID = initiative?.['0']
+  const firstPlayersFirstOrderMarkerGameCardID =
+    G.players?.[firstPlayerID]?.orderMarkers?.['0'] ?? ''
+  const currentTurnGameCardID = armyCards.find((armyCard) => {
+    return armyCard.gameCardID === firstPlayersFirstOrderMarkerGameCardID
+  })?.gameCardID
   const currentTurnGameCard = G.armyCards.find(
     (armyCard) => armyCard.gameCardID === currentTurnGameCardID
   )
+
   // CTX STATE
   const currentPhase = ctx.phase
   const currentPlayer = ctx.currentPlayer
@@ -37,6 +49,7 @@ const BoardContextProvider = (props) => {
   const numPlayers = ctx.numPlayers
   const currentTurn = ctx.turn
   // SELECTORS
+  const isMyTurn = currentPlayer === playerID
   const getBoardHexForUnitID = (unitID) => {
     return Object.values(boardHexes).find((boardHex) => {
       return boardHex?.occupyingUnitID === unitID
@@ -53,58 +66,58 @@ const BoardContextProvider = (props) => {
   }
 
   const activeUnit = gameUnits[activeUnitID]
+  const boardState = {
+    // G
+    playerID,
+    boardHexes,
+    startZones,
+    hexMap,
+    armyCards,
+    gameUnits,
+    placementReady,
+    orderMarkersReady,
+    initiative,
+    // MOVES
+    placeUnitOnHex,
+    confirmPlacementReady,
+    placeOrderMarker,
+    confirmOrderMarkersReady,
+    // CTX
+    ctx,
+    currentPhase,
+    activePlayers,
+    myCurrentStage,
+    currentPlayer,
+    numPlayers,
+    currentTurn,
+    // PLAYER STATE
+    myOrderMarkers,
+    // COMPUTED
+    myStartZone,
+    myCards,
+    myUnits,
+    activeUnit,
+    currentTurnGameCard,
+    currentTurnGameCardID,
+    isPlacementPhase,
+    isOrderMarkerPhase,
+    isTurnPhase,
+    // SELECTORS
+    isMyTurn,
+    getBoardHexForUnitID,
+    // BOARD STATE
+    errorMsg,
+    setErrorMsg,
+    activeHexID,
+    setActiveHexID,
+    activeUnitID,
+    setActiveUnitID,
+    activeGameCardID,
+    setActiveGameCardID,
+  }
 
   return (
-    <BoardContext.Provider
-      value={{
-        // PID
-        playerID,
-        // MOVES
-        placeUnitOnHex,
-        confirmReady,
-        placeOrderMarker,
-        // G
-        boardHexes,
-        startZones,
-        hexMap,
-        armyCards,
-        gameUnits,
-        placementReady,
-        orderMarkersReady,
-        initiative,
-        // CTX
-        ctx,
-        currentPhase,
-        activePlayers,
-        myCurrentStage,
-        currentPlayer,
-        numPlayers,
-        currentTurn,
-        // PLAYER STATE
-        myOrderMarkers,
-        // COMPUTED
-        myStartZone,
-        myCards,
-        myUnits,
-        activeUnit,
-        currentTurnGameCard,
-        currentTurnGameCardID,
-        isPlacementPhase,
-        isOrderMarkerPhase,
-        isTurnPhase,
-        // SELECTORS
-        getBoardHexForUnitID,
-        // BOARD STATE
-        errorMsg,
-        setErrorMsg,
-        activeHexID,
-        setActiveHexID,
-        activeUnitID,
-        setActiveUnitID,
-        activeGameCardID,
-        setActiveGameCardID,
-      }}
-    >
+    <BoardContext.Provider value={boardState}>
       {props.children}
     </BoardContext.Provider>
   )
