@@ -45,10 +45,18 @@ const EnvApp = () => {
 
 export const DevApp = () => {
   return (
-    <>
-      <DevClient gameID="gameid" playerID={'0'} />
-      <DevClient gameID="gameid" playerID={'1'} />
-    </>
+    <Switch>
+      <Route exact path="/">
+        <DevClient gameID="gameid" playerID={'0'} />
+        <DevClient gameID="gameid" playerID={'1'} />
+      </Route>
+      <Route exact path="/player/0">
+        <DevClient gameID="gameid" playerID={'0'} />
+      </Route>
+      <Route exact path="/player/1">
+        <DevClient gameID="gameid" playerID={'1'} />
+      </Route>
+    </Switch>
   )
 }
 
@@ -56,8 +64,8 @@ export const DevAppWithLocalServer = () => {
   return (
     <Switch>
       <Route exact path="/">
-        <Link to="/bees">Bees!</Link>
-        <Link to="/butterflies">Butterflies!</Link>
+        <Link to="/player/0">Bees!</Link>
+        <Link to="/player/1">Butterflies!</Link>
       </Route>
       <Route exact path="/team0">
         <DevLocalServerClient gameID="gameid" playerID={'0'} />

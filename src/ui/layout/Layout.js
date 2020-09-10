@@ -4,11 +4,15 @@ import { useUIContext } from 'ui/hooks/useUIContext'
 import { controuLinesBG } from './controuLinesBG'
 
 export const Layout = ({ children }) => {
-  const { playerColor, playerColorUrlEncoded } = useUIContext()
+  const { playerID, playerColor, playerColorUrlEncoded } = useUIContext()
   const bgSvg = controuLinesBG(playerColorUrlEncoded)
   return (
     <>
-      <LayoutContainer bg={bgSvg} playerColor={playerColor}>
+      <LayoutContainer
+        id={`player${playerID}`}
+        bg={bgSvg}
+        playerColor={playerColor}
+      >
         <LayoutTop>{children[0]}</LayoutTop>
         <LayoutMiddle playerColor={playerColor}>{children[1]}</LayoutMiddle>
         <LayoutBottom>{children[2]}</LayoutBottom>
@@ -39,7 +43,7 @@ const LayoutBottom = styled.div`
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
-  min-height: 30vh;
+  min-height: 50vh;
   background: var(--black);
   padding: 5px;
   margin: 0;
@@ -52,7 +56,8 @@ const LayoutMiddle = styled.div`
     padding-left: 20%;
     padding-right: 20%;
   }
-  height: 65vh;
+  /* height: 65vh; */
+  height: 45vh;
   overflow: auto;
 
   ::-webkit-scrollbar {

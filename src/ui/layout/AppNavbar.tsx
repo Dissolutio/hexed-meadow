@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-import NavDropdown from 'react-bootstrap/NavDropdown'
 
 import { useBoardContext } from 'ui/hooks'
 import beesBigLogo from 'assets/beesBigLogo.png'
@@ -12,15 +11,16 @@ import butterfliesLogo from 'assets/butterfliesLogo.png'
 export const AppNavbar = () => {
   const boardState: any = useBoardContext()
   const playerID = boardState?.playerID
-
+  const opponentPlayerID = playerID === '0' ? '1' : '0'
   return (
     <StyledTopConsole collapseOnSelect expand="lg" playerID={playerID}>
-      <Navbar.Brand href="#home">
+      <Navbar.Brand href={`/#player${playerID}`}>
         <PlayerTeamLogo
           playerID={playerID}
           className="d-inline-block align-top"
         />
       </Navbar.Brand>
+      <Nav.Link href={`#player${opponentPlayerID}`}>THEM</Nav.Link>
       <Navbar.Toggle
         aria-controls="responsive-navbar-nav"
         label="Toggle navigation"
@@ -35,24 +35,8 @@ export const AppNavbar = () => {
       </Navbar.Toggle>
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link as={Link} to="/team0">
-            Bees
-          </Nav.Link>
-          <Nav.Link as={Link} to="/team1">
-            Butterflies
-          </Nav.Link>
-          <NavDropdown title="Opponents" id="collasible-nav-dropdown">
-            <NavDropdown.Item as={Link} to="/team0">
-              Bees
-            </NavDropdown.Item>
-            <NavDropdown.Item as={Link} to="/team1">
-              Butterflies
-            </NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item as={Link} to="/">
-              Homepage
-            </NavDropdown.Item>
-          </NavDropdown>
+          <Nav.Link href={`#player${playerID}`}>US</Nav.Link>
+          <Nav.Link href={`#player${opponentPlayerID}`}>THEM</Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </StyledTopConsole>

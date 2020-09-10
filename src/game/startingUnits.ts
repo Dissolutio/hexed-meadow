@@ -1,5 +1,24 @@
 import { hexedMeadowCards } from './hexedMeadowCards'
 
+export type ArmyCard = {
+  name: string
+  cardID: string
+  race: string
+  life: string
+  move: string
+  range: string
+  attack: string
+  defense: string
+  points: string
+  figures: string
+  hexes: string
+}
+export interface GameArmyCard extends ArmyCard {
+  playerID: string
+  gameCardID: string
+  cardQuantity: number
+}
+
 // BEES
 const beestyBoyzCard = hexedMeadowCards['hm101']
 const beestyBoyz = {
@@ -36,7 +55,7 @@ const monarch = {
 }
 
 // MAKE STARTING ARMY CARDS
-const startingArmyCards = [
+export const armyCards: GameArmyCard[] = [
   // PLAYER 0
   queenBae,
   // beestyBoyz,
@@ -46,19 +65,28 @@ const startingArmyCards = [
   monarch,
   // butterFries,
   // scarwings,
-]
-export const armyCards = startingArmyCards.map((card) => {
+].map((card: GameArmyCard) => {
   let uniquifier = 0
-  function makeGameCardID(card) {
+  function makeGameCardID(card: GameArmyCard) {
     return `p${card.playerID}_${card.cardID}_${uniquifier++}`
   }
   return { ...card, gameCardID: makeGameCardID(card) }
 })
 
 //  MAKE STARTING UNITS
-export const gameUnits = cardsToUnits(armyCards)
 
-function cardsToUnits(cards) {
+type GameUnit = {
+  unitID: string
+  cardID: string
+  playerID: string
+  gameCardID: string
+}
+export interface GameUnits {
+  [key: string]: GameUnit
+}
+export const gameUnits: GameUnits = cardsToUnits(armyCards)
+
+function cardsToUnits(cards: GameArmyCard[]): GameUnits {
   // id factory
   let unitID = 0
   function makeUnitID(playerID: string) {

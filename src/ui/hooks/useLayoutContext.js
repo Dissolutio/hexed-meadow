@@ -11,7 +11,7 @@ const LayoutContextProvider = ({ children }) => {
     placementArmy: 'PlacementControls',
     placeOrderMarkers: 'PlaceOrderMarkers',
     dataReadout: 'DataReadout',
-    myTurnUI: 'MyTurnUI',
+    roundOfPlayControls: 'RoundOfPlayControls',
   }
   const { currentPhase } = useBoardContext()
   const [topConsoleComponent, setTopConsoleComponent] = useState(
@@ -31,9 +31,9 @@ const LayoutContextProvider = ({ children }) => {
       return layoutComponents.placeOrderMarkers
     }
     if (currentPhase === phaseNames.roundOfPlay) {
-      return layoutComponents.myTurnUI
+      return layoutComponents.roundOfPlayControls
     }
-    return layoutComponents.myTurnUI
+    return layoutComponents.roundOfPlayControls
   }
   return (
     <LayoutContext.Provider
@@ -68,8 +68,8 @@ const useLayoutContext = () => {
   const activatePlaceOrderMarkers = () =>
     setBottomConsoleComponent(layoutComponents.placeOrderMarkers)
 
-  const activateMyTurnUI = () =>
-    setBottomConsoleComponent(layoutComponents.myTurnUI)
+  const activateRoundOfPlayControls = () =>
+    setBottomConsoleComponent(layoutComponents.roundOfPlayControls)
 
   return {
     layoutComponents,
@@ -80,7 +80,7 @@ const useLayoutContext = () => {
     activatePlacementControls,
     activateDataReadout,
     activatePlaceOrderMarkers,
-    activateMyTurnUI,
+    activateRoundOfPlayControls,
   }
 }
 

@@ -1,26 +1,35 @@
 import React, { useContext, useState } from 'react'
 import { useBoardContext } from './useBoardContext'
+import { gameUnits } from 'game/startingUnits'
 
 const TurnContext = React.createContext({})
 
 export const TurnContextProvider = ({ children }) => {
   const {
+    // WIP
+    currentTurnGameCardID,
+    // G
     boardHexes,
     armyCards,
-    isMyTurn,
-    currentTurnGameCardID,
-    activeUnit,
-    getBoardHexForUnitID,
+    gameUnits,
+    // MOVES
     placeUnitOnHex,
+    // PLAYER STATE
+    isMyTurn,
+    // SELECTORS
+    getGameCardByID,
+    // APP STATE
+    activeHexID,
     activeUnitID,
     setActiveUnitID,
+    activeUnit,
+    getBoardHexForUnitID,
     setActiveHexID,
     setErrorMsg,
   } = useBoardContext()
   const [selectedGameCardID, setSelectedGameCardID] = useState(
     initialSelectedCardID()
   )
-
   function initialSelectedCardID() {
     if (isMyTurn) {
       return currentTurnGameCardID
@@ -32,28 +41,25 @@ export const TurnContextProvider = ({ children }) => {
   )
   // const boardHexesToHighlight_selectedUnits =
   function onSelectCard__turn(gameCardID) {
+    // DESELECT IF ALREADY SELECTED
     if (gameCardID === selectedGameCardID) {
       setSelectedGameCardID('')
-    } else {
-      setSelectedGameCardID(gameCardID)
+      return
     }
-  }
-  function selectMapUnit(unitID) {
-    // either deselect unit, or select unit and deselect active hex
-    if (unitID === activeUnitID) {
-      setActiveUnitID('')
-    } else {
-      setActiveUnitID(unitID)
-      setActiveHexID('')
-    }
+    if (activeHexID) setSelectedGameCardID(gameCardID)
+    return
   }
   function onClickBoardHex__turn(event, sourceHex) {
     // Do not propagate to background onClick
     event.stopPropagation()
-    const boardHex = boardHexes
+    //
     const hexID = sourceHex.id
-    // hex has unit who is ready to move, select unit
-    // ??
+    const boardHex = boardHexes[hexID]
+    const { occupyingUnitID } = boardHex
+    const unitOnHex = gameUnits[occupyingUnitID]
+    const gameCard = getGameCardByID(unitOnHex?.gameCardID)
+
+    // ?? hex has unit who is ready to move, select unit
 
     //  No unit, select hex
     if (!activeUnitID) {
@@ -85,7 +91,8 @@ export const TurnContextProvider = ({ children }) => {
   return (
     <TurnContext.Provider
       value={{
-        // TURN STATE
+        // COMPUTED
+        // HANDLERS
         onClickBoardHex__turn,
         onSelectCard__turn,
         onClickMapBackground__turn,
