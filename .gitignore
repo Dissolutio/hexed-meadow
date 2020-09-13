@@ -27,3 +27,5 @@ vscodeworkspace.code-workspace
 .env
 
 hexed-meadow.code-workspace
+
+.vscode/settings.json
