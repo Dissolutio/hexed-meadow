@@ -73,7 +73,13 @@ export const HexedMeadow = {
         G.initiative = initiativeRoll
         G.currentRound += 1
         G.currentOrderMarker = '0'
-        G.orderMarkers = { ...G.players.orderMarkers }
+        // Copy over private player OM state into public state
+        G.orderMarkers = Object.keys(G.players).reduce((prev, curr) => {
+          return {
+            ...prev,
+            [curr]: G.players[curr].orderMarkers,
+          }
+        }, {})
         ctx.events.setActivePlayers(
           isDevMode
             ? {
@@ -98,7 +104,7 @@ export const HexedMeadow = {
       start: !isDevMode,
       moves: { placeUnitOnHex, confirmPlacementReady },
       onBegin: (G, ctx) => {
-        ctx.events.setActivePlayers({ all: 'placingUnits' })
+        ctx.events.setActivePlayers({ all: stageNames.placingUnits })
       },
       endIf: (G) => G.placementReady['0'] && G.placementReady['1'],
       next: phaseNames.placeOrderMarkers,
@@ -106,7 +112,7 @@ export const HexedMeadow = {
     [phaseNames.placeOrderMarkers]: {
       onBegin: (G, ctx) => {
         G.players = { ...G.players, ...initialPlayerState }
-        ctx.events.setActivePlayers({ all: 'placeOrderMarkers' })
+        ctx.events.setActivePlayers({ all: stageNames.placeOrderMarkers })
       },
       endIf: (G) => G.orderMarkersReady['0'] && G.orderMarkersReady['1'],
       moves: {
@@ -140,7 +146,9 @@ function confirmOrderMarkersReady(G, ctx, { playerID }) {
 function confirmRoundOfPlayStartReady(G, ctx, { playerID }) {
   const isMyTurn = playerID === ctx.currentPlayer
   G.roundOfPlayStartReady[playerID] = true
-  ctx.events.setStage(isMyTurn ? 'takingTurn' : 'watchingTurn')
+  ctx.events.setStage(
+    isMyTurn ? stageNames.takingTurn : stageNames.watchingTurn
+  )
 }
 function makeNormalUnitMove(G, ctx, {}) {
   // * GET CURRENT CARD from order marker and current player

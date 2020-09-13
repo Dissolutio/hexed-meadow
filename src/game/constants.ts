@@ -5,6 +5,8 @@ export const phaseNames = {
 }
 
 export const stageNames = {
+  placeOrderMarkers: 'placeOrderMarkers',
+  placingUnits: 'placingUnits',
   revealOrderMarkers: 'revealOrderMarkers',
   takingTurn: 'takingTurn',
   watchingTurn: 'watchingTurn',
