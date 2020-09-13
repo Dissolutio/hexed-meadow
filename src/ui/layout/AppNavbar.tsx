@@ -3,24 +3,41 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-
+import { GiSabersChoc } from 'react-icons/gi'
 import { useBoardContext } from 'ui/hooks'
 import beesBigLogo from 'assets/beesBigLogo.png'
 import butterfliesLogo from 'assets/butterfliesLogo.png'
+import { playerIconColors } from 'ui/UnitIcon'
 
 export const AppNavbar = () => {
   const boardState: any = useBoardContext()
   const playerID = boardState?.playerID
   const opponentPlayerID = playerID === '0' ? '1' : '0'
+  const gameIconProps = {
+    style: {
+      fill: `${playerIconColors[playerID]}`,
+      fontSize: `30px`,
+    },
+  }
   return (
     <StyledTopConsole collapseOnSelect expand="lg" playerID={playerID}>
-      <Navbar.Brand href={`/#player${playerID}`}>
-        <PlayerTeamLogo
-          playerID={playerID}
-          className="d-inline-block align-top"
-        />
-      </Navbar.Brand>
-      <Nav.Link href={`#player${opponentPlayerID}`}>THEM</Nav.Link>
+      <div>
+        <Navbar.Brand href={`/#player${playerID}`}>
+          <PlayerTeamLogo
+            playerID={playerID}
+            className="d-inline-block align-top"
+          />
+        </Navbar.Brand>
+        <VersusStyledSpan playerID={playerID}>
+          <GiSabersChoc {...gameIconProps} />
+        </VersusStyledSpan>
+        <Navbar.Brand href={`/#player${opponentPlayerID}`}>
+          <PlayerTeamLogo
+            playerID={opponentPlayerID}
+            className="d-inline-block align-top"
+          />
+        </Navbar.Brand>
+      </div>
       <Navbar.Toggle
         aria-controls="responsive-navbar-nav"
         label="Toggle navigation"
@@ -34,7 +51,7 @@ export const AppNavbar = () => {
         </StyledSpan>
       </Navbar.Toggle>
       <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="mr-auto">
+        <Nav className="ml-auto">
           <Nav.Link href={`#player${playerID}`}>US</Nav.Link>
           <Nav.Link href={`#player${opponentPlayerID}`}>THEM</Nav.Link>
         </Nav>
@@ -59,7 +76,8 @@ const StyledTopConsole = styled(({ playerID, ...rest }) => (
     color: ${(props) => props.theme.playerColors[props.playerID]} !important ;
     border-color: ${(props) =>
       props.theme.playerColors[props.playerID]} !important ;
-    padding: 0.25rem;
+    padding: 0.25rem;import { playerIconColors } from '../UnitIcon';
+
   }
   .dropdown-menu {
     background-color: var(--black);
@@ -92,4 +110,8 @@ const PlayerTeamLogo = ({ playerID, ...rest }) => {
 const PlayerTeamLogoImg = styled.img`
   height: 32px;
   width: auto;
+`
+const VersusStyledSpan = styled.span`
+  color: ${(props) => props.theme.playerColors[props.playerID]};
+  padding: 0 10px 0 0px;
 `
