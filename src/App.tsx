@@ -7,8 +7,7 @@ import { SocketIO } from 'boardgame.io/multiplayer'
 import Board from './ui/Board'
 
 import { HexedMeadow } from './game/game'
-import 'normalize.css'
-import './theme.css'
+import { HelpPage, FeedbackPage } from 'ui/pages'
 
 const devModes = {
   dev: 'dev',
@@ -56,6 +55,12 @@ export const DevApp = () => {
       <Route exact path="/player/1">
         <DevClient gameID="gameid" playerID={'1'} />
       </Route>
+      <Route path="/help">
+        <HelpPage />
+      </Route>
+      <Route path="/feedback">
+        <FeedbackPage />
+      </Route>
     </Switch>
   )
 }
@@ -66,12 +71,16 @@ export const DevAppWithLocalServer = () => {
       <Route exact path="/">
         <Link to="/player/0">Bees!</Link>
         <Link to="/player/1">Butterflies!</Link>
+        <Link to="/help">Hexed Meadow Help Page</Link>
       </Route>
-      <Route exact path="/team0">
+      <Route exact path="/player/0">
         <DevLocalServerClient gameID="gameid" playerID={'0'} />
       </Route>
-      <Route exact path="/team1">
+      <Route exact path="/player/1">
         <DevLocalServerClient gameID="gameid" playerID={'1'} />
+      </Route>
+      <Route path="/help">
+        <HelpPage />
       </Route>
     </Switch>
   )

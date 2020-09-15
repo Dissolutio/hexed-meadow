@@ -13,6 +13,7 @@ import { useBoardContext } from './hooks/useBoardContext'
 export const playerIconColors = {
   0: 'var(--bee-yellow)',
   1: 'var(--butterfly-purple)',
+  default: 'var(--white)',
 }
 
 export const UnitIcon = ({ unit, iconProps, card }) => {
@@ -28,8 +29,9 @@ export const UnitIcon = ({ unit, iconProps, card }) => {
     iconCardID = unit.cardID
     iconPlayerID = unit.playerID
   }
-  const iconSize = hexMap.mapSize
-  const iconShift = hexMap.mapSize / -2
+  const fontSize = 20
+  const iconSize = (1 / hexMap.mapSize) * fontSize
+  const iconShift = iconSize / -2
 
   const gameIconProps = {
     x: iconProps?.x ?? `${iconShift}px`,

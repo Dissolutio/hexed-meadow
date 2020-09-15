@@ -1,6 +1,6 @@
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
-
+import { BoardProps } from 'boardgame.io/react'
 import {
   BoardContextProvider,
   UIContextProvider,
@@ -14,7 +14,7 @@ import { BottomConsole } from './layout/BottomConsole'
 import { MapDisplay } from './hexmap/MapDisplay'
 import { theme } from 'ui/theme/theme'
 
-export const Board = (props) => {
+export const Board = (props: BoardProps) => {
   const { G, ctx, moves, playerID } = props
   const gameContextProps = { G, ctx, moves, playerID }
 

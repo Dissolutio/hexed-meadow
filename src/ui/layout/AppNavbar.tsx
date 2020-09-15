@@ -31,7 +31,7 @@ export const AppNavbar = () => {
         <VersusStyledSpan playerID={playerID}>
           <GiSabersChoc {...gameIconProps} />
         </VersusStyledSpan>
-        <Navbar.Brand href={`/#player${opponentPlayerID}`}>
+        <Navbar.Brand href={`#player${opponentPlayerID}`}>
           <PlayerTeamLogo
             playerID={opponentPlayerID}
             className="d-inline-block align-top"
@@ -52,8 +52,12 @@ export const AppNavbar = () => {
       </Navbar.Toggle>
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ml-auto">
-          <Nav.Link href={`#player${playerID}`}>US</Nav.Link>
-          <Nav.Link href={`#player${opponentPlayerID}`}>THEM</Nav.Link>
+          <Nav.Link as={Link} to={'/help'}>
+            Help
+          </Nav.Link>
+          <Nav.Link as={Link} to={'/feedback'}>
+            Feedback
+          </Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </StyledTopConsole>
@@ -76,8 +80,7 @@ const StyledTopConsole = styled(({ playerID, ...rest }) => (
     color: ${(props) => props.theme.playerColors[props.playerID]} !important ;
     border-color: ${(props) =>
       props.theme.playerColors[props.playerID]} !important ;
-    padding: 0.25rem;import { playerIconColors } from '../UnitIcon';
-
+    padding: 0.25rem;
   }
   .dropdown-menu {
     background-color: var(--black);

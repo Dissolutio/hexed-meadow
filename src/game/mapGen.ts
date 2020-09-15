@@ -22,6 +22,21 @@ export type HexMap = {
   hexWidth: number
 }
 
+const hexMap = (mapSize) => {
+  return {
+    mapShape: 'hexagon',
+    mapSize,
+    // FLAT TOP
+    hexGridLayout: 'flat',
+    hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
+    hexWidth: 2,
+    // POINTY TOP
+    // hexGridLayout: 'pointy',
+    // hexHeight: 2,
+    // hexWidth: Math.sqrt(3),
+  }
+}
+
 export function makePrePlacedHexagonMap(mapSize: number) {
   const boardHexes: BoardHexes = GridGenerator.hexagon(mapSize).reduce(
     fillHexInfo,
@@ -32,18 +47,7 @@ export function makePrePlacedHexagonMap(mapSize: number) {
   return {
     boardHexes: boardHexesWithPrePlacedUnits,
     startZones,
-    hexMap: {
-      mapShape: 'hexagon',
-      mapSize,
-      // FLAT TOP
-      hexGridLayout: 'flat',
-      hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
-      hexWidth: 2,
-      // POINTY TOP
-      // hexGridLayout: 'pointy',
-      // hexHeight: 2,
-      // hexWidth: Math.sqrt(3),
-    },
+    hexMap: hexMap(mapSize),
   }
 }
 export function makeHexagonMap(mapSize: number) {
@@ -52,18 +56,7 @@ export function makeHexagonMap(mapSize: number) {
   return {
     boardHexes,
     startZones,
-    hexMap: {
-      mapShape: 'hexagon',
-      mapSize,
-      // FLAT TOP
-      hexGridLayout: 'flat',
-      hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
-      hexWidth: 2,
-      // POINTY TOP
-      // hexGridLayout: 'pointy',
-      // hexHeight: 2,
-      // hexWidth: Math.sqrt(3),
-    },
+    hexMap: hexMap(mapSize),
   }
 }
 const fillHexInfo = (prev: BoardHexes, curr: Hex): BoardHexes => {

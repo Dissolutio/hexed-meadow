@@ -1,11 +1,12 @@
 import React, { useContext, useState } from 'react'
+// FOR TYPES
+// import { BoardProps } from 'boardgame.io/react'
 import { phaseNames, stageNames } from 'game/constants'
 
 const BoardContext = React.createContext({})
 
 const BoardContextProvider = (props) => {
   const { G, ctx, moves, playerID } = props
-
   // MOVES
   const {
     placeUnitOnHex,
@@ -13,6 +14,7 @@ const BoardContextProvider = (props) => {
     placeOrderMarker,
     confirmOrderMarkersReady,
     confirmRoundOfPlayStartReady,
+    endCurrentPlayerTurn,
   } = moves
   // BOARD STATE
   const [activeHexID, setActiveHexID] = useState('')
@@ -35,6 +37,7 @@ const BoardContextProvider = (props) => {
   // TODO WIP
   // both players see this
   const firstPlayerID = initiative?.['0']
+
   // only current player sees these 3
   const firstPlayersFirstOrderMarkerGameCardID =
     G.players?.[firstPlayerID]?.orderMarkers?.['0'] ?? ''
@@ -64,7 +67,7 @@ const BoardContextProvider = (props) => {
   }
   // PLAYER STATE
   const myCurrentStage = ctx.activePlayers?.[playerID] || null
-  const myOrderMarkers = G.players[playerID].orderMarkers
+  const myOrderMarkers = G.players?.[playerID]?.orderMarkers
   function belongsToPlayer(anything) {
     return anything.playerID === playerID
   }
@@ -72,8 +75,8 @@ const BoardContextProvider = (props) => {
   const isOrderMarkerPhase = currentPhase === phaseNames.placeOrderMarkers
   const isPlacementPhase = currentPhase === phaseNames.placement
   const isTurnPhase = currentPhase === phaseNames.roundOfPlay
-  const isRevealOrderMarkersStage =
-    myCurrentStage === stageNames.revealOrderMarkers
+  const hasConfirmedRoundOfPlayStart =
+    isTurnPhase && G.roundOfPlayStartReady[playerID]
   const isTakingTurnStage = myCurrentStage === stageNames.takingTurn
   const isWatchingTurnStage = myCurrentStage === stageNames.watchingTurn
 
@@ -95,6 +98,7 @@ const BoardContextProvider = (props) => {
     placeOrderMarker,
     confirmOrderMarkersReady,
     confirmRoundOfPlayStartReady,
+    endCurrentPlayerTurn,
     // CTX
     ctx,
     currentPhase,
@@ -116,7 +120,7 @@ const BoardContextProvider = (props) => {
     isPlacementPhase,
     isOrderMarkerPhase,
     isTurnPhase,
-    isRevealOrderMarkersStage,
+    hasConfirmedRoundOfPlayStart,
     isTakingTurnStage,
     isWatchingTurnStage,
     // SELECTORS

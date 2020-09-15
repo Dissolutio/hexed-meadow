@@ -1,6 +1,7 @@
 html {
   /* THEME */
   --black: #0e0b0b;
+  --white: #f2f4f3;
   --gunmetal: #22333b;
   --bee-yellow: #ffd500;
   --butterfly-purple: #fc65b8;
@@ -26,6 +27,9 @@ body {
   background-color: var(--black) !important;
   color: white;
   overflow-x: hidden;
+}
+.app-theme {
+  color: var(--white);
 }
 #lobby-view {
   padding: 0 !important;

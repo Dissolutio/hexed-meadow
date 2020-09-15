@@ -37,16 +37,20 @@ export const MapDisplay = () => {
         // height="500px"
         // viewBox={`0 0 360 360`}
         //
-        // width={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
-        // height={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
+        width={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
+        height={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
         // no viewbox
         //
-        width={`100%`}
-        height={`100%`}
-        viewBox={computedViewBox()}
+        // width={`100%`}
+        // height={`100%`}
+        // viewBox={computedViewBox()}
       >
         <Layout
-          size={{ x: `${hexMap.hexHeight}`, y: `${hexMap.hexHeight}` }}
+          // size={{ x: `${hexMap.hexHeight}`, y: `${hexMap.hexHeight}` }}
+          size={{
+            x: `${(10 * hexMap.hexHeight) / hexMap.mapSize}`,
+            y: `${(10 * hexMap.hexHeight) / hexMap.mapSize}`,
+          }}
           flat={false}
           origin={{ x: 0, y: 0 }}
           spacing={1.06}

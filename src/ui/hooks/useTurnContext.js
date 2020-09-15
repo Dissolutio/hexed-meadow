@@ -46,7 +46,7 @@ export const TurnContextProvider = ({ children }) => {
       setSelectedGameCardID('')
       return
     }
-    if (activeHexID) setSelectedGameCardID(gameCardID)
+    setSelectedGameCardID(gameCardID)
     return
   }
   function onClickBoardHex__turn(event, sourceHex) {

@@ -9,21 +9,23 @@ import { playerColorUrlEncoded } from './theme/theme'
 
 export const RoundOfPlayControls = () => {
   const {
-    playerID,
-    confirmRoundOfPlayStartReady,
+    // G
     armyCards,
     myCards,
-    isMyTurn,
     getGameCardByID,
-    isRevealOrderMarkersStage,
+    // CTX
+    playerID,
+    currentTurn,
+    isMyTurn,
+    hasConfirmedRoundOfPlayStart,
     isTakingTurnStage,
     isWatchingTurnStage,
+    // MOVES
+    confirmRoundOfPlayStartReady,
+    endCurrentPlayerTurn,
   } = useBoardContext()
   const { selectedGameCardID, onSelectCard__turn } = useTurnContext()
 
-  const handleReadyClick = () => {
-    confirmRoundOfPlayStartReady({ playerID })
-  }
   const hexagonBgDataUrl = hexagonsHeroPatternDataUrl({
     color: playerColorUrlEncoded(playerID),
     opacity: 0.05,
@@ -35,56 +37,15 @@ export const RoundOfPlayControls = () => {
     return gameCardID === selectedGameCardID
   }
   // CONFIRM MY TURN / THEIR TURN
-  if (isRevealOrderMarkersStage) {
-    if (isMyTurn) {
-      return (
-        <div style={{ color: 'white' }}>
-          <h1>YOUR TURN!</h1>
-          <Button variant="primary" onClick={handleReadyClick}>
-            LET'S DO THIS
-          </Button>
-        </div>
-      )
-    } else {
-      return (
-        <div style={{ color: 'white' }}>
-          <h1>THEIR TURN!</h1>
-          <Button variant="primary" onClick={handleReadyClick}>
-            BIG WHOOP!
-          </Button>
-        </div>
-      )
-    }
+  if (!hasConfirmedRoundOfPlayStart) {
+    return <ConfirmReadyRoundOfPlay />
   }
 
   // RETURN THEIR TURN UI
   if (isWatchingTurnStage) {
     return (
       <StyledWrapper playerID={playerID}>
-        <PlayerCardsStyledUL>
-          {armyCards.map((card) => (
-            <PlayerCardStyledLi
-              onClick={(e) =>
-                handleArmyCardClick({ event: e, gameCardID: card.gameCardID })
-              }
-              id={`mtui-${card.gameCardID}`}
-              key={card.gameCardID}
-              playerID={card.playerID}
-              bg={hexagonBgDataUrl}
-              isCurrentSelectedCard={isCurrentSelectedCard(card.gameCardID)}
-            >
-              <UnitIcon
-                card={card}
-                iconProps={{
-                  x: '50',
-                  y: '50',
-                  transform: '',
-                }}
-              />
-              <div>{card.name}</div>
-            </PlayerCardStyledLi>
-          ))}
-        </PlayerCardsStyledUL>
+        <h2>Opponent taking turn...</h2>
       </StyledWrapper>
     )
   }
@@ -93,6 +54,7 @@ export const RoundOfPlayControls = () => {
   if (isTakingTurnStage) {
     return (
       <StyledWrapper playerID={playerID}>
+        <h2>{`Your #${currentTurn}`}</h2>
         <PlayerCardsStyledUL>
           {myCards.map((card) => (
             <PlayerCardStyledLi
@@ -117,10 +79,40 @@ export const RoundOfPlayControls = () => {
             </PlayerCardStyledLi>
           ))}
         </PlayerCardsStyledUL>
+        <Button variant="primary" onClick={() => endCurrentPlayerTurn()}>
+          END TURN
+        </Button>
       </StyledWrapper>
     )
   }
 }
+
+const ConfirmReadyRoundOfPlay = () => {
+  const { playerID, isMyTurn, confirmRoundOfPlayStartReady } = useBoardContext()
+  const handleReadyClick = () => {
+    confirmRoundOfPlayStartReady({ playerID })
+  }
+  if (isMyTurn) {
+    return (
+      <StyledWrapper playerID={playerID}>
+        <h1>YOUR TURN!</h1>
+        <Button variant="primary" onClick={handleReadyClick}>
+          LET'S DO THIS
+        </Button>
+      </StyledWrapper>
+    )
+  } else {
+    return (
+      <StyledWrapper playerID={playerID}>
+        <h1>THEIR TURN!</h1>
+        <Button variant="primary" onClick={handleReadyClick}>
+          BIG WHOOP!
+        </Button>
+      </StyledWrapper>
+    )
+  }
+}
+
 const StyledWrapper = styled.div`
   width: 100%;
   height: 100%;

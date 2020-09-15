@@ -43,22 +43,22 @@ const LayoutBottom = styled.div`
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
-  min-height: 50vh;
+  min-height: 40vh;
   background: var(--black);
   padding: 5px;
   margin: 0;
 `
 const LayoutMiddle = styled.div`
   width: 100%;
-  @media screen and (min-width: 900px) {
+  /* @media screen and (min-width: 900px) {
     box-sizing: content-box;
     width: 50%;
     padding-left: 20%;
     padding-right: 20%;
-  }
-  /* height: 65vh; */
-  height: 45vh;
+  } */
+  height: 55vh;
   overflow: auto;
+  padding: 50px;
 
   ::-webkit-scrollbar {
     width: 0.5rem;

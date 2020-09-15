@@ -9,13 +9,17 @@ import { phaseNames } from 'game/constants'
 
 export const MapHexes = () => {
   const {
-    playerID,
-    currentPhase,
+    // G
     boardHexes,
     gameUnits,
+    startZones,
+    // ctx
+    playerID,
+    currentPhase,
+    isPlacementPhase,
+    // state
     activeHexID,
     activeUnitID,
-    startZones,
   } = useBoardContext()
   const { onClickBoardHex_placement } = usePlacementContext()
   const { onClickBoardHex__turn } = useTurnContext()
@@ -50,13 +54,17 @@ export const MapHexes = () => {
   }
 
   function calcClassNames(hex) {
-    if (activeUnitID && isStartZoneHex(hex)) {
-      return 'startZoneHex'
+    let classNames = ''
+    if (isPlacementPhase && activeUnitID && isStartZoneHex(hex)) {
+      classNames += ' maphex__start-zone--placement '
     }
     if (isActiveHex(hex)) {
-      return 'selectedMapHex'
+      classNames += ' maphex__selected--active '
     }
-    return ''
+    if (isActiveHex(hex)) {
+      classNames += ' maphex__selected--active '
+    }
+    return classNames
   }
 
   return Object.values(boardHexes).map((hex, i) => {
@@ -90,7 +98,7 @@ export const HexSVGStyle = styled.div`
   }
 
   /* SELECTED HEXES */
-  .selectedMapHex > g polygon {
+  .maphex__selected--active > g polygon {
     /* 
     stroke: var(
       ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
@@ -104,7 +112,7 @@ export const HexSVGStyle = styled.div`
   }
 
   /* STARTZONE HEX */
-  .startZoneHex > g polygon {
+  .maphex__start-zone--placement > g polygon {
     stroke: var(
       ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
     );
