@@ -30,14 +30,15 @@ const BoardContextProvider = (props) => {
   const myCards = armyCards.filter(belongsToPlayer)
   const gameUnits = G.gameUnits
   const myUnits = Object.values(gameUnits).filter(belongsToPlayer)
+  const initiative = G.initiative
+  const currentOrderMarker = G.currentOrderMarker
   const placementReady = G.placementReady
   const orderMarkersReady = G.orderMarkersReady
-  const initiative = G.initiative
 
   // TODO WIP
   // both players see this
   const firstPlayerID = initiative?.['0']
-
+  // const activeTurnGameCardID = currentOrderMarker
   // only current player sees these 3
   const firstPlayersFirstOrderMarkerGameCardID =
     G.players?.[firstPlayerID]?.orderMarkers?.['0'] ?? ''
@@ -89,9 +90,10 @@ const BoardContextProvider = (props) => {
     hexMap,
     armyCards,
     gameUnits,
+    initiative,
+    currentOrderMarker,
     placementReady,
     orderMarkersReady,
-    initiative,
     // MOVES
     placeUnitOnHex,
     confirmPlacementReady,

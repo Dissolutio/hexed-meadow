@@ -58,12 +58,12 @@ const monarch = {
 export const armyCards: GameArmyCard[] = [
   // PLAYER 0
   queenBae,
-  // beestyBoyz,
+  beestyBoyz,
   // bSquad,
 
   // PLAYER 1
   monarch,
-  // butterFries,
+  butterFries,
   // scarwings,
 ].map((card: GameArmyCard) => {
   let uniquifier = 0

@@ -8,13 +8,13 @@ import {
 } from './mapGen'
 import { gameUnits, armyCards, GameArmyCard, GameUnits } from './startingUnits'
 import { rollD20Initiative } from './rollInitiative'
-import { initialPlayerState, prePlacedOrderMarkers } from './playerState'
 import {
-  OrderMarkers,
   phaseNames,
   stageNames,
-  initialOrderMarkers,
+  OrderMarkers,
   OM_COUNT,
+  initialPlayerState,
+  devPlayerState,
 } from './constants'
 
 /*
@@ -23,8 +23,8 @@ const isDevMode = false
 */
 const isDevMode = true
 
-const map = isDevMode ? makePrePlacedHexagonMap(5) : makeHexagonMap(3)
-const players = isDevMode ? prePlacedOrderMarkers : initialPlayerState
+const map = isDevMode ? makePrePlacedHexagonMap(2) : makeHexagonMap(3)
+const players = isDevMode ? devPlayerState : initialPlayerState
 
 type G = {
   armyCards: GameArmyCard[]
@@ -37,7 +37,7 @@ type G = {
   initiative: Boolean
   orderMarkers: OrderMarkers
   currentRound: number
-  currentTurn: number
+  currentOrderMarker: number
 
   placementReady: Boolean
   orderMarkersReady: Boolean
@@ -52,9 +52,9 @@ const initialGameState = {
   boardHexes: map.boardHexes,
   startZones: map.startZones,
   initiative: null,
-  currentRound: isDevMode ? 1 : 0,
-  currentTurn: 0,
-  orderMarkers: initialOrderMarkers(),
+  currentRound: 0,
+  currentOrderMarker: 0,
+  orderMarkers: devPlayerState,
   placementReady: { '0': isDevMode, '1': isDevMode },
   orderMarkersReady: { '0': isDevMode, '1': isDevMode },
   roundOfPlayStartReady: { '0': isDevMode, '1': isDevMode },
@@ -88,7 +88,6 @@ export const HexedMeadow = {
         ctx.events.setActivePlayers({ all: stageNames.placingUnits })
       },
       endIf: (G) => {
-        console.log('END PLACEMENT!')
         return G.placementReady['0'] && G.placementReady['1']
       },
       next: phaseNames.placeOrderMarkers,
@@ -97,11 +96,9 @@ export const HexedMeadow = {
     [phaseNames.placeOrderMarkers]: {
       onBegin: (G, ctx) => {
         G.currentRound += 1
-        G.players = { ...G.players, ...initialPlayerState }
         ctx.events.setActivePlayers({ all: stageNames.placeOrderMarkers })
       },
       endIf: (G) => {
-        console.log('END OMS! G=', G.orderMarkers)
         return G.orderMarkersReady['0'] && G.orderMarkersReady['1']
       },
       moves: {
@@ -112,26 +109,30 @@ export const HexedMeadow = {
     },
     // ! ROUND OF PLAY PHASE
     [phaseNames.roundOfPlay]: {
-      endIf: (G, ctx) => G.currentTurn >= ctx.numPlayers * OM_COUNT,
-      onEnd: (G, ctx) => {
-        console.log('ON END...')
-      },
+      // endIf: (G, ctx) => G.currentOrderMarker >= ctx.numPlayers * OM_COUNT,
       onBegin: (G, ctx) => {
         // TODO - generate this player IDs arr
         const initiativeRoll = rollD20Initiative(['0', '1'])
-        const firstPlayerID = initiativeRoll[0]
         G.initiative = initiativeRoll
         G.currentOrderMarker = 0
         // ADD UNREVEALED ORDER MARKER STATE FROM PLAYER STATE
-        G.orderMarkers.unrevealed = Object.keys(G.players).reduce(
+        G.orderMarkers = Object.keys(G.players).reduce(
           (orderMarkers, playerID) => {
             return {
               ...orderMarkers,
-              [playerID]: [...Object.values(G.players[playerID].orderMarkers)],
+              [playerID]: Object.values(
+                G.players[playerID].orderMarkers
+              ).map((om) => ({ gameCardID: om, order: '' })),
             }
           },
           {}
         )
+      },
+      onEnd: (G, ctx) => {
+        G.orderMarkersReady = { '0': false, '1': false }
+        G.roundOfPlayStartReady = { '0': false, '1': false }
+        G.players = { ...G.players, ...initialPlayerState }
+        G.currentOrderMarker = 0
       },
       moves: {
         confirmRoundOfPlayStartReady,
@@ -140,26 +141,47 @@ export const HexedMeadow = {
       turn: {
         order: TurnOrder.CUSTOM_FROM('initiative'),
         onBegin: (G, ctx) => {
-          // const { numPlayers } = ctx
-          // if (G.currentTurn >= numPlayers * OM_COUNT) {
-          //   G.ctx.events.endPhase({ next: phaseNames.roundOfPlay })
-          // }
-          G.currentTurn++
+          // REVEAL OM
+          const gameCardID =
+            G.players[ctx.currentPlayer].orderMarkers[
+              G.currentOrderMarker.toString()
+            ]
+          const isRevealableOM = (om) => {
+            return om.gameCardID === gameCardID && om.order === ''
+          }
+          const index = G.orderMarkers[ctx.currentPlayer].findIndex((om) =>
+            isRevealableOM(om)
+          )
+          if (index >= 0) {
+            G.orderMarkers[ctx.currentPlayer][
+              index
+            ].order = G.currentOrderMarker.toString()
+          }
+
           ctx.events.setActivePlayers({
-            all: stageNames.watchingTurn,
-            value: {
-              [G.initiative[ctx.playOrderPos]]: stageNames.takingTurn,
-            },
+            currentPlayer: stageNames.takingTurn,
+            others: stageNames.watchingTurn,
           })
         },
-        stages: {
-          [stageNames.watchingTurn]: {},
-          [stageNames.takingTurn]: {
-            moves: {
-              confirmRoundOfPlayStartReady,
-              moveAction,
-              endCurrentPlayerTurn,
-            },
+        onEnd: (G, ctx) => {
+          // HANDLE TURNS & ORDER MARKERS
+          const isLastTurn = ctx.playOrderPos === ctx.numPlayers - 1
+          const isLastOrderMarker = G.currentOrderMarker >= OM_COUNT - 1
+          if (isLastTurn && !isLastOrderMarker) {
+            G.currentOrderMarker++
+          }
+          if (isLastTurn && isLastOrderMarker) {
+            ctx.events.setPhase(phaseNames.placeOrderMarkers)
+          }
+        },
+      },
+      stages: {
+        [stageNames.watchingTurn]: {},
+        [stageNames.takingTurn]: {
+          moves: {
+            confirmRoundOfPlayStartReady,
+            moveAction,
+            endCurrentPlayerTurn,
           },
         },
       },
