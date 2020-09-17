@@ -1,43 +1,25 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-import { GiSabersChoc } from 'react-icons/gi'
+
 import { useBoardContext } from 'ui/hooks'
 import beesBigLogo from 'assets/beesBigLogo.png'
 import butterfliesLogo from 'assets/butterfliesLogo.png'
-import { playerIconColors } from 'ui/UnitIcon'
 
 export const AppNavbar = () => {
   const boardState: any = useBoardContext()
   const playerID = boardState?.playerID
   const opponentPlayerID = playerID === '0' ? '1' : '0'
-  const gameIconProps = {
-    style: {
-      fill: `${playerIconColors[playerID]}`,
-      fontSize: `30px`,
-    },
-  }
   return (
     <StyledTopConsole collapseOnSelect expand="lg" playerID={playerID}>
-      <div>
-        <Navbar.Brand href={`/#player${playerID}`}>
-          <PlayerTeamLogo
-            playerID={playerID}
-            className="d-inline-block align-top"
-          />
-        </Navbar.Brand>
-        <VersusStyledSpan playerID={playerID}>
-          <GiSabersChoc {...gameIconProps} />
-        </VersusStyledSpan>
-        <Navbar.Brand href={`#player${opponentPlayerID}`}>
-          <PlayerTeamLogo
-            playerID={opponentPlayerID}
-            className="d-inline-block align-top"
-          />
-        </Navbar.Brand>
-      </div>
+      <Navbar.Brand href={`/#player${opponentPlayerID}`}>
+        <PlayerTeamLogo
+          playerID={playerID}
+          className="d-inline-block align-top"
+        />
+      </Navbar.Brand>
       <Navbar.Toggle
         aria-controls="responsive-navbar-nav"
         label="Toggle navigation"
@@ -92,6 +74,7 @@ const StyledSpan = styled.span`
     stroke: ${(props) => props.theme.playerColors[props.playerID]};
   }
 `
+
 const PlayerTeamLogo = ({ playerID, ...rest }) => {
   if (playerID === '0') {
     return (
@@ -113,8 +96,4 @@ const PlayerTeamLogo = ({ playerID, ...rest }) => {
 const PlayerTeamLogoImg = styled.img`
   height: 32px;
   width: auto;
-`
-const VersusStyledSpan = styled.span`
-  color: ${(props) => props.theme.playerColors[props.playerID]};
-  padding: 0 10px 0 0px;
 `
