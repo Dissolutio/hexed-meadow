@@ -56,9 +56,9 @@ const PlacementContextProvider = ({ children }) => {
     }
   }
   function onClickBoardHex_placement(event, sourceHex) {
+    console.log(`functiononClickBoardHex_placement -> sourceHex`, sourceHex)
     // Do not propagate to background onClick
     event.stopPropagation()
-
     const hexID = sourceHex.id
     const isInStartZone = myStartZone.includes(hexID)
 

@@ -15,13 +15,12 @@ import { MapDisplay } from './hexmap/MapDisplay'
 import { theme } from 'ui/theme/theme'
 
 export const Board = (props: BoardProps) => {
-  const { G, ctx, moves, playerID } = props
-  const gameContextProps = { G, ctx, moves, playerID }
+  const { playerID } = props
 
   // Layout applies CSS to Children, the children are switches based on active string in LayoutContext
   return (
     <ThemeProvider theme={theme}>
-      <BoardContextProvider {...gameContextProps}>
+      <BoardContextProvider {...props}>
         <UIContextProvider playerID={playerID}>
           <LayoutContextProvider>
             <PlacementContextProvider>

@@ -49,12 +49,6 @@ export const DevApp = () => {
         <DevClient gameID="gameid" playerID={'0'} />
         <DevClient gameID="gameid" playerID={'1'} />
       </Route>
-      <Route exact path="/player/0">
-        <DevClient gameID="gameid" playerID={'0'} />
-      </Route>
-      <Route exact path="/player/1">
-        <DevClient gameID="gameid" playerID={'1'} />
-      </Route>
       <Route path="/help">
         <HelpPage />
       </Route>

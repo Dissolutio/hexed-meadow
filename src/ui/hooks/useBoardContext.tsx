@@ -1,11 +1,27 @@
-import React, { useContext, useState } from 'react'
-// FOR TYPES
-// import { BoardProps } from 'boardgame.io/react'
+import React, { createContext, useContext, useState } from 'react'
+import { BoardProps } from 'boardgame.io/react'
 import { phaseNames, stageNames } from 'game/constants'
+import { BoardHex } from 'game/mapGen'
+import { GameState } from 'game/game'
 
-const BoardContext = React.createContext({})
+interface BoardContextProps extends BoardProps {
+  children: React.ReactNode
+}
+interface BoardContextValue {
+  G: GameState
+  ctx: BoardProps['ctx']
+  moves: { [key: string]: () => void }
+  playerID: string
+}
 
-const BoardContextProvider = (props) => {
+const BoardContext = createContext(null)
+
+const BoardContextProvider = (props: BoardContextProps) => {
+  const [activeHexID, setActiveHexID] = useState('')
+  const [activeUnitID, setActiveUnitID] = useState('')
+  const [activeGameCardID, setActiveGameCardID] = useState('')
+  const [errorMsg, setErrorMsg] = useState('')
+
   const { G, ctx, moves, playerID } = props
   // MOVES
   const {
@@ -17,10 +33,6 @@ const BoardContextProvider = (props) => {
     endCurrentPlayerTurn,
   } = moves
   // BOARD STATE
-  const [activeHexID, setActiveHexID] = useState('')
-  const [activeUnitID, setActiveUnitID] = useState('')
-  const [activeGameCardID, setActiveGameCardID] = useState('')
-  const [errorMsg, setErrorMsg] = useState('')
   // GAME STATE
   const boardHexes = G.boardHexes
   const startZones = G.startZones
@@ -61,8 +73,9 @@ const BoardContextProvider = (props) => {
   const getGameCardByID = (gameCardID) => {
     return armyCards.find((card) => card.gameCardID === gameCardID)
   }
-  const getBoardHexForUnitID = (unitID) => {
-    return Object.values(boardHexes).find((boardHex) => {
+  const getBoardHexForUnitID = (unitID: string) => {
+    const boardHexesArr: BoardHex[] = Object.values(G.boardHexes)
+    return boardHexesArr.find((boardHex) => {
       return boardHex?.occupyingUnitID === unitID
     })
   }
@@ -148,8 +161,7 @@ const BoardContextProvider = (props) => {
 }
 
 const useBoardContext = () => {
-  const boardState = useContext(BoardContext)
-  return boardState
+  return useContext(BoardContext)
 }
 
 export { BoardContextProvider, useBoardContext }

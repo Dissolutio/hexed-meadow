@@ -13,48 +13,52 @@ import {
   stageNames,
   OrderMarkers,
   OM_COUNT,
+  initialOrderMarkers,
   initialPlayerState,
   devPlayerState,
 } from './constants'
 
 /*
 // {} TOGGLE DEV MODE
-const isDevMode = false
-*/
 const isDevMode = true
+*/
+const isDevMode = false
 
-const map = isDevMode ? makePrePlacedHexagonMap(2) : makeHexagonMap(3)
+// const map = isDevMode ? makePrePlacedHexagonMap(2) : makeHexagonMap(3)
+const map = makePrePlacedHexagonMap(2)
 const players = isDevMode ? devPlayerState : initialPlayerState
 
-type G = {
+type PlayerStateToggle = {
+  [playerID: string]: Boolean
+}
+
+export type GameState = {
   armyCards: GameArmyCard[]
   gameUnits: GameUnits
+  players: typeof players
   hexMap: HexMap
   boardHexes: BoardHexes
   startZones: StartZones
-
-  players: typeof players
-  initiative: Boolean
   orderMarkers: OrderMarkers
+  initiative: string[]
   currentRound: number
   currentOrderMarker: number
-
-  placementReady: Boolean
-  orderMarkersReady: Boolean
-  roundOfPlayStartReady: Boolean
+  placementReady: PlayerStateToggle
+  orderMarkersReady: PlayerStateToggle
+  roundOfPlayStartReady: PlayerStateToggle
 }
 
-const initialGameState = {
+const initialGameState: GameState = {
   armyCards,
   gameUnits,
   players,
   hexMap: map.hexMap,
   boardHexes: map.boardHexes,
   startZones: map.startZones,
-  initiative: null,
+  initiative: [],
   currentRound: 0,
   currentOrderMarker: 0,
-  orderMarkers: devPlayerState,
+  orderMarkers: initialOrderMarkers,
   placementReady: { '0': isDevMode, '1': isDevMode },
   orderMarkersReady: { '0': isDevMode, '1': isDevMode },
   roundOfPlayStartReady: { '0': isDevMode, '1': isDevMode },
@@ -63,7 +67,7 @@ const initialGameState = {
 
 export const HexedMeadow = {
   name: 'HexedMeadow',
-  setup: (ctx) => {
+  setup: (_ctx) => {
     return {
       ...initialGameState,
     }
@@ -95,7 +99,6 @@ export const HexedMeadow = {
     // ! ORDER MARKERS PHASE
     [phaseNames.placeOrderMarkers]: {
       onBegin: (G, ctx) => {
-        G.currentRound += 1
         ctx.events.setActivePlayers({ all: stageNames.placeOrderMarkers })
       },
       endIf: (G) => {
@@ -133,6 +136,7 @@ export const HexedMeadow = {
         G.roundOfPlayStartReady = { '0': false, '1': false }
         G.players = { ...G.players, ...initialPlayerState }
         G.currentOrderMarker = 0
+        G.currentRound += 1
       },
       moves: {
         confirmRoundOfPlayStartReady,

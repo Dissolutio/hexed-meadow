@@ -75,7 +75,7 @@ export const armyCards: GameArmyCard[] = [
 
 //  MAKE STARTING UNITS
 
-type GameUnit = {
+export type GameUnit = {
   unitID: string
   cardID: string
   playerID: string

@@ -21,24 +21,23 @@ export const MapHexes = () => {
     activeHexID,
     activeUnitID,
   } = useBoardContext()
+
   const { onClickBoardHex_placement } = usePlacementContext()
-  const { onClickBoardHex__turn } = useTurnContext()
+  const { onClickBoardHex__turn, selectedGameCardUnits } = useTurnContext()
 
   const startZone = startZones[playerID]
 
   const onClickBoardHex = (event, sourceHex) => {
-    if (currentPhase === phaseNames.placement)
-      return onClickBoardHex_placement(event, sourceHex)
-    if (currentPhase === phaseNames.roundOfPlay)
-      return onClickBoardHex__turn(event, sourceHex)
+    if (isPlacementPhase) {
+      onClickBoardHex_placement(event, sourceHex)
+    }
+    if (currentPhase === phaseNames.roundOfPlay) {
+      onClickBoardHex__turn(event, sourceHex)
+    }
   }
 
   function isStartZoneHex(hex) {
     return startZone.includes(hex.id)
-  }
-
-  function isActiveHex(hex) {
-    return hex.id === activeHexID
   }
 
   function getUnitForHex(unitID) {
@@ -53,16 +52,21 @@ export const MapHexes = () => {
     return unit
   }
 
+  function isActiveHex(hex) {
+    return hex.id === activeHexID
+  }
+  const selectedUnitHexIDArr = selectedGameCardUnits.map((u) => u)
+  const isSelectedCardUnitHex = (hex) => {
+    return
+  }
   function calcClassNames(hex) {
     let classNames = ''
+    // if(hex.id = )
     if (isPlacementPhase && activeUnitID && isStartZoneHex(hex)) {
-      classNames += ' maphex__start-zone--placement '
+      classNames = classNames.concat(' maphex__start-zone--placement ')
     }
     if (isActiveHex(hex)) {
-      classNames += ' maphex__selected--active '
-    }
-    if (isActiveHex(hex)) {
-      classNames += ' maphex__selected--active '
+      classNames = classNames.concat(' maphex__selected--active ')
     }
     return classNames
   }

@@ -10,22 +10,20 @@ import { playerColorUrlEncoded } from './theme/theme'
 export const RoundOfPlayControls = () => {
   const {
     // G
-    armyCards,
     myCards,
-    getGameCardByID,
+    currentOrderMarker,
+    hasConfirmedRoundOfPlayStart,
     // CTX
     playerID,
-    currentTurn,
-    isMyTurn,
-    hasConfirmedRoundOfPlayStart,
     isTakingTurnStage,
     isWatchingTurnStage,
     // MOVES
-    confirmRoundOfPlayStartReady,
     endCurrentPlayerTurn,
   } = useBoardContext()
+
   const { selectedGameCardID, onSelectCard__turn } = useTurnContext()
 
+  const myTurnCards = [...myCards] // TODO put active card at top of list
   const hexagonBgDataUrl = hexagonsHeroPatternDataUrl({
     color: playerColorUrlEncoded(playerID),
     opacity: 0.05,
@@ -54,9 +52,9 @@ export const RoundOfPlayControls = () => {
   if (isTakingTurnStage) {
     return (
       <StyledWrapper playerID={playerID}>
-        <h2>{`Your #${currentTurn}`}</h2>
+        <h2>{`Your #${currentOrderMarker + 1}:`}</h2>
         <PlayerCardsStyledUL>
-          {myCards.map((card) => (
+          {myTurnCards.map((card) => (
             <PlayerCardStyledLi
               onClick={(e) =>
                 handleArmyCardClick({ event: e, gameCardID: card.gameCardID })

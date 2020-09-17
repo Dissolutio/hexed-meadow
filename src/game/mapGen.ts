@@ -1,7 +1,7 @@
 import { GridGenerator, Hex } from 'react-hexgrid'
 import { gameUnits } from './startingUnits'
 
-interface BoardHex extends Hex {
+export interface BoardHex extends Hex {
   id: string
   occupyingUnitID: string
   terrain?: string
@@ -17,7 +17,7 @@ export interface StartZones {
 export type HexMap = {
   mapShape: string
   mapSize: number
-  hexGridLayout: 'flat' | 'pointy'
+  hexGridLayout: string
   hexHeight: number
   hexWidth: number
 }

@@ -20,7 +20,8 @@ export type OrderMarker = {
 export type OrderMarkers = {
   [playerID: string]: OrderMarker[]
 }
-export const initialOrderMarkers = (): OrderMarkers => {
+export const initialOrderMarkers: OrderMarkers = makeInitialOrderMarkers()
+function makeInitialOrderMarkers(): OrderMarkers {
   const orderMarkers = ['0', '1', '2', 'X']
   const om = orderMarkers.reduce((prev, curr) => {
     return [...prev, { gameCardID: '', order: '' }]
