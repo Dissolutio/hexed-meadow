@@ -5,7 +5,12 @@ import { MapHexes, HexSVGStyle } from './MapHexes'
 import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 
 export const MapDisplay = () => {
-  const { playerID, hexMap, isPlacementPhase, isTurnPhase } = useBoardContext()
+  const {
+    playerID,
+    hexMap,
+    isPlacementPhase,
+    isRoundOfPlayPhase,
+  } = useBoardContext()
   const {
     onClickMapBackground__turn,
     boardHexesToHighlight_selectedUnits,
@@ -16,7 +21,7 @@ export const MapDisplay = () => {
     if (isPlacementPhase) {
       return onClickMapBackground__placement()
     }
-    if (isTurnPhase) {
+    if (isRoundOfPlayPhase) {
       return onClickMapBackground__turn()
     }
   }

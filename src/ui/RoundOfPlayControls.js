@@ -12,6 +12,7 @@ export const RoundOfPlayControls = () => {
     // G
     myCards,
     currentOrderMarker,
+    currentTurnGameCardID,
     hasConfirmedRoundOfPlayStart,
     // CTX
     playerID,
@@ -23,7 +24,13 @@ export const RoundOfPlayControls = () => {
 
   const { selectedGameCardID, onSelectCard__turn } = useTurnContext()
 
-  const myTurnCards = [...myCards] // TODO put active card at top of list
+  const myTurnCards = () => {
+    const clone = [...myCards]
+    const activeTurnCards = clone.find((card) => isCurrentTurnCard(card))
+    const nonActiveTurnCards = clone.filter((card) => !isCurrentTurnCard(card))
+    const adjustedArr = [activeTurnCards, ...nonActiveTurnCards]
+    return adjustedArr
+  }
   const hexagonBgDataUrl = hexagonsHeroPatternDataUrl({
     color: playerColorUrlEncoded(playerID),
     opacity: 0.05,
@@ -31,8 +38,11 @@ export const RoundOfPlayControls = () => {
   const handleArmyCardClick = ({ event = null, gameCardID = '' }) => {
     onSelectCard__turn(gameCardID)
   }
-  const isCurrentSelectedCard = (gameCardID) => {
-    return gameCardID === selectedGameCardID
+  const isCurrentSelectedCard = (card) => {
+    return card?.gameCardID === selectedGameCardID
+  }
+  const isCurrentTurnCard = (card) => {
+    return card?.gameCardID === currentTurnGameCardID
   }
   // CONFIRM MY TURN / THEIR TURN
   if (!hasConfirmedRoundOfPlayStart) {
@@ -54,7 +64,7 @@ export const RoundOfPlayControls = () => {
       <StyledWrapper playerID={playerID}>
         <h2>{`Your #${currentOrderMarker + 1}:`}</h2>
         <PlayerCardsStyledUL>
-          {myTurnCards.map((card) => (
+          {myTurnCards().map((card) => (
             <PlayerCardStyledLi
               onClick={(e) =>
                 handleArmyCardClick({ event: e, gameCardID: card.gameCardID })
@@ -63,7 +73,7 @@ export const RoundOfPlayControls = () => {
               key={card.gameCardID}
               playerID={card.playerID}
               bg={hexagonBgDataUrl}
-              isCurrentSelectedCard={isCurrentSelectedCard(card.gameCardID)}
+              isCurrentSelectedCard={isCurrentSelectedCard(card)}
             >
               <UnitIcon
                 card={card}

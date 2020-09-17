@@ -17,140 +17,91 @@ interface BoardContextValue {
 const BoardContext = createContext(null)
 
 const BoardContextProvider = (props: BoardContextProps) => {
+  // ! UI STATE
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
   const [activeGameCardID, setActiveGameCardID] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
-
-  const { G, ctx, moves, playerID } = props
-  // MOVES
-  const {
-    placeUnitOnHex,
-    confirmPlacementReady,
-    placeOrderMarker,
-    confirmOrderMarkersReady,
-    confirmRoundOfPlayStartReady,
-    endCurrentPlayerTurn,
-  } = moves
-  // BOARD STATE
-  // GAME STATE
-  const boardHexes = G.boardHexes
-  const startZones = G.startZones
-  const myStartZone = startZones[playerID]
-  const hexMap = G.hexMap
-  const armyCards = G.armyCards
-  const myCards = armyCards.filter(belongsToPlayer)
-  const gameUnits = G.gameUnits
-  const myUnits = Object.values(gameUnits).filter(belongsToPlayer)
-  const initiative = G.initiative
-  const currentOrderMarker = G.currentOrderMarker
-  const placementReady = G.placementReady
-  const orderMarkersReady = G.orderMarkersReady
-
-  // TODO WIP
-  // both players see this
-  const firstPlayerID = initiative?.['0']
-  // const activeTurnGameCardID = currentOrderMarker
-  // only current player sees these 3
-  const firstPlayersFirstOrderMarkerGameCardID =
-    G.players?.[firstPlayerID]?.orderMarkers?.['0'] ?? ''
-  const currentTurnGameCardID = armyCards.find((armyCard) => {
-    return armyCard.gameCardID === firstPlayersFirstOrderMarkerGameCardID
-  })?.gameCardID
-  const currentTurnGameCard = G.armyCards.find(
-    (armyCard) => armyCard.gameCardID === currentTurnGameCardID
-  )
-  // TODO WIP END
-
-  // CTX STATE
-  const currentPhase = ctx.phase
-  const currentPlayer = ctx.currentPlayer
-  const activePlayers = ctx.activePlayers
-  const numPlayers = ctx.numPlayers
-  const currentTurn = ctx.turn
-  // SELECTORS
-  const isMyTurn = currentPlayer === playerID
-  const getGameCardByID = (gameCardID) => {
-    return armyCards.find((card) => card.gameCardID === gameCardID)
-  }
-  const getBoardHexForUnitID = (unitID: string) => {
-    const boardHexesArr: BoardHex[] = Object.values(G.boardHexes)
-    return boardHexesArr.find((boardHex) => {
-      return boardHex?.occupyingUnitID === unitID
-    })
-  }
-  // PLAYER STATE
-  const myCurrentStage = ctx.activePlayers?.[playerID] || null
-  const myOrderMarkers = G.players?.[playerID]?.orderMarkers
-  function belongsToPlayer(anything) {
-    return anything.playerID === playerID
-  }
-  // PHASES / STAGES
-  const isOrderMarkerPhase = currentPhase === phaseNames.placeOrderMarkers
-  const isPlacementPhase = currentPhase === phaseNames.placement
-  const isTurnPhase = currentPhase === phaseNames.roundOfPlay
-  const hasConfirmedRoundOfPlayStart =
-    isTurnPhase && G.roundOfPlayStartReady[playerID]
-  const isTakingTurnStage = myCurrentStage === stageNames.takingTurn
-  const isWatchingTurnStage = myCurrentStage === stageNames.watchingTurn
-
-  const activeUnit = gameUnits[activeUnitID]
-  const boardState = {
-    // G
-    playerID,
-    boardHexes,
-    startZones,
-    hexMap,
-    armyCards,
-    gameUnits,
-    initiative,
-    currentOrderMarker,
-    placementReady,
-    orderMarkersReady,
-    // MOVES
-    placeUnitOnHex,
-    confirmPlacementReady,
-    placeOrderMarker,
-    confirmOrderMarkersReady,
-    confirmRoundOfPlayStartReady,
-    endCurrentPlayerTurn,
-    // CTX
-    ctx,
-    currentPhase,
-    activePlayers,
-    currentPlayer,
-    numPlayers,
-    currentTurn,
-    // PLAYER STATE
-    myOrderMarkers,
-    myCurrentStage,
-    // COMPUTED
-    myStartZone,
-    myCards,
-    myUnits,
-    activeUnit,
-    currentTurnGameCard,
-    currentTurnGameCardID,
-    // PHASES / STAGES
-    isPlacementPhase,
-    isOrderMarkerPhase,
-    isTurnPhase,
-    hasConfirmedRoundOfPlayStart,
-    isTakingTurnStage,
-    isWatchingTurnStage,
-    // SELECTORS
-    isMyTurn,
-    getBoardHexForUnitID,
-    getGameCardByID,
-    // BOARD STATE
-    errorMsg,
-    setErrorMsg,
+  const uiState = {
     activeHexID,
     setActiveHexID,
     activeUnitID,
     setActiveUnitID,
     activeGameCardID,
     setActiveGameCardID,
+    errorMsg,
+    setErrorMsg,
+  }
+
+  const { G, ctx, moves, playerID } = props
+  // ! MY STATE
+  const myState = {
+    myCards: G.armyCards.filter(belongsToPlayer),
+    myStartZone: G.startZones[playerID],
+    myUnits: Object.values(G.gameUnits).filter(belongsToPlayer),
+    isMyTurn: ctx.currentPlayer === playerID,
+    myCurrentStage: ctx.activePlayers?.[playerID] || '',
+    myOrderMarkers: G.players?.[playerID]?.orderMarkers,
+  }
+  function belongsToPlayer(anything) {
+    return anything.playerID === playerID
+  }
+  // ! SELECTORS
+  const getGameCardByID = (gameCardID) => {
+    return G.armyCards.find((card) => card.gameCardID === gameCardID)
+  }
+  const getBoardHexIDForUnitID = (unitID: string) => {
+    const boardHexesArr: BoardHex[] = Object.values(G.boardHexes)
+    return (
+      boardHexesArr.find((boardHex) => {
+        return boardHex?.occupyingUnitID === unitID
+      })?.id ?? ''
+    )
+  }
+  const activeUnit = G.gameUnits[activeUnitID]
+  const currentTurnGameCardID =
+    G.players?.[playerID]?.orderMarkers?.[G.currentOrderMarker] ?? ''
+
+  const currentTurnGameCard = G.armyCards.find(
+    (armyCard) => armyCard.gameCardID === currentTurnGameCardID
+  )
+  const selectors = {
+    getGameCardByID,
+    getBoardHexIDForUnitID,
+    activeUnit,
+    currentTurnGameCardID,
+    currentTurnGameCard,
+  }
+  // ! PHASE / STAGE INFO
+  const isOrderMarkerPhase = ctx.phase === phaseNames.placeOrderMarkers
+  const isPlacementPhase = ctx.phase === phaseNames.placement
+  const isRoundOfPlayPhase = ctx.phase === phaseNames.roundOfPlay
+  const hasConfirmedRoundOfPlayStart =
+    isRoundOfPlayPhase && G.roundOfPlayStartReady[playerID]
+  const isTakingTurnStage = myState.myCurrentStage === stageNames.takingTurn
+  const isWatchingTurnStage = myState.myCurrentStage === stageNames.watchingTurn
+  const phaseStage = {
+    isPlacementPhase,
+    isOrderMarkerPhase,
+    isRoundOfPlayPhase,
+    hasConfirmedRoundOfPlayStart,
+    isTakingTurnStage,
+    isWatchingTurnStage,
+  }
+  //! FINAL BOARD STATE
+  const boardState = {
+    playerID,
+    ...G,
+    ...moves,
+    ...ctx,
+    // BOARD STATE
+    ...uiState,
+    // PLAYER STATE
+    ...myState,
+    // SELECTORS
+    ...selectors,
+    // PHASES / STAGES
+    ...phaseStage,
   }
 
   return (

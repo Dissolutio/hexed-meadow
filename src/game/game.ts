@@ -20,12 +20,11 @@ import {
 
 /*
 // {} TOGGLE DEV MODE
-const isDevMode = true
-*/
 const isDevMode = false
+*/
+const isDevMode = true
 
-// const map = isDevMode ? makePrePlacedHexagonMap(2) : makeHexagonMap(3)
-const map = makePrePlacedHexagonMap(2)
+const map = isDevMode ? makePrePlacedHexagonMap(2) : makeHexagonMap(3)
 const players = isDevMode ? devPlayerState : initialPlayerState
 
 type PlayerStateToggle = {

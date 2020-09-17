@@ -7,21 +7,14 @@ const TurnContext = React.createContext({})
 export const TurnContextProvider = ({ children }) => {
   const boardState = useBoardContext()
   const {
-    // WIP
-    currentTurnGameCardID,
-    // G
     boardHexes,
     armyCards,
     gameUnits,
-    // MOVES
     placeUnitOnHex,
-    // PLAYER STATE
     isMyTurn,
-    // SELECTORS
     getGameCardByID,
-    getBoardHexForUnitID,
-    // APP STATE
-    activeHexID,
+    getBoardHexIDForUnitID,
+    currentTurnGameCardID,
     activeUnitID,
     setActiveUnitID,
     activeUnit,
@@ -47,7 +40,7 @@ export const TurnContextProvider = ({ children }) => {
       .filter((unit: GameUnit) => unit.gameCardID === selectedGameCardID)
       .map((unit: GameUnit) => ({
         ...unit,
-        boardHexID: getBoardHexForUnitID(unit.unitID).id,
+        boardHexID: getBoardHexIDForUnitID(unit.unitID),
       }))
     return units
   }
@@ -82,7 +75,6 @@ export const TurnContextProvider = ({ children }) => {
     }
     // place unit
     if (activeUnitID) {
-      const oldHex = getBoardHexForUnitID(activeUnitID)
       placeUnitOnHex(hexID, activeUnit)
       setActiveUnitID('')
       setErrorMsg('')
