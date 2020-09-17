@@ -35,21 +35,27 @@ export const RoundOfPlayControls = () => {
     color: playerColorUrlEncoded(playerID),
     opacity: 0.05,
   })
-  const handleArmyCardClick = ({ event = null, gameCardID = '' }) => {
-    onSelectCard__turn(gameCardID)
-  }
   const isCurrentSelectedCard = (card) => {
     return card?.gameCardID === selectedGameCardID
   }
   const isCurrentTurnCard = (card) => {
     return card?.gameCardID === currentTurnGameCardID
   }
-  // CONFIRM MY TURN / THEIR TURN
+
+  //! handlers
+  const handleArmyCardClick = ({ event = null, gameCardID = '' }) => {
+    onSelectCard__turn(gameCardID)
+  }
+  const handleEndTurnButtonClick = () => {
+    endCurrentPlayerTurn()
+  }
+
+  //! RETURN CONFIRM
   if (!hasConfirmedRoundOfPlayStart) {
     return <ConfirmReadyRoundOfPlay />
   }
 
-  // RETURN THEIR TURN UI
+  //! RETURN WATCHING TURN
   if (isWatchingTurnStage) {
     return (
       <StyledWrapper playerID={playerID}>
@@ -58,7 +64,7 @@ export const RoundOfPlayControls = () => {
     )
   }
 
-  // RETURN MY TURN UI
+  //! RETURN TAKING TURN
   if (isTakingTurnStage) {
     return (
       <StyledWrapper playerID={playerID}>
@@ -87,7 +93,7 @@ export const RoundOfPlayControls = () => {
             </PlayerCardStyledLi>
           ))}
         </PlayerCardsStyledUL>
-        <Button variant="primary" onClick={() => endCurrentPlayerTurn()}>
+        <Button variant="primary" onClick={handleEndTurnButtonClick}>
           END TURN
         </Button>
       </StyledWrapper>

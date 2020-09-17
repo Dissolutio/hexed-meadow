@@ -6,12 +6,19 @@ import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 import { Hexagon } from 'react-hexgrid'
 import { UnitIcon } from 'ui/UnitIcon'
 
+const moveStatuses = {
+  safely: 'safely',
+  disengage: 'disengage',
+  engage: 'engage',
+}
+
 export const MapHexes = () => {
   const {
     playerID,
     boardHexes,
     gameUnits,
     startZones,
+    getBoardHexIDForUnitID,
     isPlacementPhase,
     isRoundOfPlayPhase,
     activeHexID,
@@ -19,7 +26,11 @@ export const MapHexes = () => {
   } = useBoardContext()
 
   const { onClickBoardHex_placement } = usePlacementContext()
-  const { onClickBoardHex__turn, selectedGameCardUnits } = useTurnContext()
+  const {
+    onClickBoardHex__turn,
+    selectedGameCardUnits,
+    selectedUnitID,
+  } = useTurnContext()
 
   const onClickBoardHex = (event, sourceHex) => {
     if (isPlacementPhase) {
@@ -48,26 +59,60 @@ export const MapHexes = () => {
   }
 
   function isActiveHex(hex) {
-    return hex.id === activeHexID
+    return isPlacementPhase && hex.id === activeHexID
   }
-  const selectedCardBoardHexIDArr = selectedGameCardUnits.map(
-    (unit) => unit?.boardHexID ?? ''
-  )
-  const isSelectedCardUnitHex = (hex) => {
-    return selectedCardBoardHexIDArr.indexOf(hex.id) >= 0
+  const isReadyToSelectUnitHex = (hex) => {
+    const selectedCardBoardHexIDArr = selectedGameCardUnits.map(
+      (unit) => unit?.boardHexID ?? ''
+    )
+    return selectedCardBoardHexIDArr.includes(hex.id)
+  }
+  const isSelectedUnitHex = (hex) => {
+    return hex.occupyingUnitID && hex.occupyingUnitID === selectedUnitID
+  }
+  const getMoveRangeStatus = (hex) => {
+    const startHexID = getBoardHexIDForUnitID(selectedUnitID)
+    const endHexID = hex.id
+    const unitAvailableMovePoints = 1
+    const myCheck = () => {}
+    return moveStatuses.safely
+    // return moveStatuses.disengage
+    // return moveStatuses.engage
   }
 
   function calcClassNames(hex) {
     let classNames = ''
-    // if(hex.id = )
-    if (isPlacementPhase && activeUnitID && isStartZoneHex(hex)) {
-      classNames = classNames.concat(' maphex__start-zone--placement ')
+    // ! Placement
+    if (isPlacementPhase) {
+      if (activeUnitID && isStartZoneHex(hex)) {
+        classNames = classNames.concat(' maphex__start-zone--placement ')
+      }
+      if (isActiveHex(hex)) {
+        classNames = classNames.concat(' maphex__selected--active ')
+      }
     }
-    if (isActiveHex(hex)) {
-      classNames = classNames.concat(' maphex__selected--active ')
-    }
-    if (isSelectedCardUnitHex(hex)) {
-      classNames = classNames.concat(' maphex__selected-card-unit--active ')
+    // ! Round of Play
+    if (isRoundOfPlayPhase) {
+      // Highlight selected card's units for selection
+      if (isReadyToSelectUnitHex(hex)) {
+        classNames = classNames.concat(
+          ' maphex__selected-card-unit--selectable '
+        )
+      }
+      // Highlight selected unit hex
+      if (isSelectedUnitHex(hex)) {
+        classNames = classNames.concat(' maphex__selected-card-unit--active ')
+      }
+      /*
+      TODO - Color hexes that 
+      ?  Can be moved to safely
+      ?  Can be moved to and become engage
+      ?  Can be moved to and incur disengagement
+
+      */
+      if (selectedUnitID && getMoveRangeStatus(hex) === moveStatuses.safely) {
+        classNames = classNames.concat(' maphex__move-safely ')
+      }
     }
     return classNames
   }
@@ -89,54 +134,66 @@ export const MapHexes = () => {
 
 export const HexSVGStyle = styled.div`
   height: 100%;
-  /* HEX FILL */
-  g {
-    fill: var(--black);
-  }
-
-  /* REGULAR HEXES */
+  
+  /* HIGHLIGHT ALL HEXES */
   svg g polygon {
     stroke: var(
       ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
     );
     stroke-width: 0.01;
   }
+  
+  /* PAINT ALL HEXES */
+  .hexagon-group {
+    fill: var(--black);
+    @media (hover: hover) {
+      &:hover {
+        fill: var(--neon-orange);
+        fill-opacity: 0.6;
+      }
+    }
+  }
 
-  /* SELECTED HEXES */
-  .maphex__selected--active > g polygon {
-    /* 
+  /* PAINT SAFE MOVE END */
+  .maphex__move-safely > g {
+    fill: var(--green);
+  }
+
+  /* HIGHLIGHT STARTZONE HEX */
+  .maphex__start-zone--placement > g polygon {
     stroke: var(
       ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
     );
-    */
+    stroke-width: 0.1;
+    @media screen and (min-width: 500px) {
+      stroke-width: 0.3;
+    }
+  }
+  /* HIGHLIGHT SELECTED HEXES */
+  .maphex__selected--active > g polygon {
     stroke: var(--white);
     stroke-width: 0.1;
     @media screen and (min-width: 500px) {
       stroke-width: 0.3;
     }
   }
-  
-  /* STARTZONE HEX */
-  .maphex__start-zone--placement > g polygon {
-    stroke: var(
-      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
-      );
-    stroke-width: 0.1;
-  }
-  /* MY TURN SELECTED CARD UNIT HEX */
-  .maphex__selected-card-unit--active > g polygon {
-    /* stroke: var(
-      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
-      ); */
-      stroke: var(--white);
-    stroke-width: 0.4;
-  }
-
-  /* HOVERED HEX */
-  @media (hover: hover) {
-    svg g:hover {
-      fill: var(--neon-orange);
-      fill-opacity: 0.6;
+  /* HIGHLIGHT SELECTABLE UNITS */
+  .maphex__selected-card-unit--selectable > g polygon {
+    stroke: var(--white);
+    stroke-width: 0.3;
+    @media screen and (min-width: 500px) {
+      stroke-width: 0.4;
     }
   }
+  /* HIGHLIGHT SELECTED UNIT */
+  .maphex__selected-card-unit--active > g polygon {
+    stroke: var(
+      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
+    );
+    stroke-width: 0.4;
+    @media screen and (min-width: 500px) {
+      stroke-width: 0.5;
+    }
+  }
+}
 `

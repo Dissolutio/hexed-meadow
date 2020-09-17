@@ -98,6 +98,11 @@ export const HexedMeadow = {
     // ! ORDER MARKERS PHASE
     [phaseNames.placeOrderMarkers]: {
       onBegin: (G, ctx) => {
+        //! reset state
+        G.orderMarkers = initialOrderMarkers
+        G.orderMarkersReady = { '0': isDevMode, '1': isDevMode }
+        G.players = initialPlayerState
+        //! set player stages
         ctx.events.setActivePlayers({ all: stageNames.placeOrderMarkers })
       },
       endIf: (G) => {
@@ -111,13 +116,12 @@ export const HexedMeadow = {
     },
     // ! ROUND OF PLAY PHASE
     [phaseNames.roundOfPlay]: {
-      // endIf: (G, ctx) => G.currentOrderMarker >= ctx.numPlayers * OM_COUNT,
       onBegin: (G, ctx) => {
         // TODO - generate this player IDs arr
         const initiativeRoll = rollD20Initiative(['0', '1'])
         G.initiative = initiativeRoll
         G.currentOrderMarker = 0
-        // ADD UNREVEALED ORDER MARKER STATE FROM PLAYER STATE
+        //! setup unrevealed OMs
         G.orderMarkers = Object.keys(G.players).reduce(
           (orderMarkers, playerID) => {
             return {
@@ -144,35 +148,39 @@ export const HexedMeadow = {
       turn: {
         order: TurnOrder.CUSTOM_FROM('initiative'),
         onBegin: (G, ctx) => {
-          // REVEAL OM
-          const gameCardID =
-            G.players[ctx.currentPlayer].orderMarkers[
-              G.currentOrderMarker.toString()
-            ]
-          const isRevealableOM = (om) => {
-            return om.gameCardID === gameCardID && om.order === ''
-          }
-          const index = G.orderMarkers[ctx.currentPlayer].findIndex((om) =>
-            isRevealableOM(om)
-          )
+          //! reveal OM
+          const index = G.orderMarkers[ctx.currentPlayer].findIndex((om) => {
+            const gameCardID =
+              G.players[ctx.currentPlayer].orderMarkers[
+                G.currentOrderMarker.toString()
+              ]
+            const isRevealableOM = (om) => {
+              return om.gameCardID === gameCardID && om.order === ''
+            }
+
+            return isRevealableOM(om)
+          })
           if (index >= 0) {
             G.orderMarkers[ctx.currentPlayer][
               index
             ].order = G.currentOrderMarker.toString()
           }
 
+          //! set player stages
           ctx.events.setActivePlayers({
             currentPlayer: stageNames.takingTurn,
             others: stageNames.watchingTurn,
           })
         },
+
         onEnd: (G, ctx) => {
-          // HANDLE TURNS & ORDER MARKERS
+          //! handle turns & order markers...
           const isLastTurn = ctx.playOrderPos === ctx.numPlayers - 1
           const isLastOrderMarker = G.currentOrderMarker >= OM_COUNT - 1
           if (isLastTurn && !isLastOrderMarker) {
             G.currentOrderMarker++
           }
+          //! ...and END PHASE
           if (isLastTurn && isLastOrderMarker) {
             ctx.events.setPhase(phaseNames.placeOrderMarkers)
           }
@@ -194,8 +202,8 @@ export const HexedMeadow = {
     endGame: false,
   },
 }
-// !! MOVES
-// round of play
+//! MOVES
+//! round of play
 function confirmRoundOfPlayStartReady(G, ctx, { playerID }) {
   const isMyTurn = playerID === ctx.currentPlayer
   G.roundOfPlayStartReady[playerID] = true
@@ -221,7 +229,7 @@ function moveAction(G, ctx, move: UnitMove) {
   // * update unit
   // * update boardHex
 }
-// placement
+//! placement
 function placeUnitOnHex(G, ctx, hexId, unit) {
   G.boardHexes[hexId].occupyingUnitID = unit?.unitID ?? ''
 }
@@ -229,7 +237,7 @@ function confirmPlacementReady(G, ctx, { playerID }) {
   G.placementReady[playerID] = true
 }
 
-// order markers
+//! order markers
 function placeOrderMarker(G, ctx, { playerID, orderMarker, gameCardID }) {
   G.players[playerID].orderMarkers[orderMarker] = gameCardID
 }

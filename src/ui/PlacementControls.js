@@ -24,7 +24,6 @@ export const PlacementControls = () => {
     }
   }, [currentPhase])
 
-  console.log(`activeUnitID`, activeUnitID)
   const selectedStyle = (unitID) => {
     if (activeUnitID === unitID) {
       return {

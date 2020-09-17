@@ -42,12 +42,12 @@ export const MapDisplay = () => {
         // height="500px"
         // viewBox={`0 0 360 360`}
         //
-        width={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
-        height={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
+        // width={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
+        // height={`${100 * (1 + Math.floor(hexMap.mapSize / 5))}%`}
         // no viewbox
         //
-        // width={`100%`}
-        // height={`100%`}
+        width={`100%`}
+        height={`100%`}
         // viewBox={computedViewBox()}
       >
         <Layout

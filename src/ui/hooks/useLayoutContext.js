@@ -13,7 +13,7 @@ const LayoutContextProvider = ({ children }) => {
     dataReadout: 'DataReadout',
     roundOfPlayControls: 'RoundOfPlayControls',
   }
-  const { currentPhase } = useBoardContext()
+  const { phase } = useBoardContext()
   const [topConsoleComponent, setTopConsoleComponent] = useState(
     layoutComponents.navbar
   )
@@ -22,18 +22,17 @@ const LayoutContextProvider = ({ children }) => {
   )
   useEffect(() => {
     setBottomConsoleComponent(setBottomConsole())
-  }, [currentPhase])
+  }, [phase])
   function setBottomConsole() {
-    if (currentPhase === phaseNames.placement) {
+    if (phase === phaseNames.placement) {
       return layoutComponents.placementArmy
     }
-    if (currentPhase === phaseNames.placeOrderMarkers) {
+    if (phase === phaseNames.placeOrderMarkers) {
       return layoutComponents.placeOrderMarkers
     }
-    if (currentPhase === phaseNames.roundOfPlay) {
+    if (phase === phaseNames.roundOfPlay) {
       return layoutComponents.roundOfPlayControls
     }
-    return layoutComponents.roundOfPlayControls
   }
   return (
     <LayoutContext.Provider

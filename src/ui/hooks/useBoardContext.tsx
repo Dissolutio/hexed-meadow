@@ -2,22 +2,17 @@ import React, { createContext, useContext, useState } from 'react'
 import { BoardProps } from 'boardgame.io/react'
 import { phaseNames, stageNames } from 'game/constants'
 import { BoardHex } from 'game/mapGen'
-import { GameState } from 'game/game'
+import { GameUnit, GameArmyCard } from 'game/startingUnits'
 
 interface BoardContextProps extends BoardProps {
   children: React.ReactNode
-}
-interface BoardContextValue {
-  G: GameState
-  ctx: BoardProps['ctx']
-  moves: { [key: string]: () => void }
-  playerID: string
 }
 
 const BoardContext = createContext(null)
 
 const BoardContextProvider = (props: BoardContextProps) => {
   // ! UI STATE
+
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
   const [activeGameCardID, setActiveGameCardID] = useState('')
@@ -34,7 +29,9 @@ const BoardContextProvider = (props: BoardContextProps) => {
   }
 
   const { G, ctx, moves, playerID } = props
+
   // ! MY STATE
+
   const myState = {
     myCards: G.armyCards.filter(belongsToPlayer),
     myStartZone: G.startZones[playerID],
@@ -43,12 +40,20 @@ const BoardContextProvider = (props: BoardContextProps) => {
     myCurrentStage: ctx.activePlayers?.[playerID] || '',
     myOrderMarkers: G.players?.[playerID]?.orderMarkers,
   }
+
+  // ! SELECTORS
+
   function belongsToPlayer(anything) {
     return anything.playerID === playerID
   }
-  // ! SELECTORS
-  const getGameCardByID = (gameCardID) => {
-    return G.armyCards.find((card) => card.gameCardID === gameCardID)
+  const getGameCardByID = (gameCardID: string) => {
+    return G.armyCards.find(
+      (card: GameArmyCard) => card.gameCardID === gameCardID
+    )
+  }
+  const getGameUnitByID = (unitID: string) => {
+    const gameUnitsArr = Object.values(G.gameUnits)
+    return gameUnitsArr.find((unit: GameUnit) => unit.unitID === unitID)
   }
   const getBoardHexIDForUnitID = (unitID: string) => {
     const boardHexesArr: BoardHex[] = Object.values(G.boardHexes)
@@ -66,13 +71,17 @@ const BoardContextProvider = (props: BoardContextProps) => {
     (armyCard) => armyCard.gameCardID === currentTurnGameCardID
   )
   const selectors = {
+    belongsToPlayer,
     getGameCardByID,
+    getGameUnitByID,
     getBoardHexIDForUnitID,
     activeUnit,
     currentTurnGameCardID,
     currentTurnGameCard,
   }
+
   // ! PHASE / STAGE INFO
+
   const isOrderMarkerPhase = ctx.phase === phaseNames.placeOrderMarkers
   const isPlacementPhase = ctx.phase === phaseNames.placement
   const isRoundOfPlayPhase = ctx.phase === phaseNames.roundOfPlay

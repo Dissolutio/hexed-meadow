@@ -74,7 +74,7 @@ export const PlaceOrderMarkers = () => {
               onClick={() => selectOrderMarker(om)}
               style={selectedStyle(om)}
             >
-              {om}
+              {om === 'X' ? om : (parseInt(om) + 1).toString()}
             </li>
           ))}
       </ul>

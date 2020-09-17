@@ -1,31 +1,38 @@
+import React, { useContext, useState, useEffect } from 'react'
+
 import { GameArmyCard, GameUnit } from 'game/startingUnits'
-import React, { useContext, useState } from 'react'
 import { useBoardContext } from './useBoardContext'
 
 const TurnContext = React.createContext({})
 
 export const TurnContextProvider = ({ children }) => {
-  const boardState = useBoardContext()
   const {
     boardHexes,
     armyCards,
     gameUnits,
-    placeUnitOnHex,
     isMyTurn,
     getGameCardByID,
+    getGameUnitByID,
     getBoardHexIDForUnitID,
     currentTurnGameCardID,
-    activeUnitID,
-    setActiveUnitID,
-    activeUnit,
     setActiveHexID,
     setErrorMsg,
-  } = boardState
+  } = useBoardContext()
 
   // ! STATE
+  const initialSelectedGameCard = () => (isMyTurn ? currentTurnGameCardID : '')
   const [selectedGameCardID, setSelectedGameCardID] = useState(
-    isMyTurn ? currentTurnGameCardID : ''
+    initialSelectedGameCard()
   )
+
+  const [selectedUnitID, setSelectedUnitID] = useState('')
+  // RESET UI ON TURN START/END
+  useEffect(() => {
+    setSelectedGameCardID(initialSelectedGameCard())
+    setSelectedUnitID('')
+  }, [isMyTurn])
+
+  const selectedUnit = getGameUnitByID(selectedUnitID)
 
   const selectedGameCard = () => {
     const armyCardsArr = Object.values(armyCards)
@@ -34,7 +41,6 @@ export const TurnContextProvider = ({ children }) => {
     )
     return gameCard
   }
-
   const selectedGameCardUnits = () => {
     const units = Object.values(gameUnits)
       .filter((unit: GameUnit) => unit.gameCardID === selectedGameCardID)
@@ -56,55 +62,49 @@ export const TurnContextProvider = ({ children }) => {
   }
 
   function onClickBoardHex__turn(event, sourceHex) {
-    // Do not propagate to background onClick
+    // Prevent propagation to onClickMapBackground__turn
     event.stopPropagation()
-    //
-    const hexID = sourceHex.id
-    const boardHex = boardHexes[hexID]
-    const { occupyingUnitID } = boardHex
-    const unitOnHex = gameUnits[occupyingUnitID]
-    const gameCard = getGameCardByID(unitOnHex?.gameCardID)
 
-    // ?? hex has unit who is ready to move, select unit
+    const occupyingUnitID = boardHexes[sourceHex.id].occupyingUnitID
+    const unitOnHex: GameUnit = gameUnits[occupyingUnitID]
+    const gameCard: GameArmyCard = getGameCardByID(unitOnHex?.gameCardID)
+    const isUnitReadyToSelect =
+      unitOnHex?.gameCardID === selectedGameCardID &&
+      selectedGameCardID === currentTurnGameCardID
+    const isUnitSelected = unitOnHex?.unitID === selectedUnitID
 
-    //  No unit, select hex
-    if (!activeUnitID) {
-      setActiveHexID(hexID)
-      setErrorMsg('')
-      return
-    }
-    // place unit
-    if (activeUnitID) {
-      placeUnitOnHex(hexID, activeUnit)
-      setActiveUnitID('')
-      setErrorMsg('')
-      return
-    }
-    // have unit, clicked hex out of unit's move range, error
-    if (activeUnitID && false) {
-      setErrorMsg(
-        'Invalid hex selected. Units can only move within their move range.'
-      )
-      return
+    // ! MY TURN
+    if (isMyTurn) {
+      if (isUnitReadyToSelect) {
+        console.log('SELECT UNIT', gameCard.name, unitOnHex)
+        setSelectedUnitID(unitOnHex.unitID)
+      }
+      if (isUnitSelected) {
+        setSelectedUnitID('')
+      }
     }
   }
 
   function onClickMapBackground__turn() {
-    setSelectedGameCardID('')
+    if (selectedGameCardID !== currentTurnGameCardID) {
+      setSelectedGameCardID(currentTurnGameCardID)
+    }
     setActiveHexID('')
   }
 
   return (
     <TurnContext.Provider
       value={{
-        // COMPUTED
+        // STATE
+        selectedGameCardID,
+        selectedUnitID,
+        selectedGameCard: selectedGameCard(),
+        selectedGameCardUnits: selectedGameCardUnits(),
+        selectedUnit,
         // HANDLERS
         onClickBoardHex__turn,
         onSelectCard__turn,
         onClickMapBackground__turn,
-        selectedGameCardID,
-        selectedGameCard: selectedGameCard(),
-        selectedGameCardUnits: selectedGameCardUnits(),
       }}
     >
       {children}
