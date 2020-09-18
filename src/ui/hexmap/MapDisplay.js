@@ -48,12 +48,12 @@ export const MapDisplay = () => {
         //
         width={`100%`}
         height={`100%`}
-        // viewBox={computedViewBox()}
+        viewBox={computedViewBox()}
       >
         <Layout
           // size={{ x: `${hexMap.hexHeight}`, y: `${hexMap.hexHeight}` }}
           size={{
-            x: `${(10 * hexMap.hexHeight) / hexMap.mapSize}`,
+            x: `${(10 * hexMap.hexWidth) / hexMap.mapSize}`,
             y: `${(10 * hexMap.hexHeight) / hexMap.mapSize}`,
           }}
           flat={false}

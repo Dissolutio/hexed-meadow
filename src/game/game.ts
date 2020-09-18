@@ -24,7 +24,7 @@ const isDevMode = false
 */
 const isDevMode = true
 
-const map = isDevMode ? makePrePlacedHexagonMap(2) : makeHexagonMap(3)
+const map = isDevMode ? makePrePlacedHexagonMap(8) : makeHexagonMap(3)
 const players = isDevMode ? devPlayerState : initialPlayerState
 
 type PlayerStateToggle = {
@@ -165,7 +165,7 @@ export const HexedMeadow = {
               index
             ].order = G.currentOrderMarker.toString()
           }
-
+          //! set unit stats
           //! set player stages
           ctx.events.setActivePlayers({
             currentPlayer: stageNames.takingTurn,

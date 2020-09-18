@@ -61,7 +61,7 @@ export const MapHexes = () => {
   function isActiveHex(hex) {
     return isPlacementPhase && hex.id === activeHexID
   }
-  const isReadyToSelectUnitHex = (hex) => {
+  const isSelectedCardUnitHex = (hex) => {
     const selectedCardBoardHexIDArr = selectedGameCardUnits.map(
       (unit) => unit?.boardHexID ?? ''
     )
@@ -93,11 +93,17 @@ export const MapHexes = () => {
     }
     // ! Round of Play
     if (isRoundOfPlayPhase) {
-      // Highlight selected card's units for selection
-      if (isReadyToSelectUnitHex(hex)) {
+      //! Highlight selectable - NO UNIT
+      if (isSelectedCardUnitHex(hex) && !selectedUnitID) {
         classNames = classNames.concat(
           ' maphex__selected-card-unit--selectable '
         )
+      }
+      //! Highlight coselections - UNIT
+      if (isSelectedCardUnitHex(hex) && selectedUnitID) {
+        classNames = classNames.concat(' maphex__coselected-unit ')
+      }
+      if (selectedUnitID) {
       }
       // Highlight selected unit hex
       if (isSelectedUnitHex(hex)) {
@@ -134,7 +140,7 @@ export const MapHexes = () => {
 
 export const HexSVGStyle = styled.div`
   height: 100%;
-  
+
   /* HIGHLIGHT ALL HEXES */
   svg g polygon {
     stroke: var(
@@ -142,7 +148,7 @@ export const HexSVGStyle = styled.div`
     );
     stroke-width: 0.01;
   }
-  
+
   /* PAINT ALL HEXES */
   .hexagon-group {
     fill: var(--black);
@@ -177,9 +183,16 @@ export const HexSVGStyle = styled.div`
       stroke-width: 0.3;
     }
   }
-  /* HIGHLIGHT SELECTABLE UNITS */
+  /* HIGHLIGHT MOVEABLE UNITS */
   .maphex__selected-card-unit--selectable > g polygon {
     stroke: var(--white);
+    stroke-width: 0.3;
+    @media screen and (min-width: 500px) {
+      stroke-width: 0.4;
+    }
+  }
+  .maphex__coselected-unit > g polygon {
+    stroke: var(--sub-white);
     stroke-width: 0.3;
     @media screen and (min-width: 500px) {
       stroke-width: 0.4;
@@ -195,5 +208,4 @@ export const HexSVGStyle = styled.div`
       stroke-width: 0.5;
     }
   }
-}
 `

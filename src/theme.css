@@ -2,13 +2,15 @@ html {
   /* THEME */
   --black: #0e0b0b;
   --white: #f2f4f3;
+  --sub-white: #b4b4b4;
   --gunmetal: #22333b;
   --bee-yellow: #ffd500;
   --butterfly-purple: #fc65b8;
   /* UTILITY */
   --white-btn-outline: #fff5fa;
-  --neon-orange: #e09628;
   --neon-green: #bada55;
+  --neon-orange: #e09628;
+  --neon-red: #e04c1f;
   /* UNUSED */
   --green: #95c623;
   --forest-green: #37480d;

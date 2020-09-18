@@ -58,7 +58,7 @@ const LayoutMiddle = styled.div`
   } */
   height: 55vh;
   overflow: auto;
-  padding: 50px;
+  padding: 50px 0px;
 
   ::-webkit-scrollbar {
     width: 0.5rem;

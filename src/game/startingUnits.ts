@@ -77,9 +77,9 @@ export const armyCards: GameArmyCard[] = [
 
 export type GameUnit = {
   unitID: string
-  cardID: string
   playerID: string
   gameCardID: string
+  cardID: string
 }
 export interface GameUnits {
   [key: string]: GameUnit
