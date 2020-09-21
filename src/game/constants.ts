@@ -7,8 +7,6 @@ export const phaseNames = {
 export const stageNames = {
   placeOrderMarkers: 'placeOrderMarkers',
   placingUnits: 'placingUnits',
-  takingTurn: 'takingTurn',
-  watchingTurn: 'watchingTurn',
 }
 
 export const OM_COUNT = 3

@@ -87,15 +87,11 @@ const BoardContextProvider = (props: BoardContextProps) => {
   const isRoundOfPlayPhase = ctx.phase === phaseNames.roundOfPlay
   const hasConfirmedRoundOfPlayStart =
     isRoundOfPlayPhase && G.roundOfPlayStartReady[playerID]
-  const isTakingTurnStage = myState.myCurrentStage === stageNames.takingTurn
-  const isWatchingTurnStage = myState.myCurrentStage === stageNames.watchingTurn
   const phaseStage = {
     isPlacementPhase,
     isOrderMarkerPhase,
     isRoundOfPlayPhase,
     hasConfirmedRoundOfPlayStart,
-    isTakingTurnStage,
-    isWatchingTurnStage,
   }
   //! FINAL BOARD STATE
   const boardState = {
@@ -103,6 +99,8 @@ const BoardContextProvider = (props: BoardContextProps) => {
     ...G,
     ...moves,
     ...ctx,
+    undo: props.undo,
+    redo: props.redo,
     // BOARD STATE
     ...uiState,
     // PLAYER STATE

@@ -14,10 +14,11 @@ export const RoundOfPlayControls = () => {
     currentOrderMarker,
     currentTurnGameCardID,
     hasConfirmedRoundOfPlayStart,
+    isMyTurn,
     // CTX
     playerID,
-    isTakingTurnStage,
-    isWatchingTurnStage,
+    undo,
+    redo,
     // MOVES
     endCurrentPlayerTurn,
   } = useBoardContext()
@@ -56,7 +57,7 @@ export const RoundOfPlayControls = () => {
   }
 
   //! RETURN WATCHING TURN
-  if (isWatchingTurnStage) {
+  if (!isMyTurn) {
     return (
       <StyledWrapper playerID={playerID}>
         <h2>Opponent taking turn...</h2>
@@ -65,7 +66,7 @@ export const RoundOfPlayControls = () => {
   }
 
   //! RETURN TAKING TURN
-  if (isTakingTurnStage) {
+  if (isMyTurn) {
     return (
       <StyledWrapper playerID={playerID}>
         <h2>{`Your #${currentOrderMarker + 1}:`}</h2>
@@ -95,6 +96,12 @@ export const RoundOfPlayControls = () => {
         </PlayerCardsStyledUL>
         <Button variant="primary" onClick={handleEndTurnButtonClick}>
           END TURN
+        </Button>
+        <Button variant="secondary" onClick={() => undo()}>
+          UNDO
+        </Button>
+        <Button variant="secondary" onClick={redo}>
+          REDO
         </Button>
       </StyledWrapper>
     )

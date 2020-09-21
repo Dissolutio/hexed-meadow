@@ -144,10 +144,6 @@ export const HexedMeadow = {
         G.currentOrderMarker = 0
         G.currentRound += 1
       },
-      moves: {
-        confirmRoundOfPlayStartReady,
-        endCurrentPlayerTurn,
-      },
       turn: {
         order: TurnOrder.CUSTOM_FROM('initiative'),
         onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
@@ -175,11 +171,6 @@ export const HexedMeadow = {
             const movePoints = thisTurnGameCard.move
             G.gameUnits[unit.unitID].movePoints = movePoints
           })
-          //! set player stages
-          ctx.events.setActivePlayers({
-            currentPlayer: stageNames.takingTurn,
-            others: stageNames.watchingTurn,
-          })
         },
 
         onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
@@ -193,16 +184,6 @@ export const HexedMeadow = {
           if (isLastTurn && isLastOrderMarker) {
             ctx.events.setPhase(phaseNames.placeOrderMarkers)
           }
-        },
-      },
-      stages: {
-        [stageNames.watchingTurn]: {},
-        [stageNames.takingTurn]: {
-          moves: {
-            confirmRoundOfPlayStartReady,
-            moveAction,
-            endCurrentPlayerTurn,
-          },
         },
       },
     },
