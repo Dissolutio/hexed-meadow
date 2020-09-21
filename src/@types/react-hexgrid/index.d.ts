@@ -74,7 +74,7 @@ declare module 'react-hexgrid' {
     static subtract: (a: Hex, b: Hex) => Hex
     static multiply: (a: Hex, b: Hex) => Hex
     static lengths: (a: Hex, b: Hex) => Hex
-    static distance: (a: Hex, b: Hex) => Hex
+    static distance: (a: Hex, b: Hex) => number
     static direction: (direction: number) => Hex
     static neighbour: (hex: Hex, direction: number) => Hex
     static neighbours: (hex: Hex, direction: Hex) => Hex[]
