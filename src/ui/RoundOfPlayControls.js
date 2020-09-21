@@ -111,7 +111,7 @@ export const RoundOfPlayControls = () => {
 const ConfirmReadyRoundOfPlay = () => {
   const { playerID, isMyTurn, confirmRoundOfPlayStartReady } = useBoardContext()
   const handleReadyClick = () => {
-    confirmRoundOfPlayStartReady({ playerID })
+    confirmRoundOfPlayStartReady()
   }
   if (isMyTurn) {
     return (

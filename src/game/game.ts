@@ -194,16 +194,8 @@ export const HexedMeadow = {
 }
 //! MOVES
 //! round of play
-function confirmRoundOfPlayStartReady(
-  G: GameState,
-  ctx: BoardProps['ctx'],
-  { playerID }
-) {
-  const isMyTurn = playerID === ctx.currentPlayer
-  G.roundOfPlayStartReady[playerID] = true
-  ctx.events.setStage(
-    isMyTurn ? stageNames.takingTurn : stageNames.watchingTurn
-  )
+function confirmRoundOfPlayStartReady(G: GameState, ctx: BoardProps['ctx']) {
+  G.roundOfPlayStartReady[ctx.playerID] = true
 }
 function endCurrentPlayerTurn(G: GameState, ctx: BoardProps['ctx']) {
   ctx.events.endTurn()
