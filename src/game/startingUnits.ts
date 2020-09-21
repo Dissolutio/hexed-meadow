@@ -4,14 +4,14 @@ export type ArmyCard = {
   name: string
   cardID: string
   race: string
-  life: string
-  move: string
-  range: string
-  attack: string
-  defense: string
-  points: string
-  figures: string
-  hexes: string
+  life: number
+  move: number
+  range: number
+  attack: number
+  defense: number
+  points: number
+  figures: number
+  hexes: number
 }
 export interface GameArmyCard extends ArmyCard {
   playerID: string
@@ -80,6 +80,7 @@ export type GameUnit = {
   playerID: string
   gameCardID: string
   cardID: string
+  movePoints: number
 }
 export interface GameUnits {
   [key: string]: GameUnit
@@ -94,7 +95,7 @@ function cardsToUnits(cards: GameArmyCard[]): GameUnits {
   }
   return cards.reduce((result, card) => {
     // CARD => FIGURES
-    const numFigures = parseInt(card.figures) * card.cardQuantity
+    const numFigures = card.figures * card.cardQuantity
     const figuresArr = Array.apply({}, Array(numFigures))
     // FIGURES => UNITS
     const unitsFromCard = figuresArr.reduce((unitsResult) => {
@@ -104,6 +105,7 @@ function cardsToUnits(cards: GameArmyCard[]): GameUnits {
         cardID: card.cardID,
         playerID: card.playerID,
         gameCardID: card.gameCardID,
+        movePoints: 0,
       }
       return {
         ...unitsResult,

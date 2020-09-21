@@ -1,4 +1,8 @@
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
+import { BoardProps } from 'boardgame.io/react'
+
+import { gameUnits, armyCards, GameArmyCard, GameUnits } from './startingUnits'
+import { rollD20Initiative } from './rollInitiative'
 import {
   makeHexagonMap,
   makePrePlacedHexagonMap,
@@ -6,8 +10,6 @@ import {
   HexMap,
   StartZones,
 } from './mapGen'
-import { gameUnits, armyCards, GameArmyCard, GameUnits } from './startingUnits'
-import { rollD20Initiative } from './rollInitiative'
 import {
   phaseNames,
   stageNames,
@@ -16,6 +18,7 @@ import {
   initialOrderMarkers,
   initialPlayerState,
   devPlayerState,
+  OrderMarker,
 } from './constants'
 
 /*
@@ -24,7 +27,7 @@ const isDevMode = false
 */
 const isDevMode = true
 
-const map = isDevMode ? makePrePlacedHexagonMap(8) : makeHexagonMap(3)
+const map = isDevMode ? makePrePlacedHexagonMap(3) : makeHexagonMap(3)
 const players = isDevMode ? devPlayerState : initialPlayerState
 
 type PlayerStateToggle = {
@@ -87,7 +90,7 @@ export const HexedMeadow = {
     [phaseNames.placement]: {
       start: true,
       moves: { placeUnitOnHex, confirmPlacementReady },
-      onBegin: (G, ctx) => {
+      onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
         ctx.events.setActivePlayers({ all: stageNames.placingUnits })
       },
       endIf: (G) => {
@@ -97,7 +100,7 @@ export const HexedMeadow = {
     },
     // ! ORDER MARKERS PHASE
     [phaseNames.placeOrderMarkers]: {
-      onBegin: (G, ctx) => {
+      onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
         //! reset state
         G.orderMarkers = initialOrderMarkers
         G.orderMarkersReady = { '0': isDevMode, '1': isDevMode }
@@ -116,7 +119,7 @@ export const HexedMeadow = {
     },
     // ! ROUND OF PLAY PHASE
     [phaseNames.roundOfPlay]: {
-      onBegin: (G, ctx) => {
+      onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
         // TODO - generate this player IDs arr
         const initiativeRoll = rollD20Initiative(['0', '1'])
         G.initiative = initiativeRoll
@@ -134,7 +137,7 @@ export const HexedMeadow = {
           {}
         )
       },
-      onEnd: (G, ctx) => {
+      onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
         G.orderMarkersReady = { '0': false, '1': false }
         G.roundOfPlayStartReady = { '0': false, '1': false }
         G.players = { ...G.players, ...initialPlayerState }
@@ -147,25 +150,31 @@ export const HexedMeadow = {
       },
       turn: {
         order: TurnOrder.CUSTOM_FROM('initiative'),
-        onBegin: (G, ctx) => {
+        onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
+          const thisTurnGameCardID =
+            G.players[ctx.currentPlayer].orderMarkers[
+              G.currentOrderMarker.toString()
+            ]
+          const thisTurnGameCard = G.armyCards.find(
+            (c) => c.gameCardID === thisTurnGameCardID
+          )
           //! reveal OM
-          const index = G.orderMarkers[ctx.currentPlayer].findIndex((om) => {
-            const gameCardID =
-              G.players[ctx.currentPlayer].orderMarkers[
-                G.currentOrderMarker.toString()
-              ]
-            const isRevealableOM = (om) => {
-              return om.gameCardID === gameCardID && om.order === ''
+          const indexToReveal = G.orderMarkers[ctx.currentPlayer].findIndex(
+            (om: OrderMarker) => {
+              return om.gameCardID === thisTurnGameCardID && om.order === ''
             }
-
-            return isRevealableOM(om)
+          )
+          G.orderMarkers[ctx.currentPlayer][
+            indexToReveal
+          ].order = G.currentOrderMarker.toString()
+          //! assign MOVE POINTS
+          const units = Object.values(G.gameUnits).filter(
+            (u) => u.gameCardID === thisTurnGameCardID
+          )
+          units.forEach((unit) => {
+            const movePoints = thisTurnGameCard.move
+            G.gameUnits[unit.unitID].movePoints = movePoints
           })
-          if (index >= 0) {
-            G.orderMarkers[ctx.currentPlayer][
-              index
-            ].order = G.currentOrderMarker.toString()
-          }
-          //! set unit stats
           //! set player stages
           ctx.events.setActivePlayers({
             currentPlayer: stageNames.takingTurn,
@@ -173,7 +182,7 @@ export const HexedMeadow = {
           })
         },
 
-        onEnd: (G, ctx) => {
+        onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
           //! handle turns & order markers...
           const isLastTurn = ctx.playOrderPos === ctx.numPlayers - 1
           const isLastOrderMarker = G.currentOrderMarker >= OM_COUNT - 1
@@ -204,14 +213,18 @@ export const HexedMeadow = {
 }
 //! MOVES
 //! round of play
-function confirmRoundOfPlayStartReady(G, ctx, { playerID }) {
+function confirmRoundOfPlayStartReady(
+  G: GameState,
+  ctx: BoardProps['ctx'],
+  { playerID }
+) {
   const isMyTurn = playerID === ctx.currentPlayer
   G.roundOfPlayStartReady[playerID] = true
   ctx.events.setStage(
     isMyTurn ? stageNames.takingTurn : stageNames.watchingTurn
   )
 }
-function endCurrentPlayerTurn(G, ctx) {
+function endCurrentPlayerTurn(G: GameState, ctx: BoardProps['ctx']) {
   ctx.events.endTurn()
 }
 type UnitMove = {
@@ -219,7 +232,7 @@ type UnitMove = {
   startHex: string
   endHex: string
 }
-function moveAction(G, ctx, move: UnitMove) {
+function moveAction(G: GameState, ctx: BoardProps['ctx'], move: UnitMove) {
   // G.boardHexes
   // * GAMECARD => FIGURES
   // * GET FIGURES from current card
@@ -230,17 +243,29 @@ function moveAction(G, ctx, move: UnitMove) {
   // * update boardHex
 }
 //! placement
-function placeUnitOnHex(G, ctx, hexId, unit) {
+function placeUnitOnHex(G: GameState, ctx: BoardProps['ctx'], hexId, unit) {
   G.boardHexes[hexId].occupyingUnitID = unit?.unitID ?? ''
 }
-function confirmPlacementReady(G, ctx, { playerID }) {
+function confirmPlacementReady(
+  G: GameState,
+  ctx: BoardProps['ctx'],
+  { playerID }
+) {
   G.placementReady[playerID] = true
 }
 
 //! order markers
-function placeOrderMarker(G, ctx, { playerID, orderMarker, gameCardID }) {
+function placeOrderMarker(
+  G: GameState,
+  ctx: BoardProps['ctx'],
+  { playerID, orderMarker, gameCardID }
+) {
   G.players[playerID].orderMarkers[orderMarker] = gameCardID
 }
-function confirmOrderMarkersReady(G, ctx, { playerID }) {
+function confirmOrderMarkersReady(
+  G: GameState,
+  ctx: BoardProps['ctx'],
+  { playerID }
+) {
   G.orderMarkersReady[playerID] = true
 }
