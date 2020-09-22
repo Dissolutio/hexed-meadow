@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useUIContext } from 'ui/hooks/useUIContext'
-import { controuLinesBG } from './controuLinesBG'
+import { contourLinesBG } from './contourLinesBG'
 
 export const Layout = ({ children }) => {
   const { playerID, playerColor, playerColorUrlEncoded } = useUIContext()
-  const bgSvg = controuLinesBG(playerColorUrlEncoded)
+  const bgSvg = contourLinesBG(playerColorUrlEncoded)
   return (
     <>
       <LayoutContainer
