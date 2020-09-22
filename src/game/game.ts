@@ -123,12 +123,9 @@ export const HexedMeadow = {
     },
     // ! ROUND OF PLAY PHASE
     [phaseNames.roundOfPlay]: {
+      //! ON BEGIN
       onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
-        // TODO - generate this player IDs arr
-        const initiativeRoll = rollD20Initiative(['0', '1'])
-        G.initiative = initiativeRoll
-        G.currentOrderMarker = 0
-        //! setup unrevealed OMs
+        //! Setup Unrevealed Order Markers
         G.orderMarkers = Object.keys(G.players).reduce(
           (orderMarkers, playerID) => {
             return {
@@ -140,8 +137,14 @@ export const HexedMeadow = {
           },
           {}
         )
+        //! Roll Initiative
+        const initiativeRoll = rollD20Initiative(['0', '1'])
+        G.initiative = initiativeRoll
+        G.currentOrderMarker = 0
       },
+      //! ON END
       onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
+        //! Setup for Next Round
         G.orderMarkersReady = { '0': false, '1': false }
         G.roundOfPlayStartReady = { '0': false, '1': false }
         G.players = { ...G.players, ...initialPlayerState }
@@ -167,11 +170,11 @@ export const HexedMeadow = {
           G.orderMarkers[ctx.currentPlayer][
             indexToReveal
           ].order = G.currentOrderMarker.toString()
-          //! assign MOVE POINTS
-          const units = Object.values(G.gameUnits).filter(
+          const thisTurnUnits = Object.values(G.gameUnits).filter(
             (u) => u.gameCardID === thisTurnGameCardID
           )
-          units.forEach((unit) => {
+          //! assign unit values
+          thisTurnUnits.forEach((unit) => {
             const movePoints = thisTurnGameCard.move
             G.gameUnits[unit.unitID].movePoints = movePoints
           })
