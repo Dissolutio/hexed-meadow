@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react'
 import { BoardProps } from 'boardgame.io/react'
-import { phaseNames, stageNames } from 'game/constants'
+import { phaseNames } from 'game/constants'
 import { BoardHex } from 'game/mapGen'
 import { GameUnit, GameArmyCard } from 'game/startingUnits'
 

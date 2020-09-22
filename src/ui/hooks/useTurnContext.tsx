@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 
 import { GameArmyCard, GameUnit } from 'game/startingUnits'
 import { useBoardContext } from './useBoardContext'
+import { HexUtils } from 'react-hexgrid'
 
 const TurnContext = React.createContext({})
 
@@ -15,8 +16,11 @@ export const TurnContextProvider = ({ children }) => {
     getGameUnitByID,
     getBoardHexIDForUnitID,
     currentTurnGameCardID,
+    // STATE
     setActiveHexID,
     setErrorMsg,
+    // MOVES
+    moveAction,
   } = useBoardContext()
 
   // ! STATE
@@ -72,13 +76,24 @@ export const TurnContextProvider = ({ children }) => {
       unitOnHex?.gameCardID === selectedGameCardID &&
       selectedGameCardID === currentTurnGameCardID
     const isUnitSelected = unitOnHex?.unitID === selectedUnitID
-
+    // * repeated from moveAction function
+    const startHex = boardHexes[getBoardHexIDForUnitID(selectedUnitID)]
+    const movePoints = gameUnits?.[selectedUnitID]?.movePoints
+    console.log(`functiononClickBoardHex__turn -> movePoints`, movePoints)
+    const isEndHexOccupied = Boolean(occupyingUnitID)
+    const distance = HexUtils.distance(startHex, sourceHex)
+    const isInMoveRange = distance <= movePoints
     // ! MY TURN
     if (isMyTurn) {
+      // ! make move
+      if (selectedUnitID && isInMoveRange && !isEndHexOccupied) {
+        moveAction({ unitID: selectedUnitID, endHexID: sourceHex.id })
+      }
+      // ! select unit
       if (isUnitReadyToSelect) {
-        console.log('SELECT UNIT', gameCard.name, unitOnHex)
         setSelectedUnitID(unitOnHex.unitID)
       }
+      // ! deselect unit
       if (isUnitSelected) {
         setSelectedUnitID('')
       }

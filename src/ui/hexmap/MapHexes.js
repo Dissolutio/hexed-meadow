@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 
-import { Hexagon } from 'react-hexgrid'
+import { Hexagon, HexUtils } from 'react-hexgrid'
 import { UnitIcon } from 'ui/UnitIcon'
 
 const moveStatuses = {
@@ -70,14 +70,32 @@ export const MapHexes = () => {
   const isSelectedUnitHex = (hex) => {
     return hex.occupyingUnitID && hex.occupyingUnitID === selectedUnitID
   }
-  const getMoveRangeStatus = (hex) => {
+  const getMoveRangeStatusForHex = (hex) => {
+    const unit = gameUnits[selectedUnitID]
+    const movePoints = unit.movePoints
     const startHexID = getBoardHexIDForUnitID(selectedUnitID)
-    const endHexID = hex.id
-    const unitAvailableMovePoints = 1
-    const myCheck = () => {}
-    return moveStatuses.safely
+    const distance = HexUtils.distance(boardHexes[startHexID], hex)
+    const isOutOfMoveRange = distance > movePoints
+    const isOccupied = Boolean(hex.occupyingUnitID)
+
+    // ! IMPROVED MOVE PATHING
+    const firstNeighbors = HexUtils.neighbours(hex)
+    const paths = firstNeighbors.reduce(
+      (prev, curr, index) => {
+        console.log(`pathing${index}`, curr)
+        prev.safe.push(curr.id)
+        return prev
+      },
+      { safe: [], engage: [], disengage: [] }
+    )
+    //! *
+
+    if (isOutOfMoveRange || isOccupied) {
+      return ''
+    }
     // return moveStatuses.disengage
     // return moveStatuses.engage
+    return moveStatuses.safely
   }
 
   function calcClassNames(hex) {
@@ -109,14 +127,10 @@ export const MapHexes = () => {
       if (isSelectedUnitHex(hex)) {
         classNames = classNames.concat(' maphex__selected-card-unit--active ')
       }
-      /*
-      TODO - Color hexes that 
-      ?  Can be moved to safely
-      ?  Can be moved to and become engage
-      ?  Can be moved to and incur disengagement
-
-      */
-      if (selectedUnitID && getMoveRangeStatus(hex) === moveStatuses.safely) {
+      if (
+        selectedUnitID &&
+        getMoveRangeStatusForHex(hex) === moveStatuses.safely
+      ) {
         classNames = classNames.concat(' maphex__move-safely ')
       }
     }

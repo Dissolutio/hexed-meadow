@@ -1,4 +1,5 @@
 import React from 'react'
+import { BsArrowCounterclockwise, BsArrowClockwise } from 'react-icons/bs'
 import styled from 'styled-components'
 import Button from 'react-bootstrap/esm/Button'
 
@@ -94,15 +95,23 @@ export const RoundOfPlayControls = () => {
             </PlayerCardStyledLi>
           ))}
         </PlayerCardsStyledUL>
-        <Button variant="primary" onClick={handleEndTurnButtonClick}>
-          END TURN
-        </Button>
-        <Button variant="secondary" onClick={() => undo()}>
-          UNDO
-        </Button>
-        <Button variant="secondary" onClick={redo}>
-          REDO
-        </Button>
+        <ButtonWrapper>
+          <Button variant="danger" onClick={handleEndTurnButtonClick}>
+            END MOVE
+          </Button>
+          <span>
+            <Button variant="secondary" onClick={() => undo()}>
+              <MiniButton>
+                <BsArrowCounterclockwise style={{ marginRight: '1rem' }} />
+                <span>UNDO</span>
+              </MiniButton>
+            </Button>
+            <Button variant="secondary" onClick={redo}>
+              <BsArrowClockwise style={{ marginRight: '1rem' }} />
+              REDO
+            </Button>
+          </span>
+        </ButtonWrapper>
       </StyledWrapper>
     )
   }
@@ -168,4 +177,16 @@ const PlayerCardStyledLi = styled.li`
     props.isCurrentSelectedCard
       ? `1px 1px 2px var(--white), 1px 1px 2px var(--white) inset`
       : `none`};
+`
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  padding: 26px;
+`
+const MiniButton = styled.div`
+  button {
+  }
+  span {
+  }
 `

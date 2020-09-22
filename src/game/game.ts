@@ -1,5 +1,6 @@
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
 import { BoardProps } from 'boardgame.io/react'
+import { HexUtils } from 'react-hexgrid'
 
 import { gameUnits, armyCards, GameArmyCard, GameUnits } from './startingUnits'
 import { rollD20Initiative } from './rollInitiative'
@@ -205,18 +206,23 @@ function endCurrentPlayerTurn(G: GameState, ctx: BoardProps['ctx']) {
 }
 type UnitMove = {
   unitID: string
-  startHex: string
-  endHex: string
+  endHexID: string
 }
 function moveAction(G: GameState, ctx: BoardProps['ctx'], move: UnitMove) {
-  // G.boardHexes
-  // * GAMECARD => FIGURES
-  // * GET FIGURES from current card
-  // * CHECK PATHS  (thru units, movement points, height changes)
-  // *
-  // * check for disengagements
-  // * update unit
-  // * update boardHex
+  const { unitID, endHexID } = move
+  const movePoints = G.gameUnits[unitID].movePoints
+  const startHex = Object.values(G.boardHexes).find(
+    (hex) => hex.occupyingUnitID === unitID
+  )
+  const endHex = G.boardHexes[endHexID]
+  const isEndHexOccupied = Boolean(endHex.occupyingUnitID)
+  const distance = HexUtils.distance(startHex, endHex)
+  const isInMoveRange = distance <= movePoints
+  if (isInMoveRange && !isEndHexOccupied) {
+    G.boardHexes[startHex.id].occupyingUnitID = ''
+    G.boardHexes[endHex.id].occupyingUnitID = unitID
+    G.gameUnits[unitID].movePoints -= distance
+  }
 }
 //! placement
 function placeUnitOnHex(G: GameState, ctx: BoardProps['ctx'], hexId, unit) {
