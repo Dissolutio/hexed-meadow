@@ -17,9 +17,25 @@ const devModes = {
 
 // TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
 let devMode = devModes.dev
-// let devMode = devModes.devWithLocalServer
+// devMode = devModes.devWithLocalServer
+
 if (process.env.NODE_ENV === 'production') {
   devMode = devModes.herokuDeployment
+}
+const EnvApp = () => {
+  if (devMode === devModes.devWithLocalServer) {
+    return <DevAppWithLocalServer />
+  } else if (
+    devMode === devModes.dev ||
+    process.env.NODE_ENV === 'development'
+  ) {
+    return <DevApp />
+  } else if (
+    devMode === devModes.herokuDeployment ||
+    process.env.NODE_ENV === 'production'
+  ) {
+    return <HerokuApp />
+  }
 }
 
 export const App = () => {
@@ -28,18 +44,6 @@ export const App = () => {
       <EnvApp />
     </BrowserRouter>
   )
-}
-
-const EnvApp = () => {
-  if (devMode === devModes.dev) {
-    return <DevApp />
-  }
-  if (devMode === devModes.devWithLocalServer) {
-    return <DevAppWithLocalServer />
-  }
-  if (devMode === devModes.herokuDeployment) {
-    return <HerokuApp />
-  }
 }
 
 export const DevApp = () => {
@@ -122,7 +126,7 @@ const DeployClient = Client({
     (window as any).__REDUX_DEVTOOLS_EXTENSION__(),
 })
 
-const HerokuApp = (props) => {
+const HerokuApp = () => {
   return (
     <Switch>
       <Route exact path="/">
