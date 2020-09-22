@@ -59,10 +59,13 @@ export function makeHexagonMap(mapSize: number) {
     hexMap: hexMap(mapSize),
   }
 }
-const fillHexInfo = (prev: BoardHexes, curr: Hex): BoardHexes => {
+export const makeHexID = (hex: Hex) => {
+  return `q${hex.q}r${hex.r}s${hex.s}`
+}
+const fillHexInfo = (prev, curr: Hex): BoardHexes => {
   const boardHex = {
     ...curr,
-    id: `q${curr.q}r${curr.r}s${curr.s}`,
+    id: makeHexID(curr),
     occupyingUnitID: '',
     terrain: 'grass',
   }
