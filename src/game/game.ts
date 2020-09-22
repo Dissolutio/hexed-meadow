@@ -101,10 +101,13 @@ export const HexedMeadow = {
     // ! ORDER MARKERS PHASE
     [phaseNames.placeOrderMarkers]: {
       onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
+        const shouldUseDevModeValue = isDevMode && G.currentRound === 0
         //! reset state
         G.orderMarkers = initialOrderMarkers
-        G.orderMarkersReady = { '0': isDevMode, '1': isDevMode }
-        G.players = initialPlayerState
+        G.orderMarkersReady = {
+          '0': shouldUseDevModeValue,
+          '1': shouldUseDevModeValue,
+        }
         //! set player stages
         ctx.events.setActivePlayers({ all: stageNames.placeOrderMarkers })
       },
