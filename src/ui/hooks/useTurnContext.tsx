@@ -78,10 +78,9 @@ export const TurnContextProvider = ({ children }) => {
     const isUnitSelected = unitOnHex?.unitID === selectedUnitID
     // * repeated from moveAction function
     const startHex = boardHexes[getBoardHexIDForUnitID(selectedUnitID)]
-    const movePoints = gameUnits?.[selectedUnitID]?.movePoints
-    console.log(`functiononClickBoardHex__turn -> movePoints`, movePoints)
     const isEndHexOccupied = Boolean(occupyingUnitID)
     const distance = HexUtils.distance(startHex, sourceHex)
+    const movePoints = gameUnits?.[selectedUnitID]?.movePoints ?? 0
     const isInMoveRange = distance <= movePoints
     // ! MY TURN
     if (isMyTurn) {
