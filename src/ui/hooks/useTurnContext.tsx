@@ -36,8 +36,6 @@ export const TurnContextProvider = ({ children }) => {
     setSelectedUnitID('')
   }, [isMyTurn])
 
-  const selectedUnit = getGameUnitByID(selectedUnitID)
-
   const selectedGameCard = () => {
     const armyCardsArr = Object.values(armyCards)
     const gameCard = armyCardsArr.find(
@@ -82,17 +80,18 @@ export const TurnContextProvider = ({ children }) => {
     const distance = HexUtils.distance(startHex, sourceHex)
     const movePoints = gameUnits?.[selectedUnitID]?.movePoints ?? 0
     const isInMoveRange = distance <= movePoints
-    // ! MY TURN
+    //TURN MyTurn
     if (isMyTurn) {
-      // ! make move
+      //🛠 unit selected, clicked valid hex, make move
       if (selectedUnitID && isInMoveRange && !isEndHexOccupied) {
         moveAction({ unitID: selectedUnitID, endHexID: sourceHex.id })
       }
-      // ! select unit
+      //🛠 clicked another selectable unit, select that unit
       if (isUnitReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)
       }
-      // ! deselect unit
+      //🛠 clicked currently selected unit, de-select the unit (to none selected)
+      // TODO This could be different, or nothing
       if (isUnitSelected) {
         setSelectedUnitID('')
       }
@@ -112,9 +111,9 @@ export const TurnContextProvider = ({ children }) => {
         // STATE
         selectedGameCardID,
         selectedUnitID,
+        selectedUnit: getGameUnitByID(selectedUnitID),
         selectedGameCard: selectedGameCard(),
         selectedGameCardUnits: selectedGameCardUnits(),
-        selectedUnit,
         // HANDLERS
         onClickBoardHex__turn,
         onSelectCard__turn,

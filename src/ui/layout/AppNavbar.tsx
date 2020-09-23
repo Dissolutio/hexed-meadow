@@ -53,7 +53,7 @@ const StyledTopConsole = styled(({ playerID, ...rest }) => (
   padding: 4px 16px 0px 16px;
   & button:focus,
   & button:hover {
-    outline: 2px solid --white-btn-outline;
+    outline: 2px solid --white;
   }
   a {
     color: ${(props) => props.theme.playerColors[props.playerID]} !important ;

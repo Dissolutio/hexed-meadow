@@ -22,11 +22,12 @@ import {
   OrderMarker,
 } from './constants'
 
-/*
-// {} TOGGLE DEV MODE
-const isDevMode = false
-*/
+/* TOGGLE DEV MODE*/
+//
 const isDevMode = true
+// const isDevMode = false
+//
+/* TOGGLE DEV MODE */
 
 const map = isDevMode ? makePrePlacedHexagonMap(3) : makeHexagonMap(3)
 const players = isDevMode ? devPlayerState : initialPlayerState
@@ -87,20 +88,23 @@ export const HexedMeadow = {
   seed: 'random_string',
   playerView: PlayerView.STRIP_SECRETS,
   phases: {
-    // ! PLACEMENT PHASE
+    //PHASE-PLACEMENT
     [phaseNames.placement]: {
       start: true,
       moves: { placeUnitOnHex, confirmPlacementReady },
+      //onBegin
       onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
         ctx.events.setActivePlayers({ all: stageNames.placingUnits })
       },
+      //endIf
       endIf: (G) => {
         return G.placementReady['0'] && G.placementReady['1']
       },
       next: phaseNames.placeOrderMarkers,
     },
-    // ! ORDER MARKERS PHASE
+    //PHASE-ORDER MARKERS
     [phaseNames.placeOrderMarkers]: {
+      //onBegin
       onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
         const shouldUseDevModeValue = isDevMode && G.currentRound === 0
         //! reset state
@@ -112,20 +116,22 @@ export const HexedMeadow = {
         //! set player stages
         ctx.events.setActivePlayers({ all: stageNames.placeOrderMarkers })
       },
+      //endIf
       endIf: (G) => {
         return G.orderMarkersReady['0'] && G.orderMarkersReady['1']
       },
+      //🎆
       moves: {
         placeOrderMarker,
         confirmOrderMarkersReady,
       },
       next: phaseNames.roundOfPlay,
     },
-    // ! ROUND OF PLAY PHASE
+    //PHASE-ROUND OF PLAY
     [phaseNames.roundOfPlay]: {
-      //! ON BEGIN
+      //onBegin
       onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
-        //! Setup Unrevealed Order Markers
+        //🛠 Setup Unrevealed Order Markers
         G.orderMarkers = Object.keys(G.players).reduce(
           (orderMarkers, playerID) => {
             return {
@@ -137,22 +143,24 @@ export const HexedMeadow = {
           },
           {}
         )
-        //! Roll Initiative
+        //🛠 Roll Initiative
         const initiativeRoll = rollD20Initiative(['0', '1'])
         G.initiative = initiativeRoll
         G.currentOrderMarker = 0
       },
-      //! ON END
+      //onEnd
       onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
-        //! Setup for Next Round
+        //🛠 Setup for Next Round
         G.orderMarkersReady = { '0': false, '1': false }
         G.roundOfPlayStartReady = { '0': false, '1': false }
         G.players = { ...G.players, ...initialPlayerState }
         G.currentOrderMarker = 0
         G.currentRound += 1
       },
+      //TURN-Round Of Play
       turn: {
         order: TurnOrder.CUSTOM_FROM('initiative'),
+        //onBegin
         onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
           const thisTurnGameCardID =
             G.players[ctx.currentPlayer].orderMarkers[
@@ -179,9 +187,9 @@ export const HexedMeadow = {
             G.gameUnits[unit.unitID].movePoints = movePoints
           })
         },
-
+        //onEnd
         onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
-          //! handle turns & order markers...
+          //🛠 reset unit move points and ranges
           const isLastTurn = ctx.playOrderPos === ctx.numPlayers - 1
           const isLastOrderMarker = G.currentOrderMarker >= OM_COUNT - 1
           if (isLastTurn && !isLastOrderMarker) {

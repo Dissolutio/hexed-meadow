@@ -1,10 +1,22 @@
 export const colors = {
-  gunmetal: '#22333b',
-  gunmetalUrlEncoded: '%2322333b',
-  beeYellow: '#ffd500',
+  // gunmetal: '#22333b',
+  // gunmetalUrlEncoded: '%2322333b',
+  gunmetal: '#5d576b',
+  gunmetalUrlEncoded: '%235d576b',
+  //players
+  beeYellow: '#FFDD33',
   butterflyPurple: '#fc65b8',
-  beeYellowUrlEncoded: '%23ffd500',
+  waspRed: '#E4572E',
+  beetleBlue: '#058ed9',
+  hummingbirdGreen: '#75DBCD',
+  orange: '#E8AA14',
+  //players - encoded
+  beeYellowUrlEncoded: '%23FFDD33',
   butterflyPurpleUrlEncoded: '%23fc65b8',
+  waspRedUrlEncoded: '%23E4572E',
+  beetleBlueUrlEncoded: '%23058ed9',
+  hummingbirdGreenUrlEncoded: '%2375DBCD',
+  orangeUrlEncoded: '%23E8AA14',
 }
 export const playerColorUrlEncoded = (playerID) => {
   if (playerID === '0') {

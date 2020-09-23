@@ -1,13 +1,17 @@
 html {
   /* THEME */
-  --black: #0e0b0b;
-  --white: #f2f4f3;
+  --black: #222222;
+  --white: #f7edf0;
   --sub-white: #b4b4b4;
-  --gunmetal: #22333b;
-  --bee-yellow: #ffd500;
+  /* --gunmetal: #22333b; */
+  --gunmetal: #5d576b;
+  --bee-yellow: #ffdd33;
   --butterfly-purple: #fc65b8;
+  --wasp-red: #e4572e;
+  --beetle-blue: #058ed9;
+  --hummingbird-green: #75dbcd;
+  --orange: #e8aa14;
   /* UTILITY */
-  --white-btn-outline: #fff5fa;
   --neon-green: #bada55;
   --neon-orange: #e09628;
   --neon-red: #e04c1f;
