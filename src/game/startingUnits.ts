@@ -18,43 +18,41 @@ export interface GameArmyCard extends ArmyCard {
   gameCardID: string
   cardQuantity: number
 }
-
+//🛠 SETUP HEXED MEADOW CARDS/UNITS
 // BEES
-const beestyBoyzCard = hexedMeadowCards['hm101']
 const beestyBoyz = {
   playerID: '0',
   cardQuantity: 1,
-  ...beestyBoyzCard,
+  ...hexedMeadowCards['hm101'],
 }
-const bSquadCard = hexedMeadowCards['hm102']
 const bSquad = {
   playerID: '0',
   cardQuantity: 1,
-  ...bSquadCard,
+  ...hexedMeadowCards['hm102'],
 }
-const queenBaeCard = hexedMeadowCards['hm103']
-const queenBae = { ...queenBaeCard, playerID: '0', cardQuantity: 1 }
+const queenBae = {
+  ...hexedMeadowCards['hm103'],
+  playerID: '0',
+  cardQuantity: 1,
+}
 // BUTTERFLIES
-const butterFriesCard = hexedMeadowCards['hm201']
 const butterFries = {
   playerID: '1',
   cardQuantity: 1,
-  ...butterFriesCard,
+  ...hexedMeadowCards['hm201'],
 }
-const scarwingsCard = hexedMeadowCards['hm202']
 const scarwings = {
   playerID: '1',
   cardQuantity: 1,
-  ...scarwingsCard,
+  ...hexedMeadowCards['hm202'],
 }
-const monarchCard = hexedMeadowCards['hm203']
 const monarch = {
   playerID: '1',
   cardQuantity: 1,
-  ...monarchCard,
+  ...hexedMeadowCards['hm203'],
 }
 
-// MAKE STARTING ARMY CARDS
+//🛠 INITIAL ARMY CARDS
 export const armyCards: GameArmyCard[] = [
   // PLAYER 0
   queenBae,

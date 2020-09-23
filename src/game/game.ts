@@ -202,7 +202,6 @@ export const HexedMeadow = {
               { ...unit, movePoints: movePoints },
               G.boardHexes
             )
-            console.log(`moveRange`, moveRange)
             G.gameUnits[unit.unitID].moveRange = moveRange
           })
         },
@@ -343,20 +342,17 @@ export function getMoveRangeForUnit(
         const isEndHexOccupied = Boolean(end.occupyingUnitID)
         const isDenied = movePointsLeftAfterMove < 0 || isEndHexOccupied
         if (isDenied) {
-          console.log(`isDenied`, isDenied)
           result.denied.push(end.id)
         }
         //🛠 ELSE safe FKN STOOP1d
         if (!isDenied) {
           result.safely.push(end.id)
           if (movePointsLeftAfterMove) {
-            console.log(`movePointsLeftAfterMove`, movePointsLeftAfterMove)
             const recursiveMoveRange = moveRangeReduce(
               end,
               movePointsLeftAfterMove,
               boardHexes
             )
-            console.log(`recursiveMoveRange`, recursiveMoveRange)
             return {
               ...result,
               ...recursiveMoveRange,

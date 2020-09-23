@@ -25,12 +25,11 @@ export const RoundOfPlayControls = () => {
   } = useBoardContext()
 
   const { selectedGameCardID, onSelectCard__turn } = useTurnContext()
-
   const myTurnCards = () => {
     const clone = [...myCards]
-    const activeTurnCards = clone.find((card) => isCurrentTurnCard(card))
+    const activeTurnCards = clone.filter((card) => isCurrentTurnCard(card))
     const nonActiveTurnCards = clone.filter((card) => !isCurrentTurnCard(card))
-    const adjustedArr = [activeTurnCards, ...nonActiveTurnCards]
+    const adjustedArr = [...activeTurnCards, ...nonActiveTurnCards]
     return adjustedArr
   }
   const hexagonBgDataUrl = hexagonsHeroPatternDataUrl({

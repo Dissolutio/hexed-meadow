@@ -24,17 +24,18 @@ export const TurnContextProvider = ({ children }) => {
   } = useBoardContext()
 
   // ! STATE
-  const initialSelectedGameCard = () => (isMyTurn ? currentTurnGameCardID : '')
-  const [selectedGameCardID, setSelectedGameCardID] = useState(
-    initialSelectedGameCard()
-  )
+  const [selectedGameCardID, setSelectedGameCardID] = useState('')
 
   const [selectedUnitID, setSelectedUnitID] = useState('')
-  // RESET UI ON TURN START/END
+
+  //🛠 auto select my turn card
   useEffect(() => {
-    setSelectedGameCardID(initialSelectedGameCard())
-    setSelectedUnitID('')
+    if (isMyTurn) {
+      setSelectedGameCardID(currentTurnGameCardID)
+    }
   }, [isMyTurn])
+
+  const selectedUnit = getGameUnitByID(selectedUnitID)
 
   const selectedGameCard = () => {
     const armyCardsArr = Object.values(armyCards)
@@ -91,7 +92,7 @@ export const TurnContextProvider = ({ children }) => {
         setSelectedUnitID(unitOnHex.unitID)
       }
       //🛠 clicked currently selected unit, de-select the unit (to none selected)
-      // TODO This could be different, or nothing
+      // TODO This could be different
       if (isUnitSelected) {
         setSelectedUnitID('')
       }
@@ -111,9 +112,9 @@ export const TurnContextProvider = ({ children }) => {
         // STATE
         selectedGameCardID,
         selectedUnitID,
-        selectedUnit: getGameUnitByID(selectedUnitID),
         selectedGameCard: selectedGameCard(),
         selectedGameCardUnits: selectedGameCardUnits(),
+        selectedUnit,
         // HANDLERS
         onClickBoardHex__turn,
         onSelectCard__turn,
