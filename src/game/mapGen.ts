@@ -1,11 +1,13 @@
 import { GridGenerator, Hex } from 'react-hexgrid'
 import { gameUnits } from './startingUnits'
+import { getRandomInt } from 'ui/utilities'
 
 export interface BoardHex extends Hex {
   id: string
   occupyingUnitID: string
-  terrain?: string
-  altitude?: string
+  terrain: string
+  altitude: number
+  horizontalMoveCost: number
 }
 export interface BoardHexes {
   [key: string]: BoardHex
@@ -62,12 +64,16 @@ export function makeHexagonMap(mapSize: number) {
 export const makeHexID = (hex: Hex) => {
   return `q${hex.q}r${hex.r}s${hex.s}`
 }
-const fillHexInfo = (prev, curr: Hex): BoardHexes => {
+const fillHexInfo = (prev: BoardHexes, curr: Hex): BoardHexes => {
+  const altitude = () => getRandomInt(1, 1)
+  const horizontalMoveCost = () => getRandomInt(1, 1)
   const boardHex = {
     ...curr,
     id: makeHexID(curr),
     occupyingUnitID: '',
     terrain: 'grass',
+    altitude: altitude(),
+    horizontalMoveCost: horizontalMoveCost(),
   }
   return {
     ...prev,

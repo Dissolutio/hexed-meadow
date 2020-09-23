@@ -2,14 +2,24 @@ import { TurnOrder, PlayerView } from 'boardgame.io/core'
 import { BoardProps } from 'boardgame.io/react'
 import { HexUtils } from 'react-hexgrid'
 
-import { gameUnits, armyCards, GameArmyCard, GameUnits } from './startingUnits'
+import {
+  gameUnits,
+  armyCards,
+  GameArmyCard,
+  GameUnits,
+  GameUnit,
+  MoveRange,
+  baseMoveRange,
+} from './startingUnits'
 import { rollD20Initiative } from './rollInitiative'
 import {
   makeHexagonMap,
   makePrePlacedHexagonMap,
   BoardHexes,
+  BoardHex,
   HexMap,
   StartZones,
+  makeHexID,
 } from './mapGen'
 import {
   phaseNames,
@@ -169,7 +179,10 @@ export const HexedMeadow = {
           const thisTurnGameCard = G.armyCards.find(
             (c) => c.gameCardID === thisTurnGameCardID
           )
-          //! reveal OM
+          const thisTurnUnits = Object.values(G.gameUnits).filter(
+            (u) => u.gameCardID === thisTurnGameCardID
+          )
+          //🛠 reveal OM
           const indexToReveal = G.orderMarkers[ctx.currentPlayer].findIndex(
             (om: OrderMarker) => {
               return om.gameCardID === thisTurnGameCardID && om.order === ''
@@ -178,24 +191,35 @@ export const HexedMeadow = {
           G.orderMarkers[ctx.currentPlayer][
             indexToReveal
           ].order = G.currentOrderMarker.toString()
-          const thisTurnUnits = Object.values(G.gameUnits).filter(
-            (u) => u.gameCardID === thisTurnGameCardID
-          )
-          //! assign unit values
-          thisTurnUnits.forEach((unit) => {
+
+          //🛠 assign unit values
+          thisTurnUnits.forEach((unit: GameUnit) => {
+            //* move points
             const movePoints = thisTurnGameCard.move
             G.gameUnits[unit.unitID].movePoints = movePoints
+            //* move ranges
+            const moveRange = getMoveRangeForUnit(
+              { ...unit, movePoints: movePoints },
+              G.boardHexes
+            )
+            console.log(`moveRange`, moveRange)
+            G.gameUnits[unit.unitID].moveRange = moveRange
           })
         },
         //onEnd
         onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
           //🛠 reset unit move points and ranges
+          Object.keys(G.gameUnits).forEach((uid) => {
+            G.gameUnits[uid].movePoints = 0
+            G.gameUnits[uid].moveRange = { ...baseMoveRange }
+          })
+          //🛠 handle turns & order markers
           const isLastTurn = ctx.playOrderPos === ctx.numPlayers - 1
           const isLastOrderMarker = G.currentOrderMarker >= OM_COUNT - 1
           if (isLastTurn && !isLastOrderMarker) {
             G.currentOrderMarker++
           }
-          //! ...and END PHASE
+          //🛠 end phase after last turn
           if (isLastTurn && isLastOrderMarker) {
             ctx.events.setPhase(phaseNames.placeOrderMarkers)
           }
@@ -207,14 +231,18 @@ export const HexedMeadow = {
     endGame: false,
   },
 }
-//! MOVES
-//! round of play
+//🎆MOVES
+
+//phase -- ROUND OF PLAY 🎆
+
 function confirmRoundOfPlayStartReady(G: GameState, ctx: BoardProps['ctx']) {
   G.roundOfPlayStartReady[ctx.playerID] = true
 }
+
 function endCurrentPlayerTurn(G: GameState, ctx: BoardProps['ctx']) {
   ctx.events.endTurn()
 }
+//🎆 move unit
 type UnitMove = {
   unitID: string
   endHexID: string
@@ -226,6 +254,7 @@ function moveAction(G: GameState, ctx: BoardProps['ctx'], move: UnitMove) {
     (hex) => hex.occupyingUnitID === unitID
   )
   const endHex = G.boardHexes[endHexID]
+
   const isEndHexOccupied = Boolean(endHex.occupyingUnitID)
   const distance = HexUtils.distance(startHex, endHex)
   const isInMoveRange = distance <= movePoints
@@ -235,8 +264,15 @@ function moveAction(G: GameState, ctx: BoardProps['ctx'], move: UnitMove) {
     G.gameUnits[unitID].movePoints -= distance
   }
 }
-//! placement
-function placeUnitOnHex(G: GameState, ctx: BoardProps['ctx'], hexId, unit) {
+
+//phase -- PLACEMENT 🎆
+
+function placeUnitOnHex(
+  G: GameState,
+  ctx: BoardProps['ctx'],
+  hexId: string,
+  unit
+) {
   G.boardHexes[hexId].occupyingUnitID = unit?.unitID ?? ''
 }
 function confirmPlacementReady(
@@ -247,7 +283,8 @@ function confirmPlacementReady(
   G.placementReady[playerID] = true
 }
 
-//! order markers
+//phase -- ORDER MARKERS 🎆
+
 function placeOrderMarker(
   G: GameState,
   ctx: BoardProps['ctx'],
@@ -261,4 +298,92 @@ function confirmOrderMarkersReady(
   { playerID }
 ) {
   G.orderMarkersReady[playerID] = true
+}
+
+//🛠--UTILITY FUNCTIONS
+
+function getBoardHexForUnit(unit: GameUnit, boardHexes: BoardHexes) {
+  return Object.values(boardHexes).find(
+    (hex) => hex.occupyingUnitID === unit?.unitID
+  )
+}
+
+export function getMoveRangeForUnit(
+  unit: GameUnit,
+  boardHexes: BoardHexes
+): MoveRange {
+  //
+  //🛠 initialize
+  const start = getBoardHexForUnit(unit, boardHexes)
+
+  //🛠 moveRange recursive reduce
+  const moveRange = moveRangeReduce(start, unit.movePoints, boardHexes)
+  return moveRange
+
+  function moveRangeReduce(
+    start: BoardHex,
+    movePoints: number,
+    boardHexes: BoardHexes
+  ): MoveRange {
+    const startNeighbors = getNeighbors(start, boardHexes)
+
+    return startNeighbors.reduce(
+      (result: MoveRange, end: BoardHex) => {
+        const { safely, engage, disengage, denied } = result
+        const moveCost = getMoveCostToNeighbor(start, end)
+        const movePointsLeftAfterMove = movePoints - moveCost
+
+        //🛠 hex already denied
+        const allPrev = [safely, engage, disengage, denied].flat()
+        const isAlreadyIncluded = allPrev.includes(end.id)
+        if (isAlreadyIncluded) {
+          return result
+        }
+        //🛠 deny hex
+        const isEndHexOccupied = Boolean(end.occupyingUnitID)
+        const isDenied = movePointsLeftAfterMove < 0 || isEndHexOccupied
+        if (isDenied) {
+          console.log(`isDenied`, isDenied)
+          result.denied.push(end.id)
+        }
+        //🛠 ELSE safe FKN STOOP1d
+        if (!isDenied) {
+          result.safely.push(end.id)
+          if (movePointsLeftAfterMove) {
+            console.log(`movePointsLeftAfterMove`, movePointsLeftAfterMove)
+            const recursiveMoveRange = moveRangeReduce(
+              end,
+              movePointsLeftAfterMove,
+              boardHexes
+            )
+            console.log(`recursiveMoveRange`, recursiveMoveRange)
+            return {
+              ...result,
+              ...recursiveMoveRange,
+            }
+          }
+        }
+        return result
+      },
+      { ...baseMoveRange }
+    )
+  }
+}
+
+function getNeighbors(start: BoardHex, boardHexes: BoardHexes): BoardHex[] {
+  return HexUtils.neighbours(start)
+    .map((hex) => {
+      const id = makeHexID(hex)
+      const exists = Object.keys(boardHexes).includes(id)
+      return exists ? { ...boardHexes[makeHexID(hex)] } : null
+    })
+    .filter((item) => Boolean(item))
+}
+
+function getMoveCostToNeighbor(start: BoardHex, end: BoardHex): number {
+  const altitudeDelta = end.altitude - start.altitude
+  const heightCost = Math.max(altitudeDelta, 0)
+  const distanceCost = end.horizontalMoveCost
+  const totalCost = heightCost + distanceCost
+  return totalCost
 }

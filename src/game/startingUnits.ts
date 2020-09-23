@@ -81,6 +81,19 @@ export type GameUnit = {
   gameCardID: string
   cardID: string
   movePoints: number
+  moveRange: MoveRange
+}
+export type MoveRange = {
+  safely: string[]
+  engage: string[]
+  disengage: string[]
+  denied: string[]
+}
+export const baseMoveRange: MoveRange = {
+  safely: [],
+  engage: [],
+  disengage: [],
+  denied: [],
 }
 export interface GameUnits {
   [key: string]: GameUnit
@@ -106,6 +119,7 @@ function cardsToUnits(cards: GameArmyCard[]): GameUnits {
         playerID: card.playerID,
         gameCardID: card.gameCardID,
         movePoints: 0,
+        moveRange: { ...baseMoveRange },
       }
       return {
         ...unitsResult,

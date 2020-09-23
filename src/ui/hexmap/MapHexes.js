@@ -5,6 +5,8 @@ import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 
 import { Hexagon, HexUtils } from 'react-hexgrid'
 import { UnitIcon } from 'ui/UnitIcon'
+import { getMoveRangeForUnit } from 'game/game'
+import { baseMoveRange } from 'game/startingUnits'
 
 const moveStatuses = {
   safely: 'safely',
@@ -30,8 +32,14 @@ export const MapHexes = () => {
     onClickBoardHex__turn,
     selectedGameCardUnits,
     selectedUnitID,
+    selectedUnit,
   } = useTurnContext()
 
+  //🛠 computed
+  const moveRange = () =>
+    selectedUnit ? getMoveRangeForUnit(selectedUnit, boardHexes) : baseMoveRange
+
+  //🛠 handlers
   const onClickBoardHex = (event, sourceHex) => {
     if (isPlacementPhase) {
       onClickBoardHex_placement(event, sourceHex)
@@ -70,37 +78,10 @@ export const MapHexes = () => {
   const isSelectedUnitHex = (hex) => {
     return hex.occupyingUnitID && hex.occupyingUnitID === selectedUnitID
   }
-  const getMoveRangeStatusForHex = (hex) => {
-    const unit = gameUnits[selectedUnitID]
-    const movePoints = unit.movePoints
-    const startHexID = getBoardHexIDForUnitID(selectedUnitID)
-    const distance = HexUtils.distance(boardHexes[startHexID], hex)
-    const isOutOfMoveRange = distance > movePoints
-    const isOccupied = Boolean(hex.occupyingUnitID)
-
-    // ! IMPROVED MOVE PATHING
-    const firstNeighbors = HexUtils.neighbours(hex)
-    const paths = firstNeighbors.reduce(
-      (prev, curr, index) => {
-        console.log(`pathing${index}`, curr)
-        prev.safe.push(curr.id)
-        return prev
-      },
-      { safe: [], engage: [], disengage: [] }
-    )
-    //! *
-
-    if (isOutOfMoveRange || isOccupied) {
-      return ''
-    }
-    // return moveStatuses.disengage
-    // return moveStatuses.engage
-    return moveStatuses.safely
-  }
 
   function calcClassNames(hex) {
     let classNames = ''
-    // ! Placement
+    //phase: Placement
     if (isPlacementPhase) {
       if (activeUnitID && isStartZoneHex(hex)) {
         classNames = classNames.concat(' maphex__start-zone--placement ')
@@ -109,28 +90,29 @@ export const MapHexes = () => {
         classNames = classNames.concat(' maphex__selected--active ')
       }
     }
-    // ! Round of Play
+    //phase: Round of Play
     if (isRoundOfPlayPhase) {
-      //! Highlight selectable - NO UNIT
+      //🛠 Highlight selected units when none selected
       if (isSelectedCardUnitHex(hex) && !selectedUnitID) {
-        classNames = classNames.concat(
-          ' maphex__selected-card-unit--selectable '
-        )
       }
-      //! Highlight coselections - UNIT
+      //🛠 Highlight selected unit's selectable squad mates
       if (isSelectedCardUnitHex(hex) && selectedUnitID) {
         classNames = classNames.concat(' maphex__coselected-unit ')
       }
       if (selectedUnitID) {
       }
-      // Highlight selected unit hex
+      //🛠 Highlight selected unit hex...
       if (isSelectedUnitHex(hex)) {
         classNames = classNames.concat(' maphex__selected-card-unit--active ')
+      } else if (isSelectedCardUnitHex(hex)) {
+        //🛠 ...and highlight un-selected but selectable units...
+        classNames = classNames.concat(
+          ' maphex__selected-card-unit--selectable '
+        )
       }
-      if (
-        selectedUnitID &&
-        getMoveRangeStatusForHex(hex) === moveStatuses.safely
-      ) {
+      //🛠 Paint safe moves for selected unit
+      const isInSafeRange = moveRange()?.safely?.includes(hex.id) ?? false
+      if (selectedUnitID && isInSafeRange) {
         classNames = classNames.concat(' maphex__move-safely ')
       }
     }
