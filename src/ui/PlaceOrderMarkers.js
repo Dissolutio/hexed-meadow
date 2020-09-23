@@ -6,6 +6,7 @@ export const PlaceOrderMarkers = () => {
   const { activateDataReadout } = useLayoutContext()
   const {
     playerID,
+    currentRound,
     orderMarkersReady,
     myCards,
     myOrderMarkers,
@@ -64,7 +65,7 @@ export const PlaceOrderMarkers = () => {
 
   return (
     <ArmyListStyle playerID={playerID}>
-      <h2>Place your Order Markers:</h2>
+      <h2>{`Place your order markers for Round ${currentRound + 1}:`}</h2>
       <ul>
         {Object.keys(myOrderMarkers)
           .filter((om) => myOrderMarkers[om] === '')
