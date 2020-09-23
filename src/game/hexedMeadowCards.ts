@@ -28,7 +28,7 @@ export const hexedMeadowCards = {
   hm103: {
     name: 'Queen Bae',
     cardID: 'hm103',
-    move: 3,
+    move: 1,
     figures: 1,
     hexes: 1,
     race: 'bee',
@@ -67,7 +67,7 @@ export const hexedMeadowCards = {
   hm203: {
     name: 'Monarch',
     cardID: 'hm203',
-    move: 3,
+    move: 2,
     figures: 1,
     hexes: 1,
     race: 'butterfly',

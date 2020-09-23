@@ -39,7 +39,7 @@ const isDevMode = true
 //
 /* TOGGLE DEV MODE */
 
-const map = isDevMode ? makePrePlacedHexagonMap(3) : makeHexagonMap(3)
+const map = isDevMode ? makePrePlacedHexagonMap(1) : makeHexagonMap(3)
 const players = isDevMode ? devPlayerState : initialPlayerState
 
 type PlayerStateToggle = {

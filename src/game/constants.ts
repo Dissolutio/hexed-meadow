@@ -51,20 +51,30 @@ export const initialPlayerState = {
 export const devPlayerState = {
   '0': {
     orderMarkers: {
-      // 1st on Squad, rest on Hero
-      '0': 'p0_hm101_0',
+      // all on Hero
+      '0': 'p0_hm103_0',
       '1': 'p0_hm103_0',
       '2': 'p0_hm103_0',
       X: 'p0_hm103_0',
+      // // 1st on Squad, rest on Hero
+      // '0': 'p0_hm101_0',
+      // '1': 'p0_hm103_0',
+      // '2': 'p0_hm103_0',
+      // X: 'p0_hm103_0',
     },
   },
   '1': {
     orderMarkers: {
-      // 1st on Squad, rest on Hero
-      '0': 'p1_hm201_0',
+      // all on Hero
+      '0': 'p1_hm203_0',
       '1': 'p1_hm203_0',
       '2': 'p1_hm203_0',
       X: 'p1_hm203_0',
+      // // 1st on Squad, rest on Hero
+      // '0': 'p1_hm201_0',
+      // '1': 'p1_hm203_0',
+      // '2': 'p1_hm203_0',
+      // X: 'p1_hm203_0',
     },
   },
 }
