@@ -9,7 +9,7 @@ import {
   TurnContextProvider,
 } from 'ui/hooks'
 import { Layout } from './layout/Layout'
-import { TopConsole } from './layout/TopConsole'
+import { AppNavbar } from './layout/AppNavbar'
 import { BottomConsole } from './layout/BottomConsole'
 import { MapDisplay } from './hexmap/MapDisplay'
 import { theme } from 'ui/theme/theme'
@@ -23,7 +23,7 @@ export const Board = (props: BoardProps) => {
           <PlacementContextProvider>
             <TurnContextProvider>
               <Layout>
-                <TopConsole />
+                <AppNavbar />
                 <MapDisplay />
                 <BottomConsole />
               </Layout>

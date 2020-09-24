@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLayoutContext } from 'ui/hooks'
+import { useBoardContext } from 'ui/hooks'
 import {
   DataReadout,
   PlacementControls,
@@ -8,18 +8,19 @@ import {
 } from 'ui'
 
 export const BottomConsole = () => {
-  const { layoutComponents, bottomConsoleComponent } = useLayoutContext()
+  const {
+    isOrderMarkerPhase,
+    isPlacementPhase,
+    isRoundOfPlayPhase,
+  } = useBoardContext()
 
-  switch (bottomConsoleComponent) {
-    case layoutComponents.dataReadout:
-      return <DataReadout />
-    case layoutComponents.placementArmy:
-      return <PlacementControls />
-    case layoutComponents.placeOrderMarkers:
-      return <PlaceOrderMarkers />
-    case layoutComponents.roundOfPlayControls:
-      return <RoundOfPlayControls />
-    default:
-      return null
+  if (isPlacementPhase) {
+    return <PlacementControls />
+  }
+  if (isOrderMarkerPhase) {
+    return <PlaceOrderMarkers />
+  }
+  if (isRoundOfPlayPhase) {
+    return <RoundOfPlayControls />
   }
 }
