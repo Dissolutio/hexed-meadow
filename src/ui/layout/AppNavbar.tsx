@@ -9,8 +9,7 @@ import beesBigLogo from 'assets/beesBigLogo.png'
 import butterfliesLogo from 'assets/butterfliesLogo.png'
 
 export const AppNavbar = () => {
-  const boardState: any = useBoardContext()
-  const playerID = boardState?.playerID
+  const { playerID } = useBoardContext()
   const opponentPlayerID = playerID === '0' ? '1' : '0'
   return (
     <StyledTopConsole collapseOnSelect expand="lg" playerID={playerID}>
@@ -24,7 +23,7 @@ export const AppNavbar = () => {
         aria-controls="responsive-navbar-nav"
         label="Toggle navigation"
       >
-        <StyledSpan playerID={playerID}>
+        <StyledSpan>
           <svg viewBox="0 0 100 70" width="20" height="20">
             <rect width="100" height="10" rx="8" strokeWidth="1" />
             <rect y="30" width="100" height="10" rx="8" strokeWidth="1" />
@@ -45,23 +44,21 @@ export const AppNavbar = () => {
     </StyledTopConsole>
   )
 }
+const _StyledTopConsole = ({ playerID, ...rest }) => <Navbar {...rest} />
 
-const StyledTopConsole = styled(({ playerID, ...rest }) => (
-  <Navbar {...rest} />
-))`
+const StyledTopConsole = styled(_StyledTopConsole)`
   background-color: var(--black);
   padding: 4px 16px 0px 16px;
   & button:focus,
   & button:hover {
-    outline: 2px solid --white;
+    outline: 2px solid var(--white);
   }
   a {
-    color: ${(props) => props.theme.playerColors[props.playerID]} !important ;
+    color: var(--player-color) !important ;
   }
   .navbar-toggler {
-    color: ${(props) => props.theme.playerColors[props.playerID]} !important ;
-    border-color: ${(props) =>
-      props.theme.playerColors[props.playerID]} !important ;
+    color: var(--player-color) !important ;
+    border-color: var(--player-color) !important ;
     padding: 0.25rem;
   }
   .dropdown-menu {
@@ -70,8 +67,8 @@ const StyledTopConsole = styled(({ playerID, ...rest }) => (
 `
 const StyledSpan = styled.span`
   svg rect {
-    fill: ${(props) => props.theme.playerColors[props.playerID]};
-    stroke: ${(props) => props.theme.playerColors[props.playerID]};
+    fill: var(--player-color);
+    stroke: var(--player-color);
   }
 `
 

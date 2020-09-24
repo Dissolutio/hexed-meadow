@@ -2,10 +2,13 @@ html {
   /* THEME */
   --black: #222222;
   --white: #f7edf0;
+  --player-color: #f7edf0; /* gets set in Layout*/
   --sub-white: #b4b4b4;
-  /* --gunmetal: #22333b; */
-  --gunmetal: #5d576b;
-  --bee-yellow: #ffdd33;
+  --gunmetal: #22333b;
+  --gray: #5d576b;
+  /* --bee-yellow: #ffdd33; */
+  /* --bee-yellow: #f5cc00; */
+  --bee-yellow: #e0bb00;
   --butterfly-purple: #fc65b8;
   --wasp-red: #e4572e;
   --beetle-blue: #058ed9;
@@ -30,9 +33,8 @@ body {
   /* mobile viewport bug fix */
   min-height: -webkit-fill-available;
   max-width: -webkit-fill-available;
-  background-color: var(--black) !important;
+  background-color: var(--black);
   color: white;
-  overflow-x: hidden;
 }
 .app-theme {
   color: var(--white);

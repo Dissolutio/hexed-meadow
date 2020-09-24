@@ -1,20 +1,24 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useUIContext } from 'ui/hooks/useUIContext'
+import { useBoardContext } from 'ui/hooks'
+import { playerColorUrlEncoded } from 'ui/theme/theme'
 import { contourLinesBG } from './contourLinesBG'
 
 export const Layout = ({ children }) => {
-  const { playerID, playerColor, playerColorUrlEncoded } = useUIContext()
-  const bgSvg = contourLinesBG(playerColorUrlEncoded)
+  const { playerID } = useBoardContext()
+  const contourLinesBgDataUrlStr = contourLinesBG({
+    color: playerColorUrlEncoded(playerID),
+  })
+
   return (
     <>
       <LayoutContainer
-        id={`player${playerID}`}
-        bg={bgSvg}
-        playerColor={playerColor}
+        id={`player${playerID}`} // for linking to this player view (useful in local dev)
+        bg={contourLinesBgDataUrlStr}
+        playerID={playerID}
       >
         <LayoutTop>{children[0]}</LayoutTop>
-        <LayoutMiddle playerColor={playerColor}>{children[1]}</LayoutMiddle>
+        <LayoutMiddle>{children[1]}</LayoutMiddle>
         <LayoutBottom>{children[2]}</LayoutBottom>
       </LayoutContainer>
     </>
@@ -22,6 +26,8 @@ export const Layout = ({ children }) => {
 }
 
 const LayoutContainer = styled.div`
+//🛠 SET PLAYER THEME COLOR
+  --player-color:  ${(props) => props.theme.playerColors[props.playerID]};
   position: relative;
   display: flex;
   flex-direction: column;
@@ -29,8 +35,7 @@ const LayoutContainer = styled.div`
   min-height: 100vh;
   padding: 0;
   margin: 0;
-  overflow: hidden;
-  color: ${(props) => props.playerColor};
+  color: var(--player-color);
   background-color: var(--gunmetal);
   background-image: url("${(props) => props.bg}");
 `
@@ -50,15 +55,8 @@ const LayoutBottom = styled.div`
 `
 const LayoutMiddle = styled.div`
   width: 100%;
-  /* @media screen and (min-width: 900px) {
-    box-sizing: content-box;
-    width: 50%;
-    padding-left: 20%;
-    padding-right: 20%;
-  } */
   height: 55vh;
   overflow: auto;
-  padding: 50px 0px;
 
   ::-webkit-scrollbar {
     width: 0.5rem;
@@ -66,7 +64,7 @@ const LayoutMiddle = styled.div`
   }
   &::-webkit-scrollbar-track-piece {
     border-radius: 10px;
-    box-shadow: inset 0 0 5px ${(props) => props.playerColor};
+    box-shadow: inset 0 0 5px var(--player-color);
     width: 0.5rem;
   }
   &::-webkit-scrollbar-corner {
@@ -74,6 +72,6 @@ const LayoutMiddle = styled.div`
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background: ${(props) => props.playerColor};
+    background: var(--player-color);
   }
 `

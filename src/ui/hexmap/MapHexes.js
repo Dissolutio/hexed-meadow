@@ -99,8 +99,6 @@ export const MapHexes = () => {
       if (isSelectedCardUnitHex(hex) && selectedUnitID) {
         classNames = classNames.concat(' maphex__coselected-unit ')
       }
-      if (selectedUnitID) {
-      }
       //🛠 Highlight selected unit hex...
       if (isSelectedUnitHex(hex)) {
         classNames = classNames.concat(' maphex__selected-card-unit--active ')
@@ -139,9 +137,7 @@ export const HexSVGStyle = styled.div`
 
   /* HIGHLIGHT ALL HEXES */
   svg g polygon {
-    stroke: var(
-      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
-    );
+    stroke: var(--player-color);
     stroke-width: 0.01;
   }
 
@@ -163,9 +159,7 @@ export const HexSVGStyle = styled.div`
 
   /* HIGHLIGHT STARTZONE HEX */
   .maphex__start-zone--placement > g polygon {
-    stroke: var(
-      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
-    );
+    stroke: var(--player-color);
     stroke-width: 0.1;
     @media screen and (min-width: 500px) {
       stroke-width: 0.3;
@@ -188,7 +182,7 @@ export const HexSVGStyle = styled.div`
     }
   }
   .maphex__coselected-unit > g polygon {
-    stroke: var(--sub-white);
+    stroke: var(--white);
     stroke-width: 0.3;
     @media screen and (min-width: 500px) {
       stroke-width: 0.4;
@@ -196,9 +190,7 @@ export const HexSVGStyle = styled.div`
   }
   /* HIGHLIGHT SELECTED UNIT */
   .maphex__selected-card-unit--active > g polygon {
-    stroke: var(
-      ${(props) => (props.pID === '0' ? '--bee-yellow' : '--butterfly-purple')}
-    );
+    stroke: var(--player-color);
     stroke-width: 0.4;
     @media screen and (min-width: 500px) {
       stroke-width: 0.5;
