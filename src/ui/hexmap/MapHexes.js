@@ -1,26 +1,17 @@
 import React from 'react'
-import styled from 'styled-components'
+import { Hexagon, Text } from 'react-hexgrid'
 
 import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
-
-import { Hexagon, HexUtils } from 'react-hexgrid'
 import { UnitIcon } from 'ui/UnitIcon'
 import { getMoveRangeForUnit } from 'game/game'
 import { baseMoveRange } from 'game/startingUnits'
 
-const moveStatuses = {
-  safely: 'safely',
-  disengage: 'disengage',
-  engage: 'engage',
-}
-
-export const MapHexes = () => {
+export const MapHexes = ({ hexSize }) => {
   const {
     playerID,
     boardHexes,
     gameUnits,
     startZones,
-    getBoardHexIDForUnitID,
     isPlacementPhase,
     isRoundOfPlayPhase,
     activeHexID,
@@ -69,12 +60,14 @@ export const MapHexes = () => {
   function isActiveHex(hex) {
     return isPlacementPhase && hex.id === activeHexID
   }
+
   const isSelectedCardUnitHex = (hex) => {
     const selectedCardBoardHexIDArr = selectedGameCardUnits.map(
       (unit) => unit?.boardHexID ?? ''
     )
     return selectedCardBoardHexIDArr.includes(hex.id)
   }
+
   const isSelectedUnitHex = (hex) => {
     return hex.occupyingUnitID && hex.occupyingUnitID === selectedUnitID
   }
@@ -126,74 +119,25 @@ export const MapHexes = () => {
         onClick={(e, source) => onClickBoardHex(e, source.props)}
         className={calcClassNames(hex)}
       >
-        {gameUnit ? <UnitIcon unit={gameUnit} /> : null}
+        <g>
+          {gameUnit && (
+            <UnitIcon
+              hexSize={hexSize}
+              cardID={gameUnit.cardID}
+              iconPlayerID={gameUnit.playerID}
+            />
+          )}
+          <HexIDText hexSize={hexSize} text={hex.id} />
+        </g>
       </Hexagon>
     )
   })
 }
 
-export const HexSVGStyle = styled.div`
-  height: 100%;
-
-  /* HIGHLIGHT ALL HEXES */
-  svg g polygon {
-    stroke: var(--player-color);
-    stroke-width: 0.01;
-  }
-
-  /* PAINT ALL HEXES */
-  .hexagon-group {
-    fill: var(--black);
-    @media (hover: hover) {
-      &:hover {
-        fill: var(--neon-orange);
-        fill-opacity: 0.6;
-      }
-    }
-  }
-
-  /* PAINT SAFE MOVE END */
-  .maphex__move-safely > g {
-    fill: var(--green);
-  }
-
-  /* HIGHLIGHT STARTZONE HEX */
-  .maphex__start-zone--placement > g polygon {
-    stroke: var(--player-color);
-    stroke-width: 0.1;
-    @media screen and (min-width: 500px) {
-      stroke-width: 0.3;
-    }
-  }
-  /* HIGHLIGHT SELECTED HEXES */
-  .maphex__selected--active > g polygon {
-    stroke: var(--white);
-    stroke-width: 0.1;
-    @media screen and (min-width: 500px) {
-      stroke-width: 0.3;
-    }
-  }
-  /* HIGHLIGHT MOVEABLE UNITS */
-  .maphex__selected-card-unit--selectable > g polygon {
-    stroke: var(--white);
-    stroke-width: 0.3;
-    @media screen and (min-width: 500px) {
-      stroke-width: 0.4;
-    }
-  }
-  .maphex__coselected-unit > g polygon {
-    stroke: var(--white);
-    stroke-width: 0.3;
-    @media screen and (min-width: 500px) {
-      stroke-width: 0.4;
-    }
-  }
-  /* HIGHLIGHT SELECTED UNIT */
-  .maphex__selected-card-unit--active > g polygon {
-    stroke: var(--player-color);
-    stroke-width: 0.4;
-    @media screen and (min-width: 500px) {
-      stroke-width: 0.5;
-    }
-  }
-`
+const HexIDText = ({ hexSize, text }) => {
+  return (
+    <Text className="maphex_altitude-text" y={hexSize * 0.6}>
+      {text.toString()}
+    </Text>
+  )
+}

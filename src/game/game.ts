@@ -32,20 +32,21 @@ import {
   OrderMarker,
 } from './constants'
 
-/* TOGGLE DEV MODE*/
-//
+//* TOGGLE DEV MODE
+//!
 const isDevMode = true
+//!
 // const isDevMode = false
-//
-/* TOGGLE DEV MODE */
+//!
+//* TOGGLE DEV MODE
 
+//* Generate map and initial player state (order markers only so far)
 const map = isDevMode ? makePrePlacedHexagonMap(1) : makeHexagonMap(3)
 const players = isDevMode ? devPlayerState : initialPlayerState
 
 type PlayerStateToggle = {
   [playerID: string]: Boolean
 }
-
 export type GameState = {
   armyCards: GameArmyCard[]
   gameUnits: GameUnits
@@ -230,18 +231,16 @@ export const HexedMeadow = {
     endGame: false,
   },
 }
-//🎆MOVES
+
+//🎆 BGIO MOVES
 
 //phase -- ROUND OF PLAY 🎆
-
 function confirmRoundOfPlayStartReady(G: GameState, ctx: BoardProps['ctx']) {
   G.roundOfPlayStartReady[ctx.playerID] = true
 }
-
 function endCurrentPlayerTurn(G: GameState, ctx: BoardProps['ctx']) {
   ctx.events.endTurn()
 }
-//🎆 move unit
 type UnitMove = {
   unitID: string
   endHexID: string
@@ -265,7 +264,6 @@ function moveAction(G: GameState, ctx: BoardProps['ctx'], move: UnitMove) {
 }
 
 //phase -- PLACEMENT 🎆
-
 function placeUnitOnHex(
   G: GameState,
   ctx: BoardProps['ctx'],
@@ -283,7 +281,6 @@ function confirmPlacementReady(
 }
 
 //phase -- ORDER MARKERS 🎆
-
 function placeOrderMarker(
   G: GameState,
   ctx: BoardProps['ctx'],
@@ -300,7 +297,7 @@ function confirmOrderMarkersReady(
 }
 
 //🛠--UTILITY FUNCTIONS
-
+//? Will this work? Can some pure hex-functions be extracted from the game to a bgio plugin?
 function getBoardHexForUnit(unit: GameUnit, boardHexes: BoardHexes) {
   return Object.values(boardHexes).find(
     (hex) => hex.occupyingUnitID === unit?.unitID

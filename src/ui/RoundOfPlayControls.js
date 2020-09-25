@@ -83,7 +83,8 @@ export const RoundOfPlayControls = () => {
               isCurrentSelectedCard={isCurrentSelectedCard(card)}
             >
               <UnitIcon
-                card={card}
+                cardID={card.cardID}
+                iconPlayerID={card.playerID}
                 iconProps={{
                   x: '50',
                   y: '50',

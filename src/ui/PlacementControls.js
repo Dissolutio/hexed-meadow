@@ -68,19 +68,26 @@ export const PlacementControls = () => {
                 style={selectedStyle(unit.unitID)}
                 onClick={() => onClickPlacementUnit(unit.unitID)}
               >
-                <UnitIcon
-                  unit={unit}
-                  iconProps={{
-                    x: '50',
-                    y: '50',
-                    transform: '',
-                  }}
-                />
+                <CardUnitIcon unit={unit} />
                 <span>{unit.name}</span>
               </button>
             </li>
           ))}
       </ul>
     </ArmyListStyle>
+  )
+}
+
+const CardUnitIcon = ({ unit }) => {
+  return (
+    <UnitIcon
+      cardID={unit.cardID}
+      iconPlayerID={unit.playerID}
+      iconProps={{
+        x: '50',
+        y: '50',
+        transform: '',
+      }}
+    />
   )
 }

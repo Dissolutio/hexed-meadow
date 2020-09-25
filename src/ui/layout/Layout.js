@@ -41,37 +41,20 @@ const LayoutContainer = styled.div`
 `
 const LayoutTop = styled.div`
   width: 100%;
-  height: 5vh;
+  height: 46px;
   background: var(--black);
 `
 const LayoutBottom = styled.div`
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
-  min-height: 40vh;
+  min-height: calc(100vh - 60vh - 46px);
   background: var(--black);
   padding: 5px;
   margin: 0;
 `
 const LayoutMiddle = styled.div`
   width: 100%;
-  height: 55vh;
+  height: 60vh;
   overflow: auto;
-
-  ::-webkit-scrollbar {
-    width: 0.5rem;
-    background: var(--black);
-  }
-  &::-webkit-scrollbar-track-piece {
-    border-radius: 10px;
-    box-shadow: inset 0 0 5px var(--player-color);
-    width: 0.5rem;
-  }
-  &::-webkit-scrollbar-corner {
-    background: var(--black);
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: var(--player-color);
-  }
 `
