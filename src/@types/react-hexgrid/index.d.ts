@@ -74,10 +74,10 @@ declare module 'react-hexgrid' {
     static subtract: (a: Hex, b: Hex) => Hex
     static multiply: (a: Hex, b: Hex) => Hex
     static lengths: (a: Hex, b: Hex) => Hex
-    static distance: (a: Hex, b: Hex) => Hex
+    static distance: (a: Hex, b: Hex) => number
     static direction: (direction: number) => Hex
     static neighbour: (hex: Hex, direction: number) => Hex
-    static neighbours: (hex: Hex, direction: Hex) => Hex[]
+    static neighbours: (hex: Hex) => Hex[]
     private round: (hex: Hex) => Hex // turns q,r,s of hex to integers (for pixelToHex)
     static hexToPixel: (hex: Hex, layout: any) => Point
     static pixelToHex: (point: Point, layout: any) => Hex

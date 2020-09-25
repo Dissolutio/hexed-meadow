@@ -11,9 +11,9 @@ const LayoutContextProvider = ({ children }) => {
     placementArmy: 'PlacementControls',
     placeOrderMarkers: 'PlaceOrderMarkers',
     dataReadout: 'DataReadout',
-    myTurnUI: 'MyTurnUI',
+    roundOfPlayControls: 'RoundOfPlayControls',
   }
-  const { currentPhase } = useBoardContext()
+  const { phase } = useBoardContext()
   const [topConsoleComponent, setTopConsoleComponent] = useState(
     layoutComponents.navbar
   )
@@ -22,18 +22,17 @@ const LayoutContextProvider = ({ children }) => {
   )
   useEffect(() => {
     setBottomConsoleComponent(setBottomConsole())
-  }, [currentPhase])
+  }, [phase])
   function setBottomConsole() {
-    if (currentPhase === phaseNames.placement) {
+    if (phase === phaseNames.placement) {
       return layoutComponents.placementArmy
     }
-    if (currentPhase === phaseNames.placeOrderMarkers) {
+    if (phase === phaseNames.placeOrderMarkers) {
       return layoutComponents.placeOrderMarkers
     }
-    if (currentPhase === phaseNames.roundOfPlay) {
-      return layoutComponents.myTurnUI
+    if (phase === phaseNames.roundOfPlay) {
+      return layoutComponents.roundOfPlayControls
     }
-    return layoutComponents.myTurnUI
   }
   return (
     <LayoutContext.Provider
@@ -68,8 +67,8 @@ const useLayoutContext = () => {
   const activatePlaceOrderMarkers = () =>
     setBottomConsoleComponent(layoutComponents.placeOrderMarkers)
 
-  const activateMyTurnUI = () =>
-    setBottomConsoleComponent(layoutComponents.myTurnUI)
+  const activateRoundOfPlayControls = () =>
+    setBottomConsoleComponent(layoutComponents.roundOfPlayControls)
 
   return {
     layoutComponents,
@@ -80,7 +79,7 @@ const useLayoutContext = () => {
     activatePlacementControls,
     activateDataReadout,
     activatePlaceOrderMarkers,
-    activateMyTurnUI,
+    activateRoundOfPlayControls,
   }
 }
 

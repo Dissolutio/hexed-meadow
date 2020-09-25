@@ -1,23 +1,24 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useUIContext } from '../hooks/useUIContext'
-import { useWindowDimensions } from '../hooks/useWindowDimensions'
+import { useBoardContext } from 'ui/hooks'
+import { playerColorUrlEncoded } from 'ui/theme/theme'
+import { contourLinesBG } from './contourLinesBG'
 
 export const Layout = ({ children }) => {
-  const { playerID, playerColor } = useUIContext()
-  const pClass = `board-${playerID}`
-  const { windowDimensions, viewportSize } = useWindowDimensions()
+  const { playerID } = useBoardContext()
+  const contourLinesBgDataUrlStr = contourLinesBG({
+    color: playerColorUrlEncoded(playerID),
+  })
 
   return (
     <>
-      <LayoutContainer playerColor={playerColor} className={`${pClass}`}>
+      <LayoutContainer
+        id={`player${playerID}`} // for linking to this player view (useful in local dev)
+        bg={contourLinesBgDataUrlStr}
+        playerID={playerID}
+      >
         <LayoutTop>{children[0]}</LayoutTop>
-        <LayoutMiddle
-          windowDimensions={windowDimensions}
-          className={`${pClass}`}
-        >
-          {children[1]}
-        </LayoutMiddle>
+        <LayoutMiddle>{children[1]}</LayoutMiddle>
         <LayoutBottom>{children[2]}</LayoutBottom>
       </LayoutContainer>
     </>
@@ -25,6 +26,8 @@ export const Layout = ({ children }) => {
 }
 
 const LayoutContainer = styled.div`
+//🛠 SET PLAYER THEME COLOR
+  --player-color:  ${(props) => props.theme.playerColors[props.playerID]};
   position: relative;
   display: flex;
   flex-direction: column;
@@ -32,53 +35,26 @@ const LayoutContainer = styled.div`
   min-height: 100vh;
   padding: 0;
   margin: 0;
-  overflow: hidden;
-  color: ${(props) => props.playerColor};
-  background: radial-gradient(
-      ellipse at top,
-      ${(props) => props.playerColor},
-      transparent
-    ),
-    radial-gradient(ellipse at bottom, var(--black), transparent);
+  color: var(--player-color);
+  background-color: var(--gunmetal);
+  background-image: url("${(props) => props.bg}");
 `
 const LayoutTop = styled.div`
   width: 100%;
-  height: 5vh;
+  height: 46px;
   background: var(--black);
 `
 const LayoutBottom = styled.div`
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
-  min-height: 30vh;
+  min-height: calc(100vh - 60vh - 46px);
   background: var(--black);
   padding: 5px;
   margin: 0;
 `
 const LayoutMiddle = styled.div`
   width: 100%;
-  @media screen and (min-width: 900px) {
-    box-sizing: content-box;
-    width: 50%;
-    padding-left: 20%;
-    padding-right: 20%;
-  }
-  height: 65vh;
+  height: 60vh;
   overflow: auto;
-  ::-webkit-scrollbar {
-    width: 0.5rem;
-    background: var(--black);
-  }
-  &::-webkit-scrollbar-track-piece {
-    border-radius: 10px;
-    box-shadow: inset 0 0 5px ${(props) => props.playerColor};
-    width: 0.5rem;
-  }
-  &::-webkit-scrollbar-corner {
-    background: var(--black);
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: ${(props) => props.playerColor};
-  }
 `

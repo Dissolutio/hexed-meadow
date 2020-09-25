@@ -1,38 +1,37 @@
 import React from 'react'
+import { ThemeProvider } from 'styled-components'
+import { BoardProps } from 'boardgame.io/react'
 
 import {
   BoardContextProvider,
-  UIContextProvider,
   LayoutContextProvider,
   PlacementContextProvider,
   TurnContextProvider,
 } from 'ui/hooks'
 import { Layout } from './layout/Layout'
-import { TopConsole } from './layout/TopConsole'
+import { AppNavbar } from './layout/AppNavbar'
 import { BottomConsole } from './layout/BottomConsole'
 import { MapDisplay } from './hexmap/MapDisplay'
+import { theme } from 'ui/theme/theme'
 
-export const Board = (props) => {
-  const { G, ctx, moves, playerID } = props
-  const gameContextProps = { G, ctx, moves, playerID }
-
+export const Board = (props: BoardProps) => {
   // Layout applies CSS to Children, the children are switches based on active string in LayoutContext
   return (
-    <BoardContextProvider {...gameContextProps}>
-      <UIContextProvider playerID={playerID}>
+    <ThemeProvider theme={theme}>
+      <BoardContextProvider {...props}>
         <LayoutContextProvider>
           <PlacementContextProvider>
             <TurnContextProvider>
               <Layout>
-                <TopConsole />
+                <AppNavbar />
                 <MapDisplay />
                 <BottomConsole />
               </Layout>
             </TurnContextProvider>
           </PlacementContextProvider>
         </LayoutContextProvider>
-      </UIContextProvider>
-    </BoardContextProvider>
+      </BoardContextProvider>
+    </ThemeProvider>
   )
 }
 

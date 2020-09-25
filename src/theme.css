@@ -1,17 +1,28 @@
 html {
-  --black: #0e0b0b;
-  /* --red: #db2d20; */
-  --pinkish-white: hsl(330, 100%, 98%);
-  --bee-yellow: #ffd50080;
-  --butterfly-purple: #ac4e82;
-
-  --neon-orange: rgb(224, 150, 40);
+  /* THEME */
+  --black: #222222;
+  --white: #f7edf0;
+  --player-color: #f7edf0; /* gets set in Layout*/
+  --sub-white: #b4b4b4;
+  --gunmetal: #22333b;
+  --gray: #5d576b;
+  /* --bee-yellow: #ffdd33; */
+  /* --bee-yellow: #f5cc00; */
+  --bee-yellow: #e0bb00;
+  --butterfly-purple: #fc65b8;
+  --wasp-red: #e4572e;
+  --beetle-blue: #058ed9;
+  --hummingbird-green: #75dbcd;
+  --orange: #e8aa14;
+  /* UTILITY */
   --neon-green: #bada55;
-
-  --grass-green: RGB(149, 198, 35);
+  --neon-orange: #e09628;
+  --neon-red: #e04c1f;
+  /* UNUSED */
+  --green: #95c623;
   --forest-green: #37480d;
-  --wood-brown: RGB(87, 51, 25);
-  --water-blue: RGB(4, 67, 137);
+  --wood-brown: #573319;
+  --water-blue: #044389;
 }
 body {
   box-sizing: border-box;
@@ -22,9 +33,12 @@ body {
   /* mobile viewport bug fix */
   min-height: -webkit-fill-available;
   max-width: -webkit-fill-available;
-  background-color: var(--black) !important;
+  background-color: var(--black);
   color: white;
-  overflow-x: hidden;
+  font-weight: 600;
+}
+.app-theme {
+  color: var(--white);
 }
 #lobby-view {
   padding: 0 !important;

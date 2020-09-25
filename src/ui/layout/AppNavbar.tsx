@@ -1,19 +1,19 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
-import NavDropdown from 'react-bootstrap/NavDropdown'
 
-import { useUIContext } from 'ui/hooks/useUIContext'
+import { useBoardContext } from 'ui/hooks'
 import beesBigLogo from 'assets/beesBigLogo.png'
 import butterfliesLogo from 'assets/butterfliesLogo.png'
 
 export const AppNavbar = () => {
-  const { playerID, playerColor } = useUIContext()
+  const { playerID } = useBoardContext()
+  const opponentPlayerID = playerID === '0' ? '1' : '0'
   return (
-    <StyledTopConsole playerColor={playerColor} collapseOnSelect expand="lg">
-      <Navbar.Brand href="#home">
+    <StyledTopConsole collapseOnSelect expand="lg" playerID={playerID}>
+      <Navbar.Brand href={`/#player${opponentPlayerID}`}>
         <PlayerTeamLogo
           playerID={playerID}
           className="d-inline-block align-top"
@@ -23,84 +23,52 @@ export const AppNavbar = () => {
         aria-controls="responsive-navbar-nav"
         label="Toggle navigation"
       >
-        <span>
+        <StyledSpan>
           <svg viewBox="0 0 100 70" width="20" height="20">
-            <rect
-              width="100"
-              height="10"
-              rx="8"
-              fill={playerColor}
-              strokeWidth="1"
-              stroke={playerColor}
-            />
-            <rect
-              y="30"
-              width="100"
-              height="10"
-              rx="8"
-              fill={playerColor}
-              strokeWidth="1"
-              stroke={playerColor}
-            />
-            <rect
-              y="60"
-              width="100"
-              height="10"
-              rx="8"
-              fill={playerColor}
-              strokeWidth="1"
-              stroke={playerColor}
-            />
+            <rect width="100" height="10" rx="8" strokeWidth="1" />
+            <rect y="30" width="100" height="10" rx="8" strokeWidth="1" />
+            <rect y="60" width="100" height="10" rx="8" strokeWidth="1" />
           </svg>
-        </span>
+        </StyledSpan>
       </Navbar.Toggle>
       <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="mr-auto">
-          <Nav.Link as={Link} to="/team0">
-            Bees
+        <Nav className="ml-auto">
+          <Nav.Link as={Link} to={'/help'}>
+            Help
           </Nav.Link>
-          <Nav.Link as={Link} to="/team1">
-            Butterflies
+          <Nav.Link as={Link} to={'/feedback'}>
+            Feedback
           </Nav.Link>
-          <NavDropdown title="Opponents" id="collasible-nav-dropdown">
-            <NavDropdown.Item as={Link} to="/team0">
-              Bees
-            </NavDropdown.Item>
-            <NavDropdown.Item as={Link} to="/team1">
-              Butterflies
-            </NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item as={Link} to="/">
-              Homepage
-            </NavDropdown.Item>
-          </NavDropdown>
         </Nav>
       </Navbar.Collapse>
     </StyledTopConsole>
   )
 }
+const _StyledTopConsole = ({ playerID, ...rest }) => <Navbar {...rest} />
 
-const StyledTopConsole = styled(({ playerColor, ...rest }) => (
-  <Navbar {...rest} />
-))`
+const StyledTopConsole = styled(_StyledTopConsole)`
   background-color: var(--black);
   padding: 4px 16px 0px 16px;
-  & button:focus {
-    outline: 2px solid --pinkish-white;
-  }
+  & button:focus,
   & button:hover {
-    outline: 2x solid --pinkish-white;
+    outline: 2px solid var(--white);
   }
   a {
-    color: ${(props) => props.playerColor} !important ;
+    color: var(--player-color) !important ;
   }
   .navbar-toggler {
-    color: ${(props) => props.playerColor} !important ;
-    border-color: ${(props) => props.playerColor} !important ;
+    color: var(--player-color) !important ;
+    border-color: var(--player-color) !important ;
     padding: 0.25rem;
   }
   .dropdown-menu {
     background-color: var(--black);
+  }
+`
+const StyledSpan = styled.span`
+  svg rect {
+    fill: var(--player-color);
+    stroke: var(--player-color);
   }
 `
 

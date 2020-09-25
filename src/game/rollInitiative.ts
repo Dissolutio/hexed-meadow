@@ -1,5 +1,5 @@
-export function rollD20Initiative(players) {
-  const initialRolls = genRolls(players)
+export function rollD20Initiative(playerIDs: string[]) {
+  const initialRolls = genRolls(playerIDs)
   return initialRolls.reduce(rollsToInitiative, [])
 }
 function rollsToInitiative(prev, curr, i, arr) {

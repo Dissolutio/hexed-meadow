@@ -6,41 +6,32 @@ import {
   GiButterfly,
   GiFairyWings,
   GiWingedEmblem,
-  GiSpiderAlt,
 } from 'react-icons/gi'
-import { useBoardContext } from './hooks/useBoardContext'
 
 export const playerIconColors = {
   0: 'var(--bee-yellow)',
   1: 'var(--butterfly-purple)',
 }
 
-export const UnitIcon = ({ unit, iconProps, card }) => {
-  const { hexMap } = useBoardContext()
-  if (!(unit || card)) return null
-  let iconCardID
-  let iconPlayerID
-  if (card) {
-    iconCardID = card.cardID
-    iconPlayerID = card.playerID
+export const UnitIcon = ({ cardID, hexSize, iconProps, iconPlayerID }) => {
+  if (!cardID) {
+    return null
   }
-  if (unit) {
-    iconCardID = unit.cardID
-    iconPlayerID = unit.playerID
-  }
-  const iconSize = hexMap.mapSize
-  const iconShift = hexMap.mapSize / -2
+
+  const iconSize = hexSize || 10
+  const iconXShift = iconSize / -2
+  const iconYShift = iconSize / -1.5
 
   const gameIconProps = {
-    x: iconProps?.x ?? `${iconShift}px`,
-    y: iconProps?.x ?? `${iconShift}px`,
+    x: iconProps?.x ?? `${iconXShift}px`,
+    y: iconProps?.x ?? `${iconYShift}px`,
     style: {
-      fill: `${playerIconColors[iconPlayerID]}`,
+      fill: `${playerIconColors?.[iconPlayerID] ?? 'var(--white)'}`,
       fontSize: iconProps?.x ?? `${iconSize}px`,
     },
   }
 
-  switch (iconCardID) {
+  switch (cardID) {
     case 'hm101':
       return <GiBee {...gameIconProps} />
     case 'hm102':
