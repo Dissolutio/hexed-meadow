@@ -1,17 +1,16 @@
-import React from 'react'
 import styled from 'styled-components'
 
 export const ArmyListStyle = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  color: ${(props) => props.theme.playerColors[props.playerID]};
+  color: var(--player-color);
   h2 {
     font-size: 1.3rem;
     margin: 0;
     text-align: center;
   }
   button {
-    color: ${(props) => props.theme.playerColors[props.playerID]};
+    color: var(--player-color);
   }
   ul {
     display: flex;
@@ -32,8 +31,8 @@ export const ArmyListStyle = styled.div`
     background: var(--black);
     width: 100%;
     height: 100%;
-    color: ${(props) => props.theme.playerColors[props.playerID]};
-    border: 0.1px solid ${(props) => props.theme.playerColors[props.playerID]};
+    color: var(--player-color);
+    border: 0.1px solid var(--player-color);
   }
   img {
     width: auto;

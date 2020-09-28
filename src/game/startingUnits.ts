@@ -13,65 +13,12 @@ export type ArmyCard = {
   figures: number
   hexes: number
 }
+
 export interface GameArmyCard extends ArmyCard {
   playerID: string
   gameCardID: string
   cardQuantity: number
 }
-//🛠 SETUP HEXED MEADOW CARDS/UNITS
-// BEES
-const beestyBoyz = {
-  playerID: '0',
-  cardQuantity: 1,
-  ...hexedMeadowCards['hm101'],
-}
-const bSquad = {
-  playerID: '0',
-  cardQuantity: 1,
-  ...hexedMeadowCards['hm102'],
-}
-const queenBae = {
-  ...hexedMeadowCards['hm103'],
-  playerID: '0',
-  cardQuantity: 1,
-}
-// BUTTERFLIES
-const butterFries = {
-  playerID: '1',
-  cardQuantity: 1,
-  ...hexedMeadowCards['hm201'],
-}
-const scarwings = {
-  playerID: '1',
-  cardQuantity: 1,
-  ...hexedMeadowCards['hm202'],
-}
-const monarch = {
-  playerID: '1',
-  cardQuantity: 1,
-  ...hexedMeadowCards['hm203'],
-}
-
-//🛠 INITIAL ARMY CARDS
-export const armyCards: GameArmyCard[] = [
-  // PLAYER 0
-  queenBae,
-  // beestyBoyz,
-  // bSquad,
-
-  // PLAYER 1
-  monarch,
-  // butterFries,
-  // scarwings,
-].map((card: GameArmyCard) => {
-  let uniquifier = 0
-  function makeGameCardID(card: GameArmyCard) {
-    return `p${card.playerID}_${card.cardID}_${uniquifier++}`
-  }
-  return { ...card, gameCardID: makeGameCardID(card) }
-})
-
-//  MAKE STARTING UNITS
 
 export type GameUnit = {
   unitID: string
@@ -81,22 +28,45 @@ export type GameUnit = {
   movePoints: number
   moveRange: MoveRange
 }
+
+export interface GameUnits {
+  [unitID: string]: GameUnit
+}
+
 export type MoveRange = {
-  safely: string[]
+  safe: string[]
   engage: string[]
   disengage: string[]
   denied: string[]
 }
-export const baseMoveRange: MoveRange = {
-  safely: [],
-  engage: [],
-  disengage: [],
-  denied: [],
+
+export function makeBlankMoveRange(): MoveRange {
+  return { safe: [], engage: [], disengage: [], denied: [] }
 }
-export interface GameUnits {
-  [key: string]: GameUnit
-}
+//🛠 INITIAL ARMY CARDS
+export const armyCards: GameArmyCard[] = Object.values(hexedMeadowCards).map(
+  fillGameCardInfo
+)
 export const gameUnits: GameUnits = cardsToUnits(armyCards)
+
+function fillGameCardInfo(card: GameArmyCard): GameArmyCard {
+  let uniquifier = 0
+  const newCard = {
+    ...card,
+    playerID: playerIDByCardRace(card),
+    cardQuantity: 1,
+  }
+  function playerIDByCardRace(card: ArmyCard) {
+    return card.race === 'bee' ? '0' : '1'
+  }
+  function makeGameCardID(card: GameArmyCard) {
+    return `p${card.playerID}_${card.cardID}_${uniquifier++}`
+  }
+  return {
+    ...newCard,
+    gameCardID: makeGameCardID(newCard),
+  }
+}
 
 function cardsToUnits(cards: GameArmyCard[]): GameUnits {
   // id factory
@@ -117,7 +87,7 @@ function cardsToUnits(cards: GameArmyCard[]): GameUnits {
         playerID: card.playerID,
         gameCardID: card.gameCardID,
         movePoints: 0,
-        moveRange: { ...baseMoveRange },
+        moveRange: { safe: [], engage: [], disengage: [], denied: [] },
       }
       return {
         ...unitsResult,

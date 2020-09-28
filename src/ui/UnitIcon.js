@@ -48,3 +48,17 @@ export const UnitIcon = ({ cardID, hexSize, iconProps, iconPlayerID }) => {
       return null
   }
 }
+
+export const CardUnitIcon = ({ unit }) => {
+  return (
+    <UnitIcon
+      cardID={unit.cardID}
+      iconPlayerID={unit.playerID}
+      iconProps={{
+        x: '50',
+        y: '50',
+        transform: '',
+      }}
+    />
+  )
+}

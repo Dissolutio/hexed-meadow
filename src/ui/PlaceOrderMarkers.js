@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
-import { useBoardContext, useLayoutContext } from 'ui/hooks'
+import { useBoardContext } from 'ui/hooks'
 import { ArmyListStyle } from 'ui/layout/ArmyListStyle'
 
 export const PlaceOrderMarkers = () => {
-  const { activateDataReadout } = useLayoutContext()
   const {
     playerID,
     currentRound,
@@ -25,9 +24,6 @@ export const PlaceOrderMarkers = () => {
     }
   }
   // TODO use this instead for active style toggling within the styled component
-  const isCurrentSelectedOrderMarker = (orderMarker) => {
-    return activeMarker === orderMarker
-  }
   const selectedStyle = (orderMarker) => {
     if (activeMarker === orderMarker) {
       return {
@@ -48,7 +44,6 @@ export const PlaceOrderMarkers = () => {
   if (orderMarkersReady[playerID] === true) {
     return (
       <ArmyListStyle playerID={playerID}>
-        <button onClick={activateDataReadout}>Data Readout</button>
         <p>Waiting for opponents to finish placing order markers...</p>
       </ArmyListStyle>
     )
@@ -56,7 +51,6 @@ export const PlaceOrderMarkers = () => {
   if (areAllOMsAssigned) {
     return (
       <ArmyListStyle playerID={playerID}>
-        <button onClick={activateDataReadout}>Data Readout</button>
         <p>Done placing your order markers?</p>
         <button onClick={makeReady}>CONFIRM DONE</button>
       </ArmyListStyle>

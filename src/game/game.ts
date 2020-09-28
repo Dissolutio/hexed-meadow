@@ -2,24 +2,28 @@ import { TurnOrder, PlayerView } from 'boardgame.io/core'
 import { BoardProps } from 'boardgame.io/react'
 import { HexUtils } from 'react-hexgrid'
 
+import { rollD20Initiative } from './rollInitiative'
+import {
+  getBoardHexForUnit,
+  getMoveRangeExperimental,
+  // getUnrevealedGameCard,
+  getMoveRangeForUnit,
+  getThisTurnData,
+} from './selectors'
 import {
   gameUnits,
   armyCards,
   GameArmyCard,
   GameUnits,
   GameUnit,
-  MoveRange,
-  baseMoveRange,
+  makeBlankMoveRange,
 } from './startingUnits'
-import { rollD20Initiative } from './rollInitiative'
 import {
-  makeHexagonMap,
-  makePrePlacedHexagonMap,
+  makeHexagonShapedMap,
   BoardHexes,
-  BoardHex,
   HexMap,
   StartZones,
-  makeHexID,
+  BoardHex,
 } from './mapGen'
 import {
   phaseNames,
@@ -31,17 +35,18 @@ import {
   devPlayerState,
   OrderMarker,
 } from './constants'
+import { cloneObject } from './utilities'
 
-//* TOGGLE DEV MODE
+//🛠 TOGGLE DEV MODE
 //!
-const isDevMode = true
+// const isDevMode = true
 //!
-// const isDevMode = false
+const isDevMode = false
 //!
-//* TOGGLE DEV MODE
+//🛠 TOGGLE DEV MODE
 
-//* Generate map and initial player state (order markers only so far)
-const map = isDevMode ? makePrePlacedHexagonMap(1) : makeHexagonMap(3)
+const mapSize = 1
+const hexagonMap = makeHexagonShapedMap(mapSize, isDevMode)
 const players = isDevMode ? devPlayerState : initialPlayerState
 
 type PlayerStateToggle = {
@@ -62,15 +67,14 @@ export type GameState = {
   orderMarkersReady: PlayerStateToggle
   roundOfPlayStartReady: PlayerStateToggle
 }
-
 const initialGameState: GameState = {
   armyCards,
   gameUnits,
   players,
-  hexMap: map.hexMap,
-  boardHexes: map.boardHexes,
-  startZones: map.startZones,
-  initiative: [],
+  hexMap: hexagonMap.hexMap,
+  boardHexes: hexagonMap.boardHexes,
+  startZones: hexagonMap.startZones,
+  initiative: [], // RoundOfPlay turn order
   currentRound: 0,
   currentOrderMarker: 0,
   orderMarkers: initialOrderMarkers,
@@ -92,7 +96,6 @@ export const HexedMeadow = {
     confirmPlacementReady,
     placeOrderMarker,
     confirmOrderMarkersReady,
-    confirmRoundOfPlayStartReady,
     moveAction,
     endCurrentPlayerTurn,
   },
@@ -116,18 +119,18 @@ export const HexedMeadow = {
     //PHASE-ORDER MARKERS
     [phaseNames.placeOrderMarkers]: {
       //onBegin
-      onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
+      onBegin: (G, ctx: BoardProps['ctx']) => {
+        //🛠 reset state
         const shouldUseDevModeValue = isDevMode && G.currentRound === 0
-        //! reset state
         G.orderMarkers = initialOrderMarkers
         G.orderMarkersReady = {
           '0': shouldUseDevModeValue,
           '1': shouldUseDevModeValue,
         }
-        //! set player stages
+        //🛠 set player stages
         ctx.events.setActivePlayers({ all: stageNames.placeOrderMarkers })
       },
-      //endIf
+      //endIf - -all players are ready
       endIf: (G) => {
         return G.orderMarkersReady['0'] && G.orderMarkersReady['1']
       },
@@ -173,45 +176,64 @@ export const HexedMeadow = {
         order: TurnOrder.CUSTOM_FROM('initiative'),
         //onBegin
         onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
-          const thisTurnGameCardID =
+          //🛠 Reveal order marker
+          const gameCardID =
             G.players[ctx.currentPlayer].orderMarkers[
               G.currentOrderMarker.toString()
             ]
-          const thisTurnGameCard = G.armyCards.find(
-            (c) => c.gameCardID === thisTurnGameCardID
-          )
-          const thisTurnUnits = Object.values(G.gameUnits).filter(
-            (u) => u.gameCardID === thisTurnGameCardID
-          )
-          //🛠 reveal OM
           const indexToReveal = G.orderMarkers[ctx.currentPlayer].findIndex(
             (om: OrderMarker) => {
-              return om.gameCardID === thisTurnGameCardID && om.order === ''
+              return om.gameCardID === gameCardID && om.order === ''
             }
           )
-          G.orderMarkers[ctx.currentPlayer][
-            indexToReveal
-          ].order = G.currentOrderMarker.toString()
-
-          //🛠 assign unit values
-          thisTurnUnits.forEach((unit: GameUnit) => {
-            //* move points
-            const movePoints = thisTurnGameCard.move
-            G.gameUnits[unit.unitID].movePoints = movePoints
-            //* move ranges
-            const moveRange = getMoveRangeForUnit(
-              { ...unit, movePoints: movePoints },
-              G.boardHexes
-            )
-            G.gameUnits[unit.unitID].moveRange = moveRange
-          })
+          if (indexToReveal >= 0) {
+            G.orderMarkers[ctx.currentPlayer][
+              indexToReveal
+            ].order = G.currentOrderMarker.toString()
+          }
+          //🛠 Assign move points/ranges
+          const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
+          const { thisTurnGameCard, thisTurnUnits } = getThisTurnData(
+            playersOrderMarkers,
+            G.currentOrderMarker,
+            G.armyCards,
+            G.gameUnits
+          )
+          const movePoints = thisTurnGameCard.move
+          let newGameUnits = { ...G.gameUnits }
+          //
+          //🛠 loop
+          thisTurnUnits.length &&
+            thisTurnUnits.forEach((unit: GameUnit) => {
+              const { unitID } = unit
+              //🛠 move points
+              const unitWithMovePoints = {
+                ...unit,
+                movePoints,
+              }
+              newGameUnits[unitID] = unitWithMovePoints
+              //🛠 move range
+              const moveRange = getMoveRangeExperimental(
+                unitWithMovePoints,
+                G.boardHexes,
+                newGameUnits
+              )
+              const unitWithMoveRange = {
+                ...unit,
+                moveRange,
+              }
+              newGameUnits[unitID] = unitWithMoveRange
+            })
+          //🛠 end loop
+          //
+          G.gameUnits = newGameUnits
         },
         //onEnd
         onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
           //🛠 reset unit move points and ranges
           Object.keys(G.gameUnits).forEach((uid) => {
             G.gameUnits[uid].movePoints = 0
-            G.gameUnits[uid].moveRange = { ...baseMoveRange }
+            G.gameUnits[uid].moveRange = { ...makeBlankMoveRange() }
           })
           //🛠 handle turns & order markers
           const isLastTurn = ctx.playOrderPos === ctx.numPlayers - 1
@@ -233,42 +255,57 @@ export const HexedMeadow = {
 }
 
 //🎆 BGIO MOVES
-
-//phase -- ROUND OF PLAY 🎆
-function confirmRoundOfPlayStartReady(G: GameState, ctx: BoardProps['ctx']) {
-  G.roundOfPlayStartReady[ctx.playerID] = true
-}
+//phase:___RoundOfPlay
 function endCurrentPlayerTurn(G: GameState, ctx: BoardProps['ctx']) {
   ctx.events.endTurn()
 }
-type UnitMove = {
-  unitID: string
-  endHexID: string
-}
-function moveAction(G: GameState, ctx: BoardProps['ctx'], move: UnitMove) {
-  const { unitID, endHexID } = move
-  const movePoints = G.gameUnits[unitID].movePoints
-  const startHex = Object.values(G.boardHexes).find(
-    (hex) => hex.occupyingUnitID === unitID
-  )
-  const endHex = G.boardHexes[endHexID]
+function moveAction(
+  G: GameState,
+  ctx: BoardProps['ctx'],
+  unit: GameUnit,
+  endHex: BoardHex
+) {
+  const { unitID, movePoints } = unit
+  const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
+  const endHexID = endHex.id
+  const startHex = getBoardHexForUnit(unit, G.boardHexes)
+  const startHexID = startHex.id
+  const currentMoveRange = getMoveRangeForUnit(unit, G.boardHexes, G.gameUnits)
+  const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
+  const moveCost = HexUtils.distance(startHex, endHex)
 
-  const isEndHexOccupied = Boolean(endHex.occupyingUnitID)
-  const distance = HexUtils.distance(startHex, endHex)
-  const isInMoveRange = distance <= movePoints
-  if (isInMoveRange && !isEndHexOccupied) {
-    G.boardHexes[startHex.id].occupyingUnitID = ''
-    G.boardHexes[endHex.id].occupyingUnitID = unitID
-    G.gameUnits[unitID].movePoints -= distance
+  const newBoardHexes: BoardHexes = cloneObject(G.boardHexes)
+  // const newBoardHexes: BoardHexes = { ...G.boardHexes }
+  const newGameUnits: GameUnits = cloneObject(G.gameUnits)
+  // const newGameUnits: GameUnits = { ...G.gameUnits }
+  newBoardHexes[startHexID].occupyingUnitID = ''
+  newBoardHexes[endHexID].occupyingUnitID = unitID
+  const newMovePoints = movePoints - moveCost
+  newGameUnits[unitID].movePoints = newMovePoints
+
+  const { thisTurnUnits } = getThisTurnData(
+    playersOrderMarkers,
+    G.currentOrderMarker,
+    G.armyCards,
+    newGameUnits
+  )
+  thisTurnUnits.forEach((unit: GameUnit) => {
+    const { unitID } = unit
+    const moveRange = getMoveRangeForUnit(unit, newBoardHexes, newGameUnits)
+    newGameUnits[unitID].moveRange = moveRange
+  })
+  //🛠 Make the move
+  if (isInSafeMoveRange) {
+    G.boardHexes = { ...newBoardHexes }
+    G.gameUnits = { ...newGameUnits }
   }
 }
-
-//phase -- PLACEMENT 🎆
+//phase:___Placement
 function placeUnitOnHex(
   G: GameState,
   ctx: BoardProps['ctx'],
   hexId: string,
-  unit
+  unit: GameUnit
 ) {
   G.boardHexes[hexId].occupyingUnitID = unit?.unitID ?? ''
 }
@@ -279,8 +316,7 @@ function confirmPlacementReady(
 ) {
   G.placementReady[playerID] = true
 }
-
-//phase -- ORDER MARKERS 🎆
+//phase:___PlaceOrderMarkers
 function placeOrderMarker(
   G: GameState,
   ctx: BoardProps['ctx'],
@@ -294,89 +330,4 @@ function confirmOrderMarkersReady(
   { playerID }
 ) {
   G.orderMarkersReady[playerID] = true
-}
-
-//🛠--UTILITY FUNCTIONS
-//? Will this work? Can some pure hex-functions be extracted from the game to a bgio plugin?
-function getBoardHexForUnit(unit: GameUnit, boardHexes: BoardHexes) {
-  return Object.values(boardHexes).find(
-    (hex) => hex.occupyingUnitID === unit?.unitID
-  )
-}
-
-export function getMoveRangeForUnit(
-  unit: GameUnit,
-  boardHexes: BoardHexes
-): MoveRange {
-  //
-  //🛠 initialize
-  const start = getBoardHexForUnit(unit, boardHexes)
-
-  //🛠 moveRange recursive reduce
-  const moveRange = moveRangeReduce(start, unit.movePoints, boardHexes)
-  return moveRange
-
-  function moveRangeReduce(
-    start: BoardHex,
-    movePoints: number,
-    boardHexes: BoardHexes
-  ): MoveRange {
-    const startNeighbors = getNeighbors(start, boardHexes)
-
-    return startNeighbors.reduce(
-      (result: MoveRange, end: BoardHex) => {
-        const { safely, engage, disengage, denied } = result
-        const moveCost = getMoveCostToNeighbor(start, end)
-        const movePointsLeftAfterMove = movePoints - moveCost
-
-        //🛠 hex already denied
-        const allPrev = [safely, engage, disengage, denied].flat()
-        const isAlreadyIncluded = allPrev.includes(end.id)
-        if (isAlreadyIncluded) {
-          return result
-        }
-        //🛠 deny hex
-        const isEndHexOccupied = Boolean(end.occupyingUnitID)
-        const isDenied = movePointsLeftAfterMove < 0 || isEndHexOccupied
-        if (isDenied) {
-          result.denied.push(end.id)
-        }
-        //🛠 ELSE safe FKN STOOP1d
-        if (!isDenied) {
-          result.safely.push(end.id)
-          if (movePointsLeftAfterMove) {
-            const recursiveMoveRange = moveRangeReduce(
-              end,
-              movePointsLeftAfterMove,
-              boardHexes
-            )
-            return {
-              ...result,
-              ...recursiveMoveRange,
-            }
-          }
-        }
-        return result
-      },
-      { ...baseMoveRange }
-    )
-  }
-}
-
-function getNeighbors(start: BoardHex, boardHexes: BoardHexes): BoardHex[] {
-  return HexUtils.neighbours(start)
-    .map((hex) => {
-      const id = makeHexID(hex)
-      const exists = Object.keys(boardHexes).includes(id)
-      return exists ? { ...boardHexes[makeHexID(hex)] } : null
-    })
-    .filter((item) => Boolean(item))
-}
-
-function getMoveCostToNeighbor(start: BoardHex, end: BoardHex): number {
-  const altitudeDelta = end.altitude - start.altitude
-  const heightCost = Math.max(altitudeDelta, 0)
-  const distanceCost = end.horizontalMoveCost
-  const totalCost = heightCost + distanceCost
-  return totalCost
 }

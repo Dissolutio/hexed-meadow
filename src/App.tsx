@@ -5,9 +5,8 @@ import { Local } from 'boardgame.io/multiplayer'
 import { SocketIO } from 'boardgame.io/multiplayer'
 
 import Board from './ui/Board'
-
 import { HexedMeadow } from './game/game'
-import { HelpPage, FeedbackPage } from 'ui/pages'
+import { HelpPage, FeedbackPage } from './ui/pages'
 
 const devModes = {
   dev: 'dev',
@@ -50,8 +49,8 @@ export const DevApp = () => {
   return (
     <Switch>
       <Route exact path="/">
-        <DevClient gameID="gameid" playerID={'0'} />
-        <DevClient gameID="gameid" playerID={'1'} />
+        <DevClient matchID="matchID" playerID={'0'} />
+        <DevClient matchID="matchID" playerID={'1'} />
       </Route>
       <Route path="/help">
         <HelpPage />
@@ -67,15 +66,17 @@ export const DevAppWithLocalServer = () => {
   return (
     <Switch>
       <Route exact path="/">
-        <Link to="/player/0">Bees!</Link>
-        <Link to="/player/1">Butterflies!</Link>
-        <Link to="/help">Hexed Meadow Help Page</Link>
+        <DevLocalServerLobby />
       </Route>
-      <Route exact path="/player/0">
-        <DevLocalServerClient gameID="gameid" playerID={'0'} />
+      <Route exact path="/example">
+        <Link to="/team0">Bees!</Link>
+        <Link to="/team1">Butterflies!</Link>
       </Route>
-      <Route exact path="/player/1">
-        <DevLocalServerClient gameID="gameid" playerID={'1'} />
+      <Route exact path="/team0">
+        <DevLocalServerClient matchID="example" playerID={'0'} />
+      </Route>
+      <Route exact path="/team1">
+        <DevLocalServerClient matchID="example" playerID={'1'} />
       </Route>
       <Route path="/help">
         <HelpPage />
@@ -84,7 +85,7 @@ export const DevAppWithLocalServer = () => {
   )
 }
 
-const LoadingComponent = (props) => {
+const LoadingComponent = () => {
   return <div>Connecting...</div>
 }
 
@@ -105,7 +106,7 @@ const DevLocalServerClient = Client({
   numPlayers: 2,
   board: Board,
   multiplayer: SocketIO({ server: 'http://localhost:8000' }),
-  debug: true,
+  debug: false,
   loading: LoadingComponent,
   enhancer:
     (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
@@ -130,14 +131,17 @@ const HerokuApp = () => {
   return (
     <Switch>
       <Route exact path="/">
+        <HerokuDeployedLobby />
+      </Route>
+      <Route exact path="/example">
         <Link to="/team0">Bees!</Link>
         <Link to="/team1">Butterflies!</Link>
       </Route>
       <Route exact path="/team0">
-        <DeployClient gameID="gameid" playerID={'0'} />
+        <DeployClient matchID="example" playerID={'0'} />
       </Route>
       <Route exact path="/team1">
-        <DeployClient gameID="gameid" playerID={'1'} />
+        <DeployClient matchID="example" playerID={'1'} />
       </Route>
     </Switch>
   )
@@ -152,7 +156,7 @@ const DevLocalServerLobby = () => {
     />
   )
 }
-const HerokuDeployedLobby = (params) => {
+const HerokuDeployedLobby = () => {
   return (
     <Lobby
       gameServer={`https://${window.location.hostname}`}

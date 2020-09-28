@@ -1,9 +1,16 @@
-import { GridGenerator, Hex } from 'react-hexgrid'
+import {
+  GridGenerator,
+  Hex,
+  // , HexUtils
+} from 'react-hexgrid'
 import { gameUnits } from './startingUnits'
-import { getRandomInt } from 'ui/utilities'
+import { getRandomInt } from './utilities'
 
-export interface BoardHex extends Hex {
+export interface BoardHex {
   id: string
+  q: number
+  r: number
+  s: number
   occupyingUnitID: string
   terrain: string
   altitude: number
@@ -24,8 +31,8 @@ export type HexMap = {
   hexWidth: number
 }
 
-const hexMap = (mapSize) => {
-  return {
+export function makeHexagonShapedMap(mapSize: number, isDevMode: boolean) {
+  const hexMap = {
     mapShape: 'hexagon',
     mapSize,
     // FLAT TOP
@@ -37,32 +44,29 @@ const hexMap = (mapSize) => {
     // hexHeight: 2,
     // hexWidth: Math.sqrt(3),
   }
+  const startZones: StartZones = makeStartZones(
+    makeHexagonShapedMapBoardHexes(mapSize),
+    mapSize
+  )
+  const devModeStartZones: StartZones = makeStartZones(
+    makeHexagonShapedMapBoardHexes(mapSize),
+    mapSize
+  )
+  const boardHexesWithPrePlacedUnits: BoardHexes = withPrePlaceUnits(
+    makeHexagonShapedMapBoardHexes(mapSize),
+    devModeStartZones
+  )
+  return {
+    boardHexes: isDevMode
+      ? boardHexesWithPrePlacedUnits
+      : makeHexagonShapedMapBoardHexes(mapSize),
+    startZones: isDevMode ? devModeStartZones : startZones,
+    hexMap,
+  }
 }
 
-export function makePrePlacedHexagonMap(mapSize: number) {
-  const boardHexes: BoardHexes = GridGenerator.hexagon(mapSize).reduce(
-    fillHexInfo,
-    {}
-  )
-  const startZones: StartZones = makeStartZones(boardHexes, mapSize)
-  const boardHexesWithPrePlacedUnits = withPrePlaceUnits(boardHexes, startZones)
-  return {
-    boardHexes: boardHexesWithPrePlacedUnits,
-    startZones,
-    hexMap: hexMap(mapSize),
-  }
-}
-export function makeHexagonMap(mapSize: number) {
-  const boardHexes = GridGenerator.hexagon(mapSize).reduce(fillHexInfo, {})
-  const startZones = makeStartZones(boardHexes, mapSize)
-  return {
-    boardHexes,
-    startZones,
-    hexMap: hexMap(mapSize),
-  }
-}
 export const makeHexID = (hex: Hex) => {
-  return `q${hex.q}r${hex.r}s${hex.s}`
+  return `${hex.q},${hex.r},${hex.s}`
 }
 const fillHexInfo = (prev: BoardHexes, curr: Hex): BoardHexes => {
   const altitude = () => getRandomInt(1, 1)
@@ -80,13 +84,30 @@ const fillHexInfo = (prev: BoardHexes, curr: Hex): BoardHexes => {
     [boardHex.id]: boardHex,
   }
 }
+function convertHexgridHexesToBoardHexes(hexgridHexes: Hex[]) {
+  return hexgridHexes.reduce(fillHexInfo, {})
+}
+function makeHexagonShapedMapBoardHexes(mapSize): BoardHexes {
+  const hexgridHexes = GridGenerator.hexagon(mapSize)
+  //
+  //! THIS WORKS! Uncomment so see the map widen up a couple more hexes!
+  // const bigMapAddition = [
+  //   ...hexgridHexes,
+  //   ...hexgridHexes.map((h) => HexUtils.add(h, { q: 1, r: 0, s: -1 })),
+  //   ...hexgridHexes.map((h) => HexUtils.add(h, { q: -1, r: 0, s: 1 })),
+  // ]
+  // const boardHexes = convertHexgridHexesToBoardHexes(bigMapAddition)
+  //
+  const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
+  return boardHexes
+}
 function makeStartZones(boardHexes: BoardHexes, mapSize: number): StartZones {
   const boardHexesArr = Object.values(boardHexes)
   const P0StartZone = boardHexesArr
-    .filter((hex) => parseFloat(hex.s) >= Math.max(mapSize - 1, 1))
+    .filter((hex) => hex.s >= Math.max(mapSize - 1, 1))
     .map((hex) => hex.id)
   const P1StartZone = boardHexesArr
-    .filter((hex) => parseFloat(hex.s) <= -1 * Math.max(mapSize - 1, 1))
+    .filter((hex) => hex.s <= -1 * Math.max(mapSize - 1, 1))
     .map((hex) => hex.id)
   return {
     '0': P0StartZone,
@@ -104,7 +125,7 @@ function withPrePlaceUnits(hexes: BoardHexes, zones: StartZones): BoardHexes {
       randomHexID = zones[unit.playerID].pop()
     }
     if (playerID === '1') {
-      randomHexID = zones[unit.playerID].shift()
+      randomHexID = zones[unit.playerID].pop()
     }
     // Assign the occupying unit's ID on the boardHex
     hexes[randomHexID].occupyingUnitID = unit.unitID

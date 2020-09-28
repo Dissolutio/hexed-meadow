@@ -1,21 +1,29 @@
 {
   "compilerOptions": {
-    "target": "es5",
     "baseUrl": "src",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "strict": false,
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "moduleResolution": "node",
+    "module": "esnext",
+    "jsx": "react",
     "allowJs": true,
-    "skipLibCheck": true,
+    "isolatedModules": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": false,
     "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
     "downlevelIteration": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react"
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "outDir": "compiled",
+    "noEmit": true
   },
-  "include": ["src"]
+  "include": [
+    "./src/game/*.ts"
+  ],
+  "compileOnSave": true
 }
