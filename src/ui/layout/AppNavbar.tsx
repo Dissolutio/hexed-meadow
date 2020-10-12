@@ -11,9 +11,16 @@ import butterfliesLogo from 'assets/butterfliesLogo.png'
 export const AppNavbar = () => {
   const { playerID } = useBoardContext()
   const opponentPlayerID = playerID === '0' ? '1' : '0'
+  const isProductionApp = process.env.NODE_ENV === 'production'
   return (
     <StyledTopConsole collapseOnSelect expand="lg" playerID={playerID}>
-      <Navbar.Brand href={`/#player${opponentPlayerID}`}>
+      <Navbar.Brand
+        href={
+          isProductionApp
+            ? `/team${opponentPlayerID}`
+            : `/#player${opponentPlayerID}`
+        }
+      >
         <PlayerTeamLogo
           playerID={playerID}
           className="d-inline-block align-top"

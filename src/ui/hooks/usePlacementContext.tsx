@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react'
 import { useBoardContext } from './useBoardContext'
+import { BoardHex } from '../../game/mapGen'
 
-const PlacementContext = React.createContext({})
+const PlacementContext = React.createContext(null)
 
 const PlacementContextProvider = ({ children }) => {
   const {
@@ -19,14 +20,12 @@ const PlacementContextProvider = ({ children }) => {
     setErrorMsg,
     placeUnitOnHex,
   } = useBoardContext()
-
   const [placementUnits, setPlacementUnits] = useState(
     myInitialPlacementUnits()
   )
-
   function myInitialPlacementUnits() {
     const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
-      .map((bH) => bH.occupyingUnitID)
+      .map((bH: BoardHex) => bH.occupyingUnitID)
       .filter((id) => {
         return id && gameUnits[id].playerID === playerID
       })
@@ -49,6 +48,7 @@ const PlacementContextProvider = ({ children }) => {
   function onClickPlacementUnit(unitID) {
     // either deselect unit, or select unit and deselect active hex
     if (unitID === activeUnitID) {
+      console.log(`onClickPlacementUnit -> DESELECT`)
       setActiveUnitID('')
     } else {
       setActiveUnitID(unitID)
@@ -60,7 +60,6 @@ const PlacementContextProvider = ({ children }) => {
     event.stopPropagation()
     const hexID = sourceHex.id
     const isInStartZone = myStartZone.includes(hexID)
-
     //  No unit, select hex
     if (!activeUnitID) {
       setActiveHexID(hexID)
@@ -88,7 +87,6 @@ const PlacementContextProvider = ({ children }) => {
       setActiveHexID('')
     }
   }
-
   return (
     <PlacementContext.Provider
       value={{
@@ -105,11 +103,9 @@ const PlacementContextProvider = ({ children }) => {
     </PlacementContext.Provider>
   )
 }
-
 const usePlacementContext = () => {
   return {
     ...useContext(PlacementContext),
   }
 }
-
 export { PlacementContextProvider, usePlacementContext }

@@ -42,8 +42,8 @@ function highToLow(a, b) {
 function rollDie(sides = 6) {
   return 1 + Math.floor(Math.random() * sides)
 }
-function rollDice(number, sides) {
-  var total = 0
-  while (number-- > 0) total += rollDie(sides)
-  return total
-}
+// function rollDice(number, sides) {
+//   var total = 0
+//   while (number-- > 0) total += rollDie(sides)
+//   return total
+// }

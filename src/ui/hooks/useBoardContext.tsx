@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from 'react'
 import { BoardProps } from 'boardgame.io/react'
 import { phaseNames } from 'game/constants'
 import { BoardHex } from 'game/mapGen'
-import { GameUnit, GameArmyCard } from 'game/startingUnits'
+import { GameArmyCard } from 'game/startingUnits'
 
 interface BoardContextProps extends BoardProps {
   children: React.ReactNode
@@ -11,49 +11,41 @@ interface BoardContextProps extends BoardProps {
 const BoardContext = createContext(null)
 
 const BoardContextProvider = (props: BoardContextProps) => {
-  // ! UI STATE
+  //🛠 PROPS
+  const { G, ctx, moves, playerID } = props
 
+  //🛠 utility
+  function belongsToPlayer(thing: any) {
+    return thing?.playerID === playerID
+  }
+
+  //🛠 UI STATE
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
   const [activeGameCardID, setActiveGameCardID] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
-  const uiState = {
-    activeHexID,
-    setActiveHexID,
-    activeUnitID,
-    setActiveUnitID,
-    activeGameCardID,
-    setActiveGameCardID,
-    errorMsg,
-    setErrorMsg,
-  }
 
-  const { G, ctx, moves, playerID } = props
+  //🛠 COMPUTED
 
-  // ! MY STATE
+  const myCards = G.armyCards.filter(belongsToPlayer)
+  const myStartZone = G.startZones[playerID]
+  const myUnits = Object.values(G.gameUnits).filter(belongsToPlayer)
+  const isMyTurn = ctx.currentPlayer === playerID
+  const myCurrentStage = ctx.activePlayers?.[playerID] || ''
+  const myOrderMarkers = G.players?.[playerID]?.orderMarkers
+  const isOrderMarkerPhase = ctx.phase === phaseNames.placeOrderMarkers
+  const isPlacementPhase = ctx.phase === phaseNames.placement
+  const isRoundOfPlayPhase = ctx.phase === phaseNames.roundOfPlay
 
-  const myState = {
-    myCards: G.armyCards.filter(belongsToPlayer),
-    myStartZone: G.startZones[playerID],
-    myUnits: Object.values(G.gameUnits).filter(belongsToPlayer),
-    isMyTurn: ctx.currentPlayer === playerID,
-    myCurrentStage: ctx.activePlayers?.[playerID] || '',
-    myOrderMarkers: G.players?.[playerID]?.orderMarkers,
-  }
-
-  // ! SELECTORS
-
-  function belongsToPlayer(anything) {
-    return anything.playerID === playerID
-  }
+  //🛠 SELECTORS
   const getGameCardByID = (gameCardID: string) => {
     return G.armyCards.find(
       (card: GameArmyCard) => card.gameCardID === gameCardID
     )
   }
   const getGameUnitByID = (unitID: string) => {
-    const gameUnitsArr = Object.values(G.gameUnits)
-    return gameUnitsArr.find((unit: GameUnit) => unit.unitID === unitID)
+    const unit = G.gameUnits?.[unitID]
+    return { ...unit }
   }
   const getBoardHexIDForUnitID = (unitID: string) => {
     const boardHexesArr: BoardHex[] = Object.values(G.boardHexes)
@@ -66,34 +58,25 @@ const BoardContextProvider = (props: BoardContextProps) => {
   const activeUnit = G.gameUnits[activeUnitID]
   const currentTurnGameCardID =
     G.players?.[playerID]?.orderMarkers?.[G.currentOrderMarker] ?? ''
-
   const currentTurnGameCard = G.armyCards.find(
     (armyCard) => armyCard.gameCardID === currentTurnGameCardID
   )
-  const selectors = {
-    belongsToPlayer,
-    getGameCardByID,
-    getGameUnitByID,
-    getBoardHexIDForUnitID,
-    activeUnit,
-    currentTurnGameCardID,
-    currentTurnGameCard,
+  //TODO: make getUnitForHex(hex)
+  function getMapHexUnit(hex: BoardHex) {
+    const unitID = hex.occupyingUnitID
+    const unit = getGameUnitByID(unitID)
+    const isMyUnit = belongsToPlayer(unit)
+    // TODO
+    // Track placement in Player State (secret state)
+    // for now, don't reveal enemy units in Placement phase
+    //TODO
+    if (isPlacementPhase && !isMyUnit) {
+      return null
+    }
+    return unit
   }
 
-  // ! PHASE / STAGE INFO
-
-  const isOrderMarkerPhase = ctx.phase === phaseNames.placeOrderMarkers
-  const isPlacementPhase = ctx.phase === phaseNames.placement
-  const isRoundOfPlayPhase = ctx.phase === phaseNames.roundOfPlay
-  const hasConfirmedRoundOfPlayStart =
-    isRoundOfPlayPhase && G.roundOfPlayStartReady[playerID]
-  const phaseStage = {
-    isPlacementPhase,
-    isOrderMarkerPhase,
-    isRoundOfPlayPhase,
-    hasConfirmedRoundOfPlayStart,
-  }
-  //! FINAL BOARD STATE
+  //🛠 ASSEMBLED BOARDSTATE
   const boardState = {
     playerID,
     ...G,
@@ -101,14 +84,35 @@ const BoardContextProvider = (props: BoardContextProps) => {
     ...ctx,
     undo: props.undo,
     redo: props.redo,
-    // BOARD STATE
-    ...uiState,
-    // PLAYER STATE
-    ...myState,
-    // SELECTORS
-    ...selectors,
-    // PHASES / STAGES
-    ...phaseStage,
+    //🛠 UI STATE
+    activeHexID,
+    setActiveHexID,
+    activeUnitID,
+    setActiveUnitID,
+    activeGameCardID,
+    setActiveGameCardID,
+    errorMsg,
+    setErrorMsg,
+
+    //🛠 COMPUTED
+    myCards,
+    myStartZone,
+    myUnits,
+    isMyTurn,
+    myCurrentStage,
+    myOrderMarkers,
+    isOrderMarkerPhase,
+    isPlacementPhase,
+    isRoundOfPlayPhase,
+    //🛠 SELECTORS
+    belongsToPlayer,
+    getGameCardByID,
+    getGameUnitByID,
+    getBoardHexIDForUnitID,
+    getMapHexUnit,
+    activeUnit,
+    currentTurnGameCardID,
+    currentTurnGameCard,
   }
 
   return (

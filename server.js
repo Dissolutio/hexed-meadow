@@ -1,18 +1,15 @@
-const Server = require('boardgame.io/server').Server
-const path = require('path')
-const Koa = require('koa')
-const serve = require('koa-static')
-const mount = require('koa-mount')
-const HexedMeadow = require('./src/game/game').HexedMeadow
+import { Server } from 'boardgame.io/server'
+import path from 'path'
+import serve from 'koa-static'
+import { HexedMeadow } from './game'
 
 const server = Server({ games: [HexedMeadow] })
-const PORT = process.env.PORT || 8000
-const frontEndAppBuildPath = path.resolve(__dirname, './build')
+const PORT = parseInt(process.env.PORT) || 8000
 
-// Serve the build directory
-const static_pages = new Koa()
-static_pages.use(serve(frontEndAppBuildPath))
-server.app.use(mount('/', static_pages))
+// Build path relative to the server.js file
+const frontEndAppBuildPath = path.resolve(__dirname, './build')
+server.app.use(serve(frontEndAppBuildPath))
+
 server.run(PORT, () => {
   server.app.use(
     async (ctx, next) =>

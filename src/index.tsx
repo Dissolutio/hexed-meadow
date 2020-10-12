@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import * as serviceWorker from './serviceWorker'
-import { App } from './App'
+import { App } from './app/App'
 
 import 'normalize.css'
 import 'bootstrap/dist/css/bootstrap.min.css'

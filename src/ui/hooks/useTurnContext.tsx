@@ -1,31 +1,33 @@
 import React, { useContext, useState, useEffect } from 'react'
 
-import { GameArmyCard, GameUnit } from 'game/startingUnits'
+import { GameArmyCard, GameUnit, makeBlankMoveRange } from 'game/startingUnits'
 import { useBoardContext } from './useBoardContext'
-import { HexUtils } from 'react-hexgrid'
+import { OrderMarker } from 'game/constants'
 
-const TurnContext = React.createContext({})
+const TurnContext = React.createContext(null)
 
 export const TurnContextProvider = ({ children }) => {
   const {
     boardHexes,
     armyCards,
     gameUnits,
+    orderMarkers,
+    myOrderMarkers,
     isMyTurn,
     getGameCardByID,
     getGameUnitByID,
     getBoardHexIDForUnitID,
     currentTurnGameCardID,
+    currentOrderMarker,
+    currentPlayer,
     // STATE
     setActiveHexID,
-    setErrorMsg,
     // MOVES
     moveAction,
   } = useBoardContext()
 
   // ! STATE
   const [selectedGameCardID, setSelectedGameCardID] = useState('')
-
   const [selectedUnitID, setSelectedUnitID] = useState('')
 
   //🛠 auto select my turn card
@@ -33,9 +35,21 @@ export const TurnContextProvider = ({ children }) => {
     if (isMyTurn) {
       setSelectedGameCardID(currentTurnGameCardID)
     }
-  }, [isMyTurn])
+  }, [isMyTurn, currentTurnGameCardID])
 
   const selectedUnit = getGameUnitByID(selectedUnitID)
+
+  const revealedGameCard = () => {
+    const orderMarker = orderMarkers[currentPlayer].find(
+      (om: OrderMarker) => om.order === currentOrderMarker.toString()
+    )
+    const id = orderMarker ? orderMarker.gameCardID : ''
+    return id ? getGameCardByID(id) : null
+  }
+  const unrevealedGameCard = () => {
+    const id = myOrderMarkers[currentOrderMarker]
+    return id ? getGameCardByID(id) : null
+  }
 
   const selectedGameCard = () => {
     const armyCardsArr = Object.values(armyCards)
@@ -70,29 +84,28 @@ export const TurnContextProvider = ({ children }) => {
 
     const occupyingUnitID = boardHexes[sourceHex.id].occupyingUnitID
     const unitOnHex: GameUnit = gameUnits[occupyingUnitID]
-    const gameCard: GameArmyCard = getGameCardByID(unitOnHex?.gameCardID)
     const isUnitReadyToSelect =
       unitOnHex?.gameCardID === selectedGameCardID &&
       selectedGameCardID === currentTurnGameCardID
     const isUnitSelected = unitOnHex?.unitID === selectedUnitID
     // * repeated from moveAction function
-    const startHex = boardHexes[getBoardHexIDForUnitID(selectedUnitID)]
     const isEndHexOccupied = Boolean(occupyingUnitID)
-    const distance = HexUtils.distance(startHex, sourceHex)
-    const movePoints = gameUnits?.[selectedUnitID]?.movePoints ?? 0
-    const isInMoveRange = distance <= movePoints
     //TURN MyTurn
     if (isMyTurn) {
+      const moveRange = selectedUnit?.moveRange ?? makeBlankMoveRange()
+      const { safe, engage, disengage } = moveRange
+      const allMoves = [safe, disengage, engage].flat()
+      const isInMoveRange = allMoves.includes(sourceHex.id)
       //🛠 unit selected, clicked valid hex, make move
       if (selectedUnitID && isInMoveRange && !isEndHexOccupied) {
-        moveAction({ unitID: selectedUnitID, endHexID: sourceHex.id })
+        moveAction(selectedUnit, boardHexes[sourceHex.id])
       }
       //🛠 clicked another selectable unit, select that unit
       if (isUnitReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)
       }
       //🛠 clicked currently selected unit, de-select the unit (to none selected)
-      // TODO This could be different
+      // TODO Do something else besides deselect unit
       if (isUnitSelected) {
         setSelectedUnitID('')
       }
@@ -115,6 +128,8 @@ export const TurnContextProvider = ({ children }) => {
         selectedGameCard: selectedGameCard(),
         selectedGameCardUnits: selectedGameCardUnits(),
         selectedUnit,
+        revealedGameCard: revealedGameCard(),
+        unrevealedGameCard: unrevealedGameCard(),
         // HANDLERS
         onClickBoardHex__turn,
         onSelectCard__turn,
@@ -126,7 +141,7 @@ export const TurnContextProvider = ({ children }) => {
   )
 }
 
-export const useTurnContext = () => {
+export const useTurnContext = (): any => {
   return {
     ...useContext(TurnContext),
   }

@@ -6,9 +6,9 @@ declare module 'react-hexgrid' {
   }
   class Hex {
     constructor(q: number, r: number, s: number)
-    readonly q: string
-    readonly r: string
-    readonly s: string
+    readonly q: number
+    readonly r: number
+    readonly s: number
   }
   class Orientation {
     constructor(

@@ -1,11 +1,6 @@
 import React from 'react'
 import { useBoardContext } from 'ui/hooks'
-import {
-  DataReadout,
-  PlacementControls,
-  PlaceOrderMarkers,
-  RoundOfPlayControls,
-} from 'ui'
+import { PlacementControls, PlaceOrderMarkers, RoundOfPlayControls } from 'ui'
 
 export const BottomConsole = () => {
   const {
