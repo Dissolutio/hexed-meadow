@@ -30,7 +30,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm-run-all --continue-on-error compile cra-build",
+    "cra-build": "react-scripts build",
+    "compile": "tsc src/game/**.ts --outDir 'server'",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "format": "prettier --write 'src/*/*.js' '**/*.json'",
@@ -62,6 +64,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.0.8",
+    "npm-run-all": "^4.1.5",
     "prettier": "2.0.4",
     "typescript": "^4.0.2"
   }
