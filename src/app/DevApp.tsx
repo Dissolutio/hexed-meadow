@@ -2,7 +2,6 @@ import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { Client } from 'boardgame.io/react'
 import { Local } from 'boardgame.io/multiplayer'
-import { SocketIO } from 'boardgame.io/multiplayer'
 
 import Board from '../ui/Board'
 import { HexedMeadow } from '../game/game'

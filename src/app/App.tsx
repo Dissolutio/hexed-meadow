@@ -5,15 +5,14 @@ import { DevApp } from './DevApp'
 import { LocalServerApp } from './LocalServerApp'
 import { HerokuApp } from './HerokuApp'
 
-//! TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
 const appModes = {
   dev: 'dev',
   devWithLocalServer: 'devWithLocalServer',
   herokuDeployment: 'herokuDeployment',
 }
 let myMode = appModes.dev
-// Toggle here
-myMode = appModes.devWithLocalServer
+//! TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
+// myMode = appModes.devWithLocalServer
 //
 if (process.env.NODE_ENV === 'production') {
   myMode = appModes.herokuDeployment
