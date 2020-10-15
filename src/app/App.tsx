@@ -2,27 +2,26 @@ import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
 import { DevApp } from './DevApp'
-import { LocalServerApp } from './LocalServerApp'
-import { HerokuApp } from './HerokuApp'
+import { StagingApp } from './StagingApp'
+import { ProductionApp } from './ProductionApp'
 
-//! TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
 const appModes = {
   dev: 'dev',
-  devWithLocalServer: 'devWithLocalServer',
-  herokuDeployment: 'herokuDeployment',
+  staging: 'staging',
+  production: 'production',
 }
 let myMode = appModes.dev
-// Toggle here
-myMode = appModes.devWithLocalServer
+//! TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
+myMode = appModes.staging
 //
 if (process.env.NODE_ENV === 'production') {
-  myMode = appModes.herokuDeployment
+  myMode = appModes.production
 }
 //!
 
 const isDevNoServer = myMode === appModes.dev
-const isDevWithServer = myMode === appModes.devWithLocalServer
-const isProduction = myMode === appModes.herokuDeployment
+const isDevWithServer = myMode === appModes.staging
+const isProduction = myMode === appModes.production
 
 export const App = () => {
   return (
@@ -30,9 +29,9 @@ export const App = () => {
       {isDevNoServer ? (
         <DevApp />
       ) : isDevWithServer ? (
-        <LocalServerApp />
+        <StagingApp />
       ) : isProduction ? (
-        <HerokuApp />
+        <ProductionApp />
       ) : (
         <div>No mode specified</div>
       )}

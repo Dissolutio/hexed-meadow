@@ -17,6 +17,5 @@
     "resolveJsonModule": true,
     "noEmit": true
   },
-  "include": ["./src/game/*.ts"],
-  "compileOnSave": true
+  "include": ["src"]
 }

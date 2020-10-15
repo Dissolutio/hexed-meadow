@@ -2,7 +2,6 @@ import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { Client } from 'boardgame.io/react'
 import { Local } from 'boardgame.io/multiplayer'
-import { SocketIO } from 'boardgame.io/multiplayer'
 
 import Board from '../ui/Board'
 import { HexedMeadow } from '../game/game'
@@ -30,7 +29,6 @@ const DevClient = Client({
   board: Board,
   multiplayer: Local(),
   debug: false,
-  // loading: LoadingComponent,
   enhancer:
     (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
     (window as any).__REDUX_DEVTOOLS_EXTENSION__(),
