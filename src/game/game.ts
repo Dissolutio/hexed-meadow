@@ -39,9 +39,9 @@ import { cloneObject } from './utilities'
 
 //🛠 TOGGLE DEV MODE
 //!
-const isDevMode = true
+// const isDevMode = true
 //!
-// const isDevMode = false
+const isDevMode = false
 //!
 //🛠 TOGGLE DEV MODE
 
