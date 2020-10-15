@@ -10,14 +10,13 @@ const appModes = {
   staging: 'staging',
   production: 'production',
 }
-let myMode = appModes.dev
 //! TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
-myMode = appModes.staging
-//
+let myMode = appModes.dev
+// myMode = appModes.staging
+//!
 if (process.env.NODE_ENV === 'production') {
   myMode = appModes.production
 }
-//!
 
 const isDevNoServer = myMode === appModes.dev
 const isDevWithServer = myMode === appModes.staging
