@@ -5,41 +5,40 @@ import { SocketIO } from 'boardgame.io/multiplayer'
 
 import Board from '../ui/Board'
 import { HexedMeadow } from '../game/game'
-import { HelpPage, FeedbackPage } from '../ui/pages'
+import { HelpPage } from '../ui/pages'
+import { FeedbackPage } from '../ui/pages/FeedbackPage'
 
-export const HerokuApp = () => {
+export const StagingApp = () => {
   return (
     <Switch>
       <Route exact path="/">
-        <HerokuDeployedLobby />
+        <StagingLobby />
       </Route>
       <Route exact path="/example">
         <Link to="/team0">Bees!</Link>
         <Link to="/team1">Butterflies!</Link>
       </Route>
       <Route exact path="/team0">
-        <DeployClient matchID="example" playerID={'0'} />
+        <DevLocalServerClient matchID="example" playerID={'0'} />
       </Route>
       <Route exact path="/team1">
-        <DeployClient matchID="example" playerID={'1'} />
+        <DevLocalServerClient matchID="example" playerID={'1'} />
       </Route>
-      <Route exact path="/help">
+      <Route path="/help">
         <HelpPage />
       </Route>
-      <Route exact path="/feedback">
+      <Route path="/feedback">
         <FeedbackPage />
       </Route>
     </Switch>
   )
 }
 
-const DeployClient = Client({
+const DevLocalServerClient = Client({
   game: HexedMeadow,
   numPlayers: 2,
   board: Board,
-  multiplayer: SocketIO({
-    server: `https://${window.location.hostname}`,
-  }),
+  multiplayer: SocketIO({ server: 'http://localhost:8000' }),
   debug: false,
   // loading: LoadingComponent,
   enhancer:
@@ -47,12 +46,16 @@ const DeployClient = Client({
     (window as any).__REDUX_DEVTOOLS_EXTENSION__(),
 })
 
-const HerokuDeployedLobby = () => {
+const StagingLobby = () => {
+  const importedGames = [{ game: HexedMeadow, board: Board }]
   return (
-    <Lobby
-      gameServer={`https://${window.location.hostname}`}
-      lobbyServer={`https://${window.location.hostname}`}
-      gameComponents={[{ game: HexedMeadow, board: Board }]}
-    />
+    <div>
+      <h1>Lobby</h1>
+      <Lobby
+        gameServer={`http://localhost:8000`}
+        lobbyServer={`http://localhost:8000`}
+        gameComponents={importedGames}
+      />
+    </div>
   )
 }

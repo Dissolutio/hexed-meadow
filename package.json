@@ -35,8 +35,8 @@
     "cra-build": "react-scripts build",
     "compile": "tsc ./src/game/*.ts --outDir ./server --downlevelIteration true --skipLibCheck true",
     "compile:watch": "watch 'npm run compile' ./src/game",
-    "devserver": "nodemon --watch ./server -r esm devserver.js",
-    "server": "npm-run-all --continue-on-error compile:watch devserver",
+    "devserver": "nodemon --delay 1 --watch ./server -r esm devserver.js",
+    "server": "run-p devserver compile:watch",
     "format": "prettier --write 'src/**/*.js' '**/*.json' 'src/**/*.ts' 'src/**/*.tsx' 'server.js' 'devserver.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
