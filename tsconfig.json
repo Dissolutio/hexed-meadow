@@ -3,11 +3,7 @@
     "baseUrl": "src",
     "strict": false,
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "moduleResolution": "node",
     "module": "esnext",
     "jsx": "react",
@@ -21,8 +17,5 @@
     "resolveJsonModule": true,
     "noEmit": true
   },
-  "include": [
-    "./src/game/*.ts"
-  ],
-  "compileOnSave": true
+  "include": ["src"]
 }
