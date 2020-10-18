@@ -5,7 +5,7 @@ import { HexUtils } from 'react-hexgrid'
 import { rollD20Initiative } from './rollInitiative'
 import {
   getBoardHexForUnit,
-  getMoveRangeExperimental,
+  // getMoveRangeExperimental,
   // getUnrevealedGameCard,
   getMoveRangeForUnit,
   getThisTurnData,
@@ -201,7 +201,7 @@ export const HexedMeadow = {
           )
           const movePoints = thisTurnGameCard.move
           let newGameUnits = { ...G.gameUnits }
-          //
+
           //🛠 loop
           thisTurnUnits.length &&
             thisTurnUnits.forEach((unit: GameUnit) => {
@@ -213,7 +213,7 @@ export const HexedMeadow = {
               }
               newGameUnits[unitID] = unitWithMovePoints
               //🛠 move range
-              const moveRange = getMoveRangeExperimental(
+              const moveRange = getMoveRangeForUnit(
                 unitWithMovePoints,
                 G.boardHexes,
                 newGameUnits
@@ -273,16 +273,16 @@ function moveAction(
   const currentMoveRange = getMoveRangeForUnit(unit, G.boardHexes, G.gameUnits)
   const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
   const moveCost = HexUtils.distance(startHex, endHex)
-
-  const newBoardHexes: BoardHexes = cloneObject(G.boardHexes)
-  // const newBoardHexes: BoardHexes = { ...G.boardHexes }
-  const newGameUnits: GameUnits = cloneObject(G.gameUnits)
-  // const newGameUnits: GameUnits = { ...G.gameUnits }
+  // clone G
+  const newBoardHexes: BoardHexes = { ...G.boardHexes }
+  const newGameUnits: GameUnits = { ...G.gameUnits }
+  // set hex's unit id
   newBoardHexes[startHexID].occupyingUnitID = ''
   newBoardHexes[endHexID].occupyingUnitID = unitID
+  // update move points
   const newMovePoints = movePoints - moveCost
   newGameUnits[unitID].movePoints = newMovePoints
-
+  // update move ranges for this turn's units
   const { thisTurnUnits } = getThisTurnData(
     playersOrderMarkers,
     G.currentOrderMarker,
@@ -292,6 +292,7 @@ function moveAction(
   thisTurnUnits.forEach((unit: GameUnit) => {
     const { unitID } = unit
     const moveRange = getMoveRangeForUnit(unit, newBoardHexes, newGameUnits)
+    console.log(`unitID`, unitID, `moveRange`, moveRange)
     newGameUnits[unitID].moveRange = moveRange
   })
   //🛠 Make the move
