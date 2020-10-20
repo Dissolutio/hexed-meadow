@@ -5,15 +5,18 @@ import { DevApp } from './DevApp'
 import { StagingApp } from './StagingApp'
 import { ProductionApp } from './ProductionApp'
 
+let myMode
 const appModes = {
   dev: 'dev',
   staging: 'staging',
   production: 'production',
 }
-//! TOGGLE THIS TO OVERRIDE NODE_ENV AND SET SERVER USAGE
-let myMode = appModes.dev
+//! TOGGLE STAGING HERE
 // myMode = appModes.staging
 //!
+if (!myMode && process.env.NODE_ENV === 'development') {
+  myMode = appModes.dev
+}
 if (process.env.NODE_ENV === 'production') {
   myMode = appModes.production
 }
