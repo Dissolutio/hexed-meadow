@@ -292,7 +292,6 @@ function moveAction(
   thisTurnUnits.forEach((unit: GameUnit) => {
     const { unitID } = unit
     const moveRange = getMoveRangeForUnit(unit, newBoardHexes, newGameUnits)
-    console.log(`unitID`, unitID, `moveRange`, moveRange)
     newGameUnits[unitID].moveRange = moveRange
   })
   //🛠 Make the move
