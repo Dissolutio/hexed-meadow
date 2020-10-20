@@ -136,7 +136,7 @@ export const MapHexes = ({ hexSize }) => {
               iconPlayerID={gameUnit.playerID}
             />
           )}
-          <HexIDText hexSize={hexSize} text={hex.id} />
+          <HexIDText hexSize={hexSize} text={hex.occupyingUnitID} />
         </g>
       </Hexagon>
     )
