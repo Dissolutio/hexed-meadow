@@ -14,12 +14,12 @@ export const MapDisplay = () => {
   const mapRef = useRef()
   const zoomInterval = 100
 
-  const [mapState, setMapState] = React.useState({
+  const [mapState, setMapState] = React.useState(() => ({
     width: 100,
     height: 100,
     hexSize: mapSize <= 3 ? 15 : mapSize <= 5 ? 20 : mapSize <= 10 ? 25 : 25,
     spacing: 1.06,
-  })
+  }))
 
   const handleClickMapBackground = () => {
     if (isPlacementPhase) {
