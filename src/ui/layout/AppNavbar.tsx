@@ -56,6 +56,7 @@ const _StyledTopConsole = ({ playerID, ...rest }) => <Navbar {...rest} />
 const StyledTopConsole = styled(_StyledTopConsole)`
   background-color: var(--black);
   padding: 4px 16px 0px 16px;
+  z-index: 10;
   & button:focus,
   & button:hover {
     outline: 2px solid var(--white);
