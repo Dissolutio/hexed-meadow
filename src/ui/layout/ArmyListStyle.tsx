@@ -23,6 +23,30 @@ export const ArmyListStyle = styled.div`
       padding: 0.3rem;
     }
   }
+  .order-marker {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    flex-grow: 1;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    li {
+      font-size: 2rem;
+      padding: 0 1rem;
+    }
+  }
+  .om-army-cards {
+    display: flex;
+    flex-flow: row wrap;
+    flex-grow: 1;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    li {
+      font-size: 2rem;
+    }
+  }
   button {
     display: flex;
     flex-flow: column nowrap;
@@ -36,8 +60,5 @@ export const ArmyListStyle = styled.div`
   }
   img {
     width: auto;
-  }
-  span {
-    font-size: 1rem;
   }
 `
