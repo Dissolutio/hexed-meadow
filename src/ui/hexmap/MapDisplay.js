@@ -3,14 +3,13 @@ import styled from 'styled-components'
 import Button from 'react-bootstrap/esm/Button'
 import { HiOutlineZoomIn, HiOutlineZoomOut } from 'react-icons/hi'
 
-import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
+import { useBoardContext, usePlacementContext } from 'ui/hooks'
 import { ReactHexgrid } from './ReactHexgrid'
 import { MapHexes } from './MapHexes'
 
 export const MapDisplay = () => {
-  const { isPlacementPhase, isRoundOfPlayPhase, hexMap } = useBoardContext()
+  const { isPlacementPhase, hexMap } = useBoardContext()
   const { onClickMapBackground__placement } = usePlacementContext()
-  const { onClickMapBackground__turn } = useTurnContext()
   const { mapSize } = hexMap
   const mapRef = useRef()
   const zoomInterval = 100
@@ -25,9 +24,6 @@ export const MapDisplay = () => {
   const handleClickMapBackground = () => {
     if (isPlacementPhase) {
       return onClickMapBackground__placement()
-    }
-    if (isRoundOfPlayPhase) {
-      return onClickMapBackground__turn()
     }
   }
 

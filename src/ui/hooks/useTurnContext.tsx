@@ -112,13 +112,6 @@ export const TurnContextProvider = ({ children }) => {
     }
   }
 
-  function onClickMapBackground__turn() {
-    if (selectedGameCardID !== currentTurnGameCardID) {
-      setSelectedGameCardID(currentTurnGameCardID)
-    }
-    setActiveHexID('')
-  }
-
   return (
     <TurnContext.Provider
       value={{
@@ -133,7 +126,6 @@ export const TurnContextProvider = ({ children }) => {
         // HANDLERS
         onClickBoardHex__turn,
         onSelectCard__turn,
-        onClickMapBackground__turn,
       }}
     >
       {children}
