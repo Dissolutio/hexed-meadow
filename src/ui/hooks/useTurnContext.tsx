@@ -39,12 +39,19 @@ export const TurnContextProvider = ({ children }) => {
 
   const selectedUnit = getGameUnitByID(selectedUnitID)
 
-  const revealedGameCard = () => {
+  const revealedGameCard = (): GameArmyCard => {
     const orderMarker = orderMarkers[currentPlayer].find(
       (om: OrderMarker) => om.order === currentOrderMarker.toString()
     )
     const id = orderMarker ? orderMarker.gameCardID : ''
     return id ? getGameCardByID(id) : null
+  }
+  const revealedGameCardUnits = () => {
+    const gameCard = revealedGameCard()
+    const units = Object.values(gameUnits).filter(
+      (u: GameUnit) => u?.gameCardID === gameCard?.gameCardID
+    )
+    return units
   }
   const unrevealedGameCard = () => {
     const id = myOrderMarkers[currentOrderMarker]
@@ -122,6 +129,7 @@ export const TurnContextProvider = ({ children }) => {
         selectedGameCardUnits: selectedGameCardUnits(),
         selectedUnit,
         revealedGameCard: revealedGameCard(),
+        revealedGameCardUnits: revealedGameCardUnits(),
         unrevealedGameCard: unrevealedGameCard(),
         // HANDLERS
         onClickBoardHex__turn,

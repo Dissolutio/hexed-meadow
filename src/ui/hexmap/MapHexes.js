@@ -11,6 +11,7 @@ export const MapHexes = ({ hexSize }) => {
     boardHexes,
     startZones,
     getMapHexUnit,
+    isMyTurn,
     isPlacementPhase,
     isRoundOfPlayPhase,
     activeHexID,
@@ -23,6 +24,7 @@ export const MapHexes = ({ hexSize }) => {
     selectedGameCardUnits,
     selectedUnitID,
     selectedUnit,
+    revealedGameCardUnits,
   } = useTurnContext()
 
   //🛠 computed
@@ -58,6 +60,10 @@ export const MapHexes = ({ hexSize }) => {
   const isSelectedUnitHex = (hex) => {
     return hex.occupyingUnitID && hex.occupyingUnitID === selectedUnitID
   }
+  const activeEnemyUnitIDs = revealedGameCardUnits.map((u) => u.unitID)
+  const isOpponentsActiveUnitHex = (hex) => {
+    return activeEnemyUnitIDs.includes(hex.occupyingUnitID)
+  }
   function calcClassNames(hex) {
     let classNames = ''
     //phase: Placement
@@ -71,6 +77,10 @@ export const MapHexes = ({ hexSize }) => {
     }
     //phase: Round of Play
     if (isRoundOfPlayPhase) {
+      //🛠 Highlight opponents active units on their turn
+      if (!isMyTurn && isOpponentsActiveUnitHex(hex)) {
+        classNames = classNames.concat(' maphex__opponents-active-unit ')
+      }
       //🛠 Highlight selectable units
       if (!selectedUnitID && isSelectedCardUnitHex(hex)) {
         classNames = classNames.concat(

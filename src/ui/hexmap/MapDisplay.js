@@ -164,6 +164,11 @@ const StyledReactHexgrid = styled.div`
     stroke: var(--sub-white);
     stroke-width: 0.6;
   }
+  /* HIGHLIGHT ACTIVE ENEMY UNIT */
+  .maphex__opponents-active-unit > g polygon {
+    stroke: var(--neon-red);
+    stroke-width: 0.6;
+  }
   //🛠 PAINT MOVE HEXES
   /* PAINT SAFE MOVERANGE */
   .maphex__move-safe > g {
