@@ -39,14 +39,14 @@ import { cloneObject } from './utilities'
 
 //🛠 TOGGLE DEV MODE
 //!
-const isDevMode = true
+// const isDevMode = true
 //!
-// const isDevMode = false
+const isDevMode = false
 //!
 //🛠 TOGGLE DEV MODE
 
 const mapSize = 1
-const hexagonMap = makeHexagonShapedMap(mapSize, isDevMode)
+const hexagonMap = makeHexagonShapedMap(mapSize, true)
 const players = isDevMode ? devPlayerState : initialPlayerState
 
 type PlayerStateToggle = {
@@ -78,7 +78,7 @@ const initialGameState: GameState = {
   currentRound: 0,
   currentOrderMarker: 0,
   orderMarkers: initialOrderMarkers,
-  placementReady: { '0': isDevMode, '1': isDevMode },
+  placementReady: { '0': true, '1': true },
   orderMarkersReady: { '0': isDevMode, '1': isDevMode },
   roundOfPlayStartReady: { '0': isDevMode, '1': isDevMode },
   // secret: {},
