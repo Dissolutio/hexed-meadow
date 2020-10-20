@@ -219,7 +219,7 @@ export const HexedMeadow = {
                 newGameUnits
               )
               const unitWithMoveRange = {
-                ...unit,
+                ...unitWithMovePoints,
                 moveRange,
               }
               newGameUnits[unitID] = unitWithMoveRange
