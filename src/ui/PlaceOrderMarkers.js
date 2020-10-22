@@ -27,7 +27,8 @@ export const PlaceOrderMarkers = () => {
   const selectedStyle = (orderMarker) => {
     if (activeMarker === orderMarker) {
       return {
-        boxShadow: `0 0 2px var(--neon-green)`,
+        boxShadow: `1 1 2px var(--neon-green)`,
+        border: `1px solid var(--neon-green)`,
       }
     } else {
       return {}
@@ -40,51 +41,57 @@ export const PlaceOrderMarkers = () => {
   const areAllOMsAssigned = !Object.values(myOrderMarkers).some(
     (om) => om === ''
   )
+  const Content = () => {
+    if (orderMarkersReady[playerID] === true) {
+      return (
+        <>
+          <p>Waiting for opponents to finish placing order markers...</p>
+        </>
+      )
+    }
+    if (areAllOMsAssigned) {
+      return (
+        <>
+          <p>Done placing your order markers?</p>
+          <button onClick={makeReady}>CONFIRM DONE</button>
+        </>
+      )
+    }
 
-  if (orderMarkersReady[playerID] === true) {
     return (
-      <ArmyListStyle playerID={playerID}>
-        <p>Waiting for opponents to finish placing order markers...</p>
-      </ArmyListStyle>
-    )
-  }
-  if (areAllOMsAssigned) {
-    return (
-      <ArmyListStyle playerID={playerID}>
-        <p>Done placing your order markers?</p>
-        <button onClick={makeReady}>CONFIRM DONE</button>
-      </ArmyListStyle>
-    )
-  }
-
-  return (
-    <ArmyListStyle playerID={playerID}>
-      <h2>{`Place your order markers for Round ${currentRound + 1}:`}</h2>
-      <ul>
-        {Object.keys(myOrderMarkers)
-          .filter((om) => myOrderMarkers[om] === '')
-          .map((om) => (
-            <li
-              key={om}
-              onClick={() => selectOrderMarker(om)}
-              style={selectedStyle(om)}
-            >
-              {om === 'X' ? om : (parseInt(om) + 1).toString()}
+      <>
+        <h2>{`Place your order markers for Round ${currentRound + 1}:`}</h2>
+        <ul className="order-marker">
+          {Object.keys(myOrderMarkers)
+            .filter((om) => myOrderMarkers[om] === '')
+            .map((om) => (
+              <li
+                key={om}
+                onClick={() => selectOrderMarker(om)}
+                style={selectedStyle(om)}
+              >
+                {om === 'X' ? om : (parseInt(om) + 1).toString()}
+              </li>
+            ))}
+        </ul>
+        <ul className="om-army-cards">
+          {myCards.map((card) => (
+            <li key={card.gameCardID}>
+              <button
+                style={selectedStyle(card.gameCardID)}
+                onClick={() => selectCard(card.gameCardID)}
+              >
+                <span>{card.name}</span>
+              </button>
             </li>
           ))}
-      </ul>
-      <ul>
-        {myCards.map((card) => (
-          <li key={card.gameCardID}>
-            <button
-              style={selectedStyle(card.gameCardID)}
-              onClick={() => selectCard(card.gameCardID)}
-            >
-              <span>{card.name}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+        </ul>
+      </>
+    )
+  }
+  return (
+    <ArmyListStyle playerID={playerID}>
+      <Content />
     </ArmyListStyle>
   )
 }

@@ -14,7 +14,6 @@ import { MapDisplay } from './hexmap/MapDisplay'
 import { theme } from './theme/theme'
 
 export const Board = (props: BoardProps) => {
-  // Layout applies CSS to Children, the children are switches based on active string in LayoutContext
   return (
     <ThemeProvider theme={theme}>
       <BoardContextProvider {...props}>

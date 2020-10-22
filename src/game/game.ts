@@ -5,7 +5,7 @@ import { HexUtils } from 'react-hexgrid'
 import { rollD20Initiative } from './rollInitiative'
 import {
   getBoardHexForUnit,
-  getMoveRangeExperimental,
+  // getMoveRangeExperimental,
   // getUnrevealedGameCard,
   getMoveRangeForUnit,
   getThisTurnData,
@@ -37,13 +37,13 @@ import {
 } from './constants'
 import { cloneObject } from './utilities'
 
-//🛠 TOGGLE DEV MODE
+let isDevMode = true
+//! TOGGLE DEV MODE HERE
+// isDevMode = false
 //!
-// const isDevMode = true
-//!
-const isDevMode = false
-//!
-//🛠 TOGGLE DEV MODE
+if (process.env.NODE_ENV === 'production') {
+  isDevMode = false
+}
 
 const mapSize = 1
 const hexagonMap = makeHexagonShapedMap(mapSize, isDevMode)
@@ -201,7 +201,7 @@ export const HexedMeadow = {
           )
           const movePoints = thisTurnGameCard.move
           let newGameUnits = { ...G.gameUnits }
-          //
+
           //🛠 loop
           thisTurnUnits.length &&
             thisTurnUnits.forEach((unit: GameUnit) => {
@@ -213,13 +213,13 @@ export const HexedMeadow = {
               }
               newGameUnits[unitID] = unitWithMovePoints
               //🛠 move range
-              const moveRange = getMoveRangeExperimental(
+              const moveRange = getMoveRangeForUnit(
                 unitWithMovePoints,
                 G.boardHexes,
                 newGameUnits
               )
               const unitWithMoveRange = {
-                ...unit,
+                ...unitWithMovePoints,
                 moveRange,
               }
               newGameUnits[unitID] = unitWithMoveRange
@@ -273,16 +273,16 @@ function moveAction(
   const currentMoveRange = getMoveRangeForUnit(unit, G.boardHexes, G.gameUnits)
   const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
   const moveCost = HexUtils.distance(startHex, endHex)
-
-  const newBoardHexes: BoardHexes = cloneObject(G.boardHexes)
-  // const newBoardHexes: BoardHexes = { ...G.boardHexes }
-  const newGameUnits: GameUnits = cloneObject(G.gameUnits)
-  // const newGameUnits: GameUnits = { ...G.gameUnits }
+  // clone G
+  const newBoardHexes: BoardHexes = { ...G.boardHexes }
+  const newGameUnits: GameUnits = { ...G.gameUnits }
+  // set hex's unit id
   newBoardHexes[startHexID].occupyingUnitID = ''
   newBoardHexes[endHexID].occupyingUnitID = unitID
+  // update move points
   const newMovePoints = movePoints - moveCost
   newGameUnits[unitID].movePoints = newMovePoints
-
+  // update move ranges for this turn's units
   const { thisTurnUnits } = getThisTurnData(
     playersOrderMarkers,
     G.currentOrderMarker,

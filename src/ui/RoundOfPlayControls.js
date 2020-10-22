@@ -23,7 +23,8 @@ export const RoundOfPlayControls = () => {
 }
 
 const TheirMoveUI = () => {
-  const { currentOrderMarker, playerID, revealedGameCard } = useBoardContext()
+  const { currentOrderMarker, playerID } = useBoardContext()
+  const { revealedGameCard } = useTurnContext()
   return (
     <StyledWrapper playerID={playerID}>
       <h2>

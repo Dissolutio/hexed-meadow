@@ -3,31 +3,27 @@ import styled from 'styled-components'
 import Button from 'react-bootstrap/esm/Button'
 import { HiOutlineZoomIn, HiOutlineZoomOut } from 'react-icons/hi'
 
-import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
+import { useBoardContext, usePlacementContext } from 'ui/hooks'
 import { ReactHexgrid } from './ReactHexgrid'
 import { MapHexes } from './MapHexes'
 
 export const MapDisplay = () => {
-  const { isPlacementPhase, isRoundOfPlayPhase, hexMap } = useBoardContext()
+  const { isPlacementPhase, hexMap } = useBoardContext()
   const { onClickMapBackground__placement } = usePlacementContext()
-  const { onClickMapBackground__turn } = useTurnContext()
   const { mapSize } = hexMap
   const mapRef = useRef()
   const zoomInterval = 100
 
-  const [mapState, setMapState] = React.useState({
+  const [mapState, setMapState] = React.useState(() => ({
     width: 100,
     height: 100,
     hexSize: mapSize <= 3 ? 15 : mapSize <= 5 ? 20 : mapSize <= 10 ? 25 : 25,
     spacing: 1.06,
-  })
+  }))
 
   const handleClickMapBackground = () => {
     if (isPlacementPhase) {
       return onClickMapBackground__placement()
-    }
-    if (isRoundOfPlayPhase) {
-      return onClickMapBackground__turn()
     }
   }
 
@@ -155,7 +151,7 @@ const StyledReactHexgrid = styled.div`
   }
   /* HIGHLIGHT SELECTABLE UNITS */
   .maphex__selected-card-unit--selectable > g polygon {
-    stroke: var(--white);
+    stroke: var(--sub-white);
     stroke-width: 0.6;
   }
   /* HIGHLIGHT SELECTED UNIT */
@@ -163,9 +159,9 @@ const StyledReactHexgrid = styled.div`
     stroke: var(--player-color);
     stroke-width: 0.6;
   }
-  /* HIGHLIGHT CO-SELECTED UNIT */
-  .maphex__coselected-unit > g polygon {
-    stroke: var(--sub-white);
+  /* HIGHLIGHT ACTIVE ENEMY UNIT */
+  .maphex__opponents-active-unit > g polygon {
+    stroke: var(--neon-red);
     stroke-width: 0.6;
   }
   //🛠 PAINT MOVE HEXES

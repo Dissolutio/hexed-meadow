@@ -30,21 +30,32 @@ export const TurnContextProvider = ({ children }) => {
   const [selectedGameCardID, setSelectedGameCardID] = useState('')
   const [selectedUnitID, setSelectedUnitID] = useState('')
 
-  //🛠 auto select my turn card
+  //🛠 auto select my turn card, auto deselect card on end turn
   useEffect(() => {
     if (isMyTurn) {
       setSelectedGameCardID(currentTurnGameCardID)
+    }
+    if (!isMyTurn) {
+      setSelectedGameCardID('')
+      setSelectedUnitID('')
     }
   }, [isMyTurn, currentTurnGameCardID])
 
   const selectedUnit = getGameUnitByID(selectedUnitID)
 
-  const revealedGameCard = () => {
+  const revealedGameCard = (): GameArmyCard => {
     const orderMarker = orderMarkers[currentPlayer].find(
       (om: OrderMarker) => om.order === currentOrderMarker.toString()
     )
     const id = orderMarker ? orderMarker.gameCardID : ''
     return id ? getGameCardByID(id) : null
+  }
+  const revealedGameCardUnits = () => {
+    const gameCard = revealedGameCard()
+    const units = Object.values(gameUnits).filter(
+      (u: GameUnit) => u?.gameCardID === gameCard?.gameCardID
+    )
+    return units
   }
   const unrevealedGameCard = () => {
     const id = myOrderMarkers[currentOrderMarker]
@@ -112,13 +123,6 @@ export const TurnContextProvider = ({ children }) => {
     }
   }
 
-  function onClickMapBackground__turn() {
-    if (selectedGameCardID !== currentTurnGameCardID) {
-      setSelectedGameCardID(currentTurnGameCardID)
-    }
-    setActiveHexID('')
-  }
-
   return (
     <TurnContext.Provider
       value={{
@@ -129,11 +133,11 @@ export const TurnContextProvider = ({ children }) => {
         selectedGameCardUnits: selectedGameCardUnits(),
         selectedUnit,
         revealedGameCard: revealedGameCard(),
+        revealedGameCardUnits: revealedGameCardUnits(),
         unrevealedGameCard: unrevealedGameCard(),
         // HANDLERS
         onClickBoardHex__turn,
         onSelectCard__turn,
-        onClickMapBackground__turn,
       }}
     >
       {children}

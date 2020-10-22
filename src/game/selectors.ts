@@ -43,15 +43,8 @@ export function getMoveRangeForUnit(
   }
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
-  const movingUnitID = unit?.unitID
   const startHex = getBoardHexForUnit(unit, boardHexes)
   initialMoveRange.denied.push(`${startHex.id}`)
-  const initialEngagements = getUnitHexEngagements(
-    startHex,
-    playerID,
-    boardHexes,
-    gameUnits
-  )
   //*early out again?
   if (!startHex || !initialMovePoints) {
     return initialMoveRange
@@ -76,12 +69,6 @@ export function getMoveRangeForUnit(
     gameUnits: GameUnits
   ): MoveRange {
     const neighbors = getNeighbors(startHex, boardHexes)
-    const prevEngagements = getUnitHexEngagements(
-      startHex,
-      playerID,
-      boardHexes,
-      gameUnits
-    )
     //*early out
     if (movePoints <= 0) {
       return initialMoveRange
@@ -94,12 +81,6 @@ export function getMoveRangeForUnit(
         const endHexUnitPlayerID = endHexUnit.playerID
         const moveCost = getMoveCostToNeighbor(startHex, end)
         const movePointsLeftAfterMove = movePoints - moveCost
-        const endEngagements = getUnitHexEngagements(
-          end,
-          playerID,
-          boardHexes,
-          gameUnits
-        )
         const isEndHexOccupied = Boolean(endHexUnitID)
         const isTooCostly = movePointsLeftAfterMove < 0
         const isEndHexEnemyOccupied =
@@ -107,47 +88,13 @@ export function getMoveRangeForUnit(
         const isEndHexFriendlyOccupied = Boolean(
           endHexUnitID && endHexUnitPlayerID === playerID
         )
-        const isFriendlyHexEngaged = Boolean(
-          getUnitHexEngagements(end, playerID, boardHexes, gameUnits).length
-        )
         const isUnpassable = isTooCostly || isEndHexEnemyOccupied
-        const isInitialDisengaging = initialEngagements.some((id) => {
-          return !endEngagements.includes(id) && id !== movingUnitID
-        })
-        const isPrevDisengaging = prevEngagements.some(
-          (id) => !endEngagements.includes(id) && id !== movingUnitID
-        )
-        const isInitialEngaging = endEngagements.some(
-          (id) => !initialEngagements.includes(id) && id !== movingUnitID
-        )
-        const isPrevEngaging = endEngagements.some(
-          (id) => !prevEngagements.includes(id) && id !== movingUnitID
-        )
-        const wasPreviousInitialEngaging = prevEngagements.some((id) => {
-          return !initialEngagements.includes(id) && id !== movingUnitID
-        })
 
         if (isUnpassable || isEndHexFriendlyOccupied) {
           result.denied.push(endHexID)
         } else {
           // Not unpassable or occupied, then can be moved to
-          if (
-            ((isInitialDisengaging || isPrevDisengaging) &&
-              !result.safe.includes(endHexID)) ||
-            (isPrevDisengaging && wasPreviousInitialEngaging)
-          ) {
-            result.disengage.push(endHexID)
-          } else if (
-            (isPrevEngaging || isInitialEngaging) &&
-            !result.safe.includes(endHexID)
-          ) {
-            result.engage.push(endHexID)
-            // result.disengage = result.disengage.filter((id) => id !== endHexID)
-          } else {
-            result.safe.push(endHexID)
-            result.disengage = result.disengage.filter((id) => id !== endHexID)
-            result.engage = result.engage.filter((id) => id !== endHexID)
-          }
+          result.safe.push(endHexID)
         }
 
         if (!isUnpassable) {
