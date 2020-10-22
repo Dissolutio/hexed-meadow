@@ -81,8 +81,11 @@ export const MapHexes = ({ hexSize }) => {
       if (!isMyTurn && isOpponentsActiveUnitHex(hex)) {
         classNames = classNames.concat(' maphex__opponents-active-unit ')
       }
-      //🛠 Highlight selectable units
-      if (!selectedUnitID && isSelectedCardUnitHex(hex)) {
+      //🛠 Highlight selected card units
+      // TODO Color selectable units based on if they have moved, have not moved, or have finished moving
+      const isSelectableUnit =
+        isSelectedCardUnitHex(hex) && !isSelectedUnitHex(hex)
+      if (isSelectableUnit) {
         classNames = classNames.concat(
           ' maphex__selected-card-unit--selectable '
         )
@@ -90,10 +93,6 @@ export const MapHexes = ({ hexSize }) => {
       //🛠 Highlight selected unit
       if (selectedUnitID && isSelectedUnitHex(hex)) {
         classNames = classNames.concat(' maphex__selected-card-unit--active ')
-      }
-      //🛠 Highlight coselected units
-      if (isSelectedCardUnitHex(hex) && selectedUnitID) {
-        classNames = classNames.concat(' maphex__coselected-unit ')
       }
 
       //🛠 Paint safe moves

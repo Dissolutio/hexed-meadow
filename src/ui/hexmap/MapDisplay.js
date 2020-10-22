@@ -151,17 +151,12 @@ const StyledReactHexgrid = styled.div`
   }
   /* HIGHLIGHT SELECTABLE UNITS */
   .maphex__selected-card-unit--selectable > g polygon {
-    stroke: var(--white);
+    stroke: var(--sub-white);
     stroke-width: 0.6;
   }
   /* HIGHLIGHT SELECTED UNIT */
   .maphex__selected-card-unit--active > g polygon {
     stroke: var(--player-color);
-    stroke-width: 0.6;
-  }
-  /* HIGHLIGHT CO-SELECTED UNIT */
-  .maphex__coselected-unit > g polygon {
-    stroke: var(--sub-white);
     stroke-width: 0.6;
   }
   /* HIGHLIGHT ACTIVE ENEMY UNIT */
