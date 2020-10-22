@@ -30,10 +30,14 @@ export const TurnContextProvider = ({ children }) => {
   const [selectedGameCardID, setSelectedGameCardID] = useState('')
   const [selectedUnitID, setSelectedUnitID] = useState('')
 
-  //🛠 auto select my turn card
+  //🛠 auto select my turn card, auto deselect card on end turn
   useEffect(() => {
     if (isMyTurn) {
       setSelectedGameCardID(currentTurnGameCardID)
+    }
+    if (!isMyTurn) {
+      setSelectedGameCardID('')
+      setSelectedUnitID('')
     }
   }, [isMyTurn, currentTurnGameCardID])
 
