@@ -37,13 +37,13 @@ import {
 } from './constants'
 import { cloneObject } from './utilities'
 
-//🛠 TOGGLE DEV MODE
+let isDevMode = true
+//! TOGGLE DEV MODE HERE
+// isDevMode = false
 //!
-const isDevMode = true
-//!
-// const isDevMode = false
-//!
-//🛠 TOGGLE DEV MODE
+if (process.env.NODE_ENV === 'production') {
+  isDevMode = false
+}
 
 const mapSize = 1
 const hexagonMap = makeHexagonShapedMap(mapSize, isDevMode)
