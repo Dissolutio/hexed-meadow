@@ -66,6 +66,7 @@ export type GameState = {
   placementReady: PlayerStateToggle
   orderMarkersReady: PlayerStateToggle
   roundOfPlayStartReady: PlayerStateToggle
+  unitsMoved: string[]
 }
 const initialGameState: GameState = {
   armyCards,
@@ -81,6 +82,7 @@ const initialGameState: GameState = {
   placementReady: { '0': isDevMode, '1': isDevMode },
   orderMarkersReady: { '0': isDevMode, '1': isDevMode },
   roundOfPlayStartReady: { '0': isDevMode, '1': isDevMode },
+  unitsMoved: [],
   // secret: {},
 }
 
@@ -176,7 +178,7 @@ export const HexedMeadow = {
         order: TurnOrder.CUSTOM_FROM('initiative'),
         //onBegin
         onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
-          //🛠 Reveal order marker
+          // Reveal order marker
           const gameCardID =
             G.players[ctx.currentPlayer].orderMarkers[
               G.currentOrderMarker.toString()
@@ -191,7 +193,7 @@ export const HexedMeadow = {
               indexToReveal
             ].order = G.currentOrderMarker.toString()
           }
-          //🛠 Assign move points/ranges
+          // Assign move points/ranges
           const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
           const { thisTurnGameCard, thisTurnUnits } = getThisTurnData(
             playersOrderMarkers,
@@ -202,17 +204,17 @@ export const HexedMeadow = {
           const movePoints = thisTurnGameCard.move
           let newGameUnits = { ...G.gameUnits }
 
-          //🛠 loop
+          //🛠 loop thru this turns units
           thisTurnUnits.length &&
             thisTurnUnits.forEach((unit: GameUnit) => {
               const { unitID } = unit
-              //🛠 move points
+              // move points
               const unitWithMovePoints = {
                 ...unit,
                 movePoints,
               }
               newGameUnits[unitID] = unitWithMovePoints
-              //🛠 move range
+              // move range
               const moveRange = getMoveRangeForUnit(
                 unitWithMovePoints,
                 G.boardHexes,
@@ -225,8 +227,10 @@ export const HexedMeadow = {
               newGameUnits[unitID] = unitWithMoveRange
             })
           //🛠 end loop
-          //
+
+          //🛠 update G
           G.gameUnits = newGameUnits
+          G.unitsMoved = []
         },
         //onEnd
         onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
@@ -276,10 +280,16 @@ function moveAction(
   // clone G
   const newBoardHexes: BoardHexes = { ...G.boardHexes }
   const newGameUnits: GameUnits = { ...G.gameUnits }
-  // set hex's unit id
+  // update moved units counter
+  const unitsMoved = [...G.unitsMoved]
+  if (!unitsMoved.includes(unitID)) {
+    unitsMoved.push(unitID)
+    G.unitsMoved = unitsMoved
+  }
+  // update unit position
   newBoardHexes[startHexID].occupyingUnitID = ''
   newBoardHexes[endHexID].occupyingUnitID = unitID
-  // update move points
+  // update unit move points
   const newMovePoints = movePoints - moveCost
   newGameUnits[unitID].movePoints = newMovePoints
   // update move ranges for this turn's units
