@@ -5,7 +5,6 @@ import { HexUtils } from 'react-hexgrid'
 import { rollD20Initiative } from './rollInitiative'
 import {
   getBoardHexForUnit,
-  // getMoveRangeExperimental,
   // getUnrevealedGameCard,
   getMoveRangeForUnit,
   getThisTurnData,

@@ -118,61 +118,6 @@ export function getMoveRangeForUnit(
     return nextResults
   }
 }
-export function getMoveRangeExperimental(
-  unit: GameUnit,
-  boardHexes: BoardHexes,
-  gameUnits: GameUnits
-) {
-  const initialMovePoints = unit.movePoints
-  const startHex = getBoardHexForUnit(unit, boardHexes)
-  const startHexID = startHex.id
-  //🛠 reached / frontier
-  const reachedIDs = [startHex.id]
-  let frontier = [
-    { id: startHexID, cameFrom: startHex.id, movePoints: initialMovePoints },
-  ]
-  let moveRange = makeBlankMoveRange()
-
-  while (frontier.length > 0) {
-    // pick one off frontier
-    const current = frontier.shift()
-    const currentID = current.id
-    const currentHex = { ...boardHexes[current.id] }
-    const currentMovePoints = current.movePoints
-    if (currentMovePoints < 0) {
-      continue
-    }
-    // expand its neighbors
-    const neighbors = getNeighbors(currentHex, boardHexes)
-    // unreached neighbors get added to queue (frontier) and to master list (reachedIDs)
-    neighbors.forEach((neighbor) => {
-      const isInFrontier = frontier.find((h) => h.id === neighbor.id)
-      const isInReached = reachedIDs.includes(neighbor.id)
-
-      if (!isInReached) {
-        const cameFrom = currentID
-        const horizontalMoveCost = 1
-        const heightCost = Math.max(neighbor.altitude - currentHex.altitude, 0)
-        const newMovePoints =
-          currentMovePoints - horizontalMoveCost - heightCost
-        const frontierHex = {
-          id: neighbor.id,
-          cameFrom,
-          movePoints: newMovePoints,
-        }
-        frontier.push(frontierHex)
-        reachedIDs.push(neighbor.id)
-      }
-    })
-    // sort current
-    if (current.movePoints < 0) {
-      continue
-    } else {
-      moveRange.safe.push(current.id)
-    }
-  }
-  return moveRange
-}
 
 export function getNeighbors(
   startHex: BoardHex,
