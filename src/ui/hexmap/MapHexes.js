@@ -95,22 +95,24 @@ export const MapHexes = ({ hexSize }) => {
         classNames = classNames.concat(' maphex__selected-card-unit--active ')
       }
 
-      //🛠 Paint safe moves
-      const isInSafeMoveRange = selectedUnitMoveRange.safe.includes(hex.id)
-      if (isInSafeMoveRange) {
-        classNames = classNames.concat(' maphex__move-safe ')
-      }
-      //🛠 Paint engage moves
-      const isInEngageMoveRange = selectedUnitMoveRange.engage.includes(hex.id)
-      if (isInEngageMoveRange) {
-        classNames = classNames.concat(' maphex__move-engage ')
-      }
-      //🛠 Paint disengage moves
-      const isInDisengageMoveRange = selectedUnitMoveRange.disengage.includes(
-        hex.id
-      )
-      if (isInDisengageMoveRange) {
-        classNames = classNames.concat(' maphex__move-disengage ')
+      // MY MOVE
+      if (!isAttackingStage) {
+        const { safe, engage, disengage } = selectedUnitMoveRange
+        const isInSafeMoveRange = safe.includes(hex.id)
+        const isInEngageMoveRange = engage.includes(hex.id)
+        const isInDisengageMoveRange = disengage.includes(hex.id)
+        //🛠 Paint safe moves
+        if (isInSafeMoveRange) {
+          classNames = classNames.concat(' maphex__move-safe ')
+        }
+        //🛠 Paint engage moves
+        if (isInEngageMoveRange) {
+          classNames = classNames.concat(' maphex__move-engage ')
+        }
+        //🛠 Paint disengage moves
+        if (isInDisengageMoveRange) {
+          classNames = classNames.concat(' maphex__move-disengage ')
+        }
       }
     }
 
