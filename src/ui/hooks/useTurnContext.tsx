@@ -45,6 +45,13 @@ export const TurnContextProvider = ({ children }) => {
       setSelectedUnitID('')
     }
   }, [isMyTurn, currentTurnGameCardID])
+  //🛠 auto select my turn card in attacking stage
+  useEffect(() => {
+    if (isAttackingStage) {
+      setSelectedGameCardID(currentTurnGameCardID)
+      setSelectedUnitID('')
+    }
+  }, [isAttackingStage])
 
   const selectedUnit = getGameUnitByID(selectedUnitID)
 
