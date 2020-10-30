@@ -8,18 +8,23 @@ const TurnContext = React.createContext(null)
 
 export const TurnContextProvider = ({ children }) => {
   const {
+    // G
     boardHexes,
     armyCards,
     gameUnits,
     orderMarkers,
+    unitsMoved,
+    // COMPUTED
     myOrderMarkers,
+    currentOrderMarker,
+    currentPlayer,
     isMyTurn,
+    isAttackingStage,
+    // SELECTORS
     getGameCardByID,
     getGameUnitByID,
     getBoardHexIDForUnitID,
     currentTurnGameCardID,
-    currentOrderMarker,
-    currentPlayer,
     // STATE
     setActiveHexID,
     // MOVES
