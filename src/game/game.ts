@@ -5,6 +5,7 @@ import { HexUtils } from 'react-hexgrid'
 import { rollD20Initiative } from './rollInitiative'
 import {
   getBoardHexForUnit,
+  getGameCardByID,
   // getUnrevealedGameCard,
   getMoveRangeForUnit,
   getThisTurnData,
@@ -66,6 +67,7 @@ export type GameState = {
   orderMarkersReady: PlayerStateToggle
   roundOfPlayStartReady: PlayerStateToggle
   unitsMoved: string[]
+  unitsAttacked: string[]
 }
 const initialGameState: GameState = {
   armyCards,
@@ -82,6 +84,7 @@ const initialGameState: GameState = {
   orderMarkersReady: { '0': isDevMode, '1': isDevMode },
   roundOfPlayStartReady: { '0': isDevMode, '1': isDevMode },
   unitsMoved: [],
+  unitsAttacked: [],
   // secret: {},
 }
 
@@ -98,6 +101,7 @@ export const HexedMeadow = {
     placeOrderMarker,
     confirmOrderMarkersReady,
     moveAction,
+    attackAction,
     endCurrentPlayerTurn,
     endCurrentMoveStage,
   },
@@ -231,6 +235,7 @@ export const HexedMeadow = {
           //🛠 update G
           G.gameUnits = newGameUnits
           G.unitsMoved = []
+          G.unitsAttacked = []
         },
         //onEnd
         onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
@@ -312,6 +317,84 @@ function moveAction(
     G.boardHexes = { ...newBoardHexes }
     G.gameUnits = { ...newGameUnits }
   }
+}
+function attackAction(
+  G: GameState,
+  ctx: BoardProps['ctx'],
+  unit: GameUnit,
+  defenderHex: BoardHex
+) {
+  const { unitID } = unit
+  const unitGameCard = getGameCardByID(G.armyCards, unit.gameCardID)
+  const unitRange = unitGameCard.range
+  const unitsMoved = [...G.unitsMoved]
+  const unitsAttacked = [...G.unitsAttacked]
+  const attacksAllowed = unitGameCard.figures
+  const attacksLeft = attacksAllowed - unitsAttacked.length
+  const attackerHex = getBoardHexForUnit(unit, G.boardHexes)
+
+  //! EARLY OUTS
+  // DISALLOW - no target
+  if (!defenderHex.occupyingUnitID) {
+    console.log(`no target`)
+    return
+  }
+  // DISALLOW - all attacks used
+  const isEndAttacks = attacksLeft <= 0
+  if (isEndAttacks) {
+    console.log(`all attacks used`)
+    return
+  }
+  // DISALLOW - unit already attacked
+  const isAlreadyAttacked = unitsAttacked.includes(unitID)
+  if (isAlreadyAttacked) {
+    console.log(`unit already attacked`)
+    return
+  }
+  // DISALLOW - attack must be used by a moved unit
+  const isMovedUnit = unitsMoved.includes(unitID)
+  const isOpenAttack = attacksLeft > unitsMoved.length
+  const isUsableAttack = isMovedUnit || isOpenAttack
+  if (!isUsableAttack) {
+    console.log(`attack must be used by a moved unit`)
+    return
+  }
+  // DISALLOW - defender is out of range
+  const isInRange = HexUtils.distance(attackerHex, defenderHex) <= unitRange
+  if (!isInRange) {
+    console.log(`defender is out of range`)
+    return
+  }
+
+  //🛠 ALLOW
+  const attack = unitGameCard.attack
+  const defenderGameUnit = G.gameUnits[defenderHex.occupyingUnitID]
+  const defenderGameCard = getGameCardByID(
+    G.armyCards,
+    defenderGameUnit.gameCardID
+  )
+  const defense = defenderGameCard.defense
+  const defenderLife = defenderGameCard.life
+  const attackRoll = ctx.random.Die(6, attack)
+  const skulls = attackRoll.filter((n) => n <= 3).length
+  const defenseRoll = ctx.random.Die(6, defense)
+  const shields = defenseRoll.filter((n) => n === 4 || n === 5).length
+  const wounds = skulls - shields
+  const isHit = wounds > 0
+  const isFatal = wounds >= defenderLife
+  console.log(`A:`, skulls, `D:`, shields, `wounds:`, wounds)
+
+  // deal damage
+  if (isHit && !isFatal) {
+    G.armyCards[defenderGameUnit.gameCardID].life = defenderLife - wounds
+  }
+  if (isFatal) {
+    delete G.gameUnits[defenderGameUnit.unitID]
+    G.boardHexes[defenderHex.id].occupyingUnitID = ''
+  }
+  // update units attacked
+  unitsAttacked.push(unitID)
+  G.unitsAttacked = unitsAttacked
 }
 //phase:___Placement
 function placeUnitOnHex(

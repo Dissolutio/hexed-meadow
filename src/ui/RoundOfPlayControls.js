@@ -140,7 +140,7 @@ const MyAttackUI = () => {
     currentOrderMarker,
     currentTurnGameCardID,
     endCurrentPlayerTurn,
-    unitsMoved,
+    unitsAttacked,
   } = useBoardContext()
   const {
     selectedGameCardID,
@@ -173,6 +173,10 @@ const MyAttackUI = () => {
   return (
     <StyledWrapper playerID={playerID}>
       <h2>{`Your #${currentOrderMarker + 1}: ${revealedGameCard.name}`}</h2>
+      <p>
+        You have used {unitsAttacked.length} / {revealedGameCard.figures}{' '}
+        attacks{' '}
+      </p>
       <PlayerCardsStyledUL>
         <ButtonWrapper>
           <Button variant="danger" onClick={handleEndTurnButtonClick}>

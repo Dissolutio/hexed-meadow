@@ -3,11 +3,14 @@ import React, { useContext, useState, useEffect } from 'react'
 import { GameArmyCard, GameUnit, makeBlankMoveRange } from 'game/startingUnits'
 import { useBoardContext } from './useBoardContext'
 import { OrderMarker } from 'game/constants'
+import { getBoardHexForUnit } from '../../game/selectors'
+import { HexUtils } from 'react-hexgrid'
 
 const TurnContext = React.createContext(null)
 
 export const TurnContextProvider = ({ children }) => {
   const {
+    playerID,
     // G
     boardHexes,
     armyCards,
@@ -29,6 +32,7 @@ export const TurnContextProvider = ({ children }) => {
     setActiveHexID,
     // MOVES
     moveAction,
+    attackAction,
   } = useBoardContext()
 
   // ! STATE
@@ -102,35 +106,61 @@ export const TurnContextProvider = ({ children }) => {
   }
 
   function onClickBoardHex__turn(event, sourceHex) {
-    // Prevent propagation to onClickMapBackground__turn
     event.stopPropagation()
-
-    const occupyingUnitID = boardHexes[sourceHex.id].occupyingUnitID
-    const unitOnHex: GameUnit = gameUnits[occupyingUnitID]
+    const boardHex = boardHexes[sourceHex.id]
+    const occupyingUnitID = boardHex.occupyingUnitID
+    const isEndHexOccupied = Boolean(occupyingUnitID)
+    const unitOnHex: GameUnit = { ...gameUnits[occupyingUnitID] }
+    const endHexUnitPlayerID = unitOnHex.playerID
     const isUnitReadyToSelect =
       unitOnHex?.gameCardID === selectedGameCardID &&
       selectedGameCardID === currentTurnGameCardID
     const isUnitSelected = unitOnHex?.unitID === selectedUnitID
-    // * repeated from moveAction function
-    const isEndHexOccupied = Boolean(occupyingUnitID)
-    //TURN MyTurn
-    if (isMyTurn) {
+
+    //🛠 MOVE STAGE
+    if (isMyTurn && !isAttackingStage) {
       const moveRange = selectedUnit?.moveRange ?? makeBlankMoveRange()
       const { safe, engage, disengage } = moveRange
       const allMoves = [safe, disengage, engage].flat()
       const isInMoveRange = allMoves.includes(sourceHex.id)
-      //🛠 unit selected, clicked valid hex, make move
+      // move selected unit
       if (selectedUnitID && isInMoveRange && !isEndHexOccupied) {
         moveAction(selectedUnit, boardHexes[sourceHex.id])
       }
-      //🛠 clicked another selectable unit, select that unit
+      // select unit
       if (isUnitReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)
       }
-      //🛠 clicked currently selected unit, de-select the unit (to none selected)
-      // TODO Do something else besides deselect unit
+      // deselect unit
       if (isUnitSelected) {
         setSelectedUnitID('')
+      }
+    }
+    //🛠 ATTACK STAGE
+    if (isMyTurn && isAttackingStage) {
+      const isEndHexEnemyOccupied =
+        isEndHexOccupied && endHexUnitPlayerID !== playerID
+
+      // select unit
+      if (isUnitReadyToSelect) {
+        setSelectedUnitID(unitOnHex.unitID)
+      }
+      // deselect unit
+      if (isUnitSelected) {
+        setSelectedUnitID('')
+      }
+      // attack with selected unit
+      if (selectedUnitID && isEndHexEnemyOccupied) {
+        const startHex = getBoardHexForUnit(selectedUnit, boardHexes)
+        const gameCard: any = Object.values(armyCards).find(
+          (armyCard: GameArmyCard) =>
+            armyCard?.gameCardID === selectedGameCardID
+        )
+        const isInRange =
+          HexUtils.distance(startHex, boardHex) <= gameCard?.range ?? false
+        if (isInRange) {
+          attackAction(selectedUnit, boardHexes[sourceHex.id])
+        }
       }
     }
   }
