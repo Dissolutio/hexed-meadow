@@ -50,6 +50,7 @@ const MyMoveUI = () => {
     redo,
     endCurrentPlayerTurn,
     endCurrentMoveStage,
+    unitsMoved,
   } = useBoardContext()
   const {
     selectedGameCardID,
@@ -87,6 +88,9 @@ const MyMoveUI = () => {
   return (
     <StyledWrapper playerID={playerID}>
       <h2>{`Your #${currentOrderMarker + 1}: ${revealedGameCard.name}`}</h2>
+      <p>
+        You have moved {unitsMoved.length} / {revealedGameCard.figures} units{' '}
+      </p>
       <PlayerCardsStyledUL>
         <ButtonWrapper>
           <Button variant="danger" onClick={handleEndMovementClick}>
@@ -128,6 +132,7 @@ const MyMoveUI = () => {
     </StyledWrapper>
   )
 }
+
 const MyAttackUI = () => {
   const {
     playerID,
@@ -135,6 +140,7 @@ const MyAttackUI = () => {
     currentOrderMarker,
     currentTurnGameCardID,
     endCurrentPlayerTurn,
+    unitsMoved,
   } = useBoardContext()
   const {
     selectedGameCardID,
