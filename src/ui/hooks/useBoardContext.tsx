@@ -38,7 +38,7 @@ const BoardContextProvider = (props: BoardContextProps) => {
   const isRoundOfPlayPhase = ctx.phase === phaseNames.roundOfPlay
   const isAttackingStage =
     isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === stageNames.attacking
-
+  const isGameover = Boolean(ctx.gameover)
   //🛠 SELECTORS
   const getGameCardByID = (gameCardID: string) => {
     return G.armyCards.find(
@@ -107,6 +107,7 @@ const BoardContextProvider = (props: BoardContextProps) => {
     isPlacementPhase,
     isRoundOfPlayPhase,
     isAttackingStage,
+    isGameover,
     //🛠 SELECTORS
     belongsToPlayer,
     getGameCardByID,

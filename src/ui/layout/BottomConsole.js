@@ -4,9 +4,12 @@ import { PlacementControls, PlaceOrderMarkers, RoundOfPlayControls } from 'ui'
 
 export const BottomConsole = () => {
   const {
+    playerID,
     isOrderMarkerPhase,
     isPlacementPhase,
     isRoundOfPlayPhase,
+    isGameover,
+    gameover,
   } = useBoardContext()
 
   if (isPlacementPhase) {
@@ -17,5 +20,13 @@ export const BottomConsole = () => {
   }
   if (isRoundOfPlayPhase) {
     return <RoundOfPlayControls />
+  }
+  if (isGameover) {
+    const winnerID = gameover.winner
+    if (winnerID === playerID) {
+      return <h1>{`VICTORY!`}</h1>
+    } else {
+      return <h1>{`DEFEAT!`}</h1>
+    }
   }
 }

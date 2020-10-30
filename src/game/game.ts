@@ -261,6 +261,30 @@ export const HexedMeadow = {
   events: {
     endGame: false,
   },
+  // The minimum and maximum number of players supported
+  // (This is only enforced when using the Lobby server component.)
+  minPlayers: 2,
+  maxPlayers: 2,
+  // Ends the game if this returns anything.
+  // The return value is available in `ctx.gameover`.
+  endIf: (G, ctx) => {
+    const gameUnitsArr = Object.values(G.gameUnits)
+    const isP0Dead = !gameUnitsArr.some((u: GameUnit) => u.playerID === '0')
+    const isP1Dead = !gameUnitsArr.some((u: GameUnit) => u.playerID === '1')
+    if (isP0Dead) {
+      return { winner: '1' }
+    } else if (isP1Dead) {
+      return { winner: '0' }
+    } else {
+      return false
+    }
+  },
+  // Called at the end of the game.
+  // `ctx.gameover` is available at this point.
+  onEnd: (G, ctx) => {
+    const winner = ctx.gameover.winner === '0' ? 'BEES' : 'BUTTERFLIES'
+    console.log(`THE ${winner} WON!`)
+  },
 }
 
 //🎆 BGIO MOVES
