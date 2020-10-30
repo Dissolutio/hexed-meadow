@@ -207,6 +207,10 @@ const StyledWrapper = styled.div`
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4),
       0 1px 0 rgba(255, 255, 255, 0.2) inset;
   }
+  h2 {
+    font-size: 1.4rem;
+    padding: 0.3rem 0 0 0.3rem;
+  }
 `
 const PlayerCardsStyledUL = styled.ul`
   display: flex;
