@@ -1,19 +1,22 @@
 import React from 'react'
-import { Hexagon, Text } from 'react-hexgrid'
+import { Hexagon, HexUtils, Text } from 'react-hexgrid'
 
 import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 import { UnitIcon } from 'ui/UnitIcon'
 import { makeBlankMoveRange } from 'game/startingUnits'
+import { getBoardHexForUnit } from '../../game/selectors'
 
 export const MapHexes = ({ hexSize }) => {
   const {
     playerID,
     boardHexes,
     startZones,
+    gameUnits,
     getMapHexUnit,
     isMyTurn,
     isPlacementPhase,
     isRoundOfPlayPhase,
+    isAttackingStage,
     activeHexID,
     activeUnitID,
   } = useBoardContext()
@@ -21,6 +24,7 @@ export const MapHexes = ({ hexSize }) => {
   const { onClickBoardHex_placement } = usePlacementContext()
   const {
     onClickBoardHex__turn,
+    selectedGameCard,
     selectedGameCardUnits,
     selectedUnitID,
     selectedUnit,
@@ -77,10 +81,12 @@ export const MapHexes = ({ hexSize }) => {
     }
     //phase: Round of Play
     if (isRoundOfPlayPhase) {
+      // THEIR TURN
       //🛠 Highlight opponents active units on their turn
       if (!isMyTurn && isOpponentsActiveUnitHex(hex)) {
         classNames = classNames.concat(' maphex__opponents-active-unit ')
       }
+      // ANYONES TURN
       //🛠 Highlight selected card units
       // TODO Color selectable units based on if they have moved, have not moved, or have finished moving
       const isSelectableUnit =
@@ -93,6 +99,26 @@ export const MapHexes = ({ hexSize }) => {
       //🛠 Highlight selected unit
       if (selectedUnitID && isSelectedUnitHex(hex)) {
         classNames = classNames.concat(' maphex__selected-card-unit--active ')
+      }
+      // MY ATTACK
+      if (isAttackingStage) {
+        //🛠 Highlight targetable enemy units
+        const endHexUnitID = hex.occupyingUnitID
+        const isEndHexOccupied = Boolean(endHexUnitID)
+        const endHexUnit = { ...gameUnits[endHexUnitID] }
+        const endHexUnitPlayerID = endHexUnit.playerID
+        const isEndHexEnemyOccupied =
+          isEndHexOccupied && endHexUnitPlayerID !== playerID
+        // If unit selected, hex is enemy occupied...
+        if (selectedUnitID && isEndHexEnemyOccupied) {
+          const startHex = getBoardHexForUnit(selectedUnit, boardHexes)
+          const isInRange =
+            HexUtils.distance(startHex, hex) <= selectedGameCard.range
+          // ... and is in range
+          if (isInRange) {
+            classNames = classNames.concat(' maphex__targetable-enemy ')
+          }
+        }
       }
 
       // MY MOVE

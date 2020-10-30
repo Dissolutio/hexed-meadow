@@ -177,6 +177,11 @@ const StyledReactHexgrid = styled.div`
   .maphex__move-disengage > g {
     fill: var(--neon-red);
   }
+  //🛠 PAINT ATTACK HEXES
+  /* PAINT TARGETABLE ENEMY UNIT */
+  .maphex__targetable-enemy > g polygon {
+    fill: var(--neon-red);
+  }
 `
 
 //🛠 DEV MAP TOOL
