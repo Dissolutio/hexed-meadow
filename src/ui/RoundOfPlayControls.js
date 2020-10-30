@@ -13,12 +13,16 @@ import { hexagonsHeroPatternDataUrl } from 'ui/layout/hexagonsHeroPatternDataUrl
 import { playerColorUrlEncoded } from './theme/theme'
 
 export const RoundOfPlayControls = () => {
-  const { isMyTurn } = useBoardContext()
+  const { isMyTurn, isAttackingStage } = useBoardContext()
+  console.log(`RoundOfPlayControls -> isAttackingStage`, isAttackingStage)
   if (!isMyTurn) {
     return <TheirMoveUI />
   }
-  if (isMyTurn) {
+  if (isMyTurn && !isAttackingStage) {
     return <MyMoveUI />
+  }
+  if (isMyTurn && isAttackingStage) {
+    return <MyAttackUI />
   }
 }
 
@@ -45,6 +49,7 @@ const MyMoveUI = () => {
     undo,
     redo,
     endCurrentPlayerTurn,
+    endCurrentMoveStage,
   } = useBoardContext()
   const {
     selectedGameCardID,
@@ -61,8 +66,8 @@ const MyMoveUI = () => {
   const handleArmyCardClick = (gameCardID) => {
     onSelectCard__turn(gameCardID)
   }
-  const handleEndTurnButtonClick = () => {
-    endCurrentPlayerTurn()
+  const handleEndMovementClick = () => {
+    endCurrentMoveStage()
   }
 
   const myTurnCards = () => {
@@ -84,7 +89,7 @@ const MyMoveUI = () => {
       <h2>{`Your #${currentOrderMarker + 1}: ${revealedGameCard.name}`}</h2>
       <PlayerCardsStyledUL>
         <ButtonWrapper>
-          <Button variant="danger" onClick={handleEndTurnButtonClick}>
+          <Button variant="danger" onClick={handleEndMovementClick}>
             END MOVE
           </Button>
           <span>
@@ -97,6 +102,76 @@ const MyMoveUI = () => {
               REDO
             </Button>
           </span>
+        </ButtonWrapper>
+        {myTurnCards().map((card) => (
+          <PlayerCardStyledLi
+            onClick={() => handleArmyCardClick(card.gameCardID)}
+            id={`mtui-${card.gameCardID}`}
+            key={card.gameCardID}
+            playerID={card.playerID}
+            bg={hexagonBgDataUrl}
+            isCurrentSelectedCard={isCurrentSelectedCard(card)}
+          >
+            <UnitIcon
+              cardID={card.cardID}
+              iconPlayerID={card.playerID}
+              iconProps={{
+                x: '50',
+                y: '50',
+                transform: '',
+              }}
+            />
+            <div>{card.name}</div>
+          </PlayerCardStyledLi>
+        ))}
+      </PlayerCardsStyledUL>
+    </StyledWrapper>
+  )
+}
+const MyAttackUI = () => {
+  const {
+    playerID,
+    myCards,
+    currentOrderMarker,
+    currentTurnGameCardID,
+    endCurrentPlayerTurn,
+  } = useBoardContext()
+  const {
+    selectedGameCardID,
+    revealedGameCard,
+    onSelectCard__turn,
+  } = useTurnContext()
+  const hexagonBgDataUrl = hexagonsHeroPatternDataUrl({
+    color: playerColorUrlEncoded(playerID),
+    opacity: 0.05,
+  })
+  const handleEndTurnButtonClick = () => {
+    endCurrentPlayerTurn()
+  }
+  const handleArmyCardClick = (gameCardID) => {
+    onSelectCard__turn(gameCardID)
+  }
+  const isCurrentSelectedCard = (card) => {
+    return card?.gameCardID === selectedGameCardID
+  }
+  const myTurnCards = () => {
+    const isCurrentTurnCard = (card) => {
+      return card?.gameCardID === currentTurnGameCardID
+    }
+    //🛠 sort active card to top
+    const clone = [...myCards]
+    const activeTurnCards = clone.find((card) => isCurrentTurnCard(card))
+    const nonActiveTurnCards = clone.filter((card) => !isCurrentTurnCard(card))
+    return [activeTurnCards, ...nonActiveTurnCards]
+  }
+  return (
+    <StyledWrapper playerID={playerID}>
+      <h2>{`Your #${currentOrderMarker + 1}: ${revealedGameCard.name}`}</h2>
+      <PlayerCardsStyledUL>
+        <ButtonWrapper>
+          <Button variant="danger" onClick={handleEndTurnButtonClick}>
+            END TURN
+          </Button>
         </ButtonWrapper>
         {myTurnCards().map((card) => (
           <PlayerCardStyledLi

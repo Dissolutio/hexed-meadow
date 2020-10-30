@@ -99,6 +99,7 @@ export const HexedMeadow = {
     confirmOrderMarkersReady,
     moveAction,
     endCurrentPlayerTurn,
+    endCurrentMoveStage,
   },
   seed: 'random_string',
   playerView: PlayerView.STRIP_SECRETS,
@@ -259,6 +260,9 @@ export const HexedMeadow = {
 
 //🎆 BGIO MOVES
 //phase:___RoundOfPlay
+function endCurrentMoveStage(G: GameState, ctx: BoardProps['ctx']) {
+  ctx.events.setStage(stageNames.attacking)
+}
 function endCurrentPlayerTurn(G: GameState, ctx: BoardProps['ctx']) {
   ctx.events.endTurn()
 }

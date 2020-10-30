@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react'
 import { BoardProps } from 'boardgame.io/react'
-import { phaseNames } from 'game/constants'
+import { phaseNames, stageNames } from 'game/constants'
 import { BoardHex } from 'game/mapGen'
 import { GameArmyCard } from 'game/startingUnits'
 
@@ -36,6 +36,8 @@ const BoardContextProvider = (props: BoardContextProps) => {
   const isOrderMarkerPhase = ctx.phase === phaseNames.placeOrderMarkers
   const isPlacementPhase = ctx.phase === phaseNames.placement
   const isRoundOfPlayPhase = ctx.phase === phaseNames.roundOfPlay
+  const isAttackingStage =
+    isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === stageNames.attacking
 
   //🛠 SELECTORS
   const getGameCardByID = (gameCardID: string) => {
@@ -104,6 +106,7 @@ const BoardContextProvider = (props: BoardContextProps) => {
     isOrderMarkerPhase,
     isPlacementPhase,
     isRoundOfPlayPhase,
+    isAttackingStage,
     //🛠 SELECTORS
     belongsToPlayer,
     getGameCardByID,
