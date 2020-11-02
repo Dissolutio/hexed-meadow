@@ -21,7 +21,7 @@ export const ReactHexgrid = ({ mapProps, children }) => {
           x: hexSize,
           y: hexSize,
         }}
-        flat={true}
+        flat={false}
         origin={{ x: 0, y: 0 }}
         spacing={spacing}
       >

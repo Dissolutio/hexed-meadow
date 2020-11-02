@@ -36,13 +36,13 @@ export function makeHexagonShapedMap(mapSize: number, isDevMode: boolean) {
     mapShape: 'hexagon',
     mapSize,
     // FLAT TOP
-    hexGridLayout: 'flat',
-    hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
-    hexWidth: 2,
+    // hexGridLayout: 'flat',
+    // hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
+    // hexWidth: 2,
     // POINTY TOP
-    // hexGridLayout: 'pointy',
-    // hexHeight: 2,
-    // hexWidth: Math.sqrt(3),
+    hexGridLayout: 'pointy',
+    hexHeight: 2,
+    hexWidth: Math.sqrt(3),
   }
   const startZones: StartZones = makeStartZones(
     makeHexagonShapedMapBoardHexes(mapSize),
