@@ -4,12 +4,13 @@ import { Hexagon, HexUtils, Text } from 'react-hexgrid'
 import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 import { UnitIcon } from 'ui/UnitIcon'
 import { makeBlankMoveRange } from 'game/startingUnits'
-import { getBoardHexForUnit } from '../../game/selectors'
+import { getBoardHexForUnit, getGameCardByID } from 'game/selectors'
 
 export const MapHexes = ({ hexSize }) => {
   const {
     playerID,
     boardHexes,
+    armyCards,
     startZones,
     gameUnits,
     getMapHexUnit,
@@ -148,6 +149,8 @@ export const MapHexes = ({ hexSize }) => {
 
   return Object.values(boardHexes).map((hex, i) => {
     const gameUnit = getMapHexUnit(hex)
+    const gameUnitCard = getGameCardByID(armyCards, gameUnit?.gameCardID)
+    const unitName = gameUnitCard?.name ?? ''
     return (
       <Hexagon
         key={i}
@@ -163,7 +166,7 @@ export const MapHexes = ({ hexSize }) => {
               iconPlayerID={gameUnit.playerID}
             />
           )}
-          <HexIDText hexSize={hexSize} text={hex.occupyingUnitID} />
+          {!isPlacementPhase && <HexIDText hexSize={hexSize} text={unitName} />}
         </g>
       </Hexagon>
     )
