@@ -41,11 +41,11 @@ let isDevMode = true
 //! TOGGLE DEV MODE HERE
 // isDevMode = false
 //!
+
 if (process.env.NODE_ENV === 'production') {
   isDevMode = false
 }
-
-const mapSize = 1
+const mapSize = 2
 const hexagonMap = makeHexagonShapedMap(mapSize, isDevMode)
 const players = isDevMode ? devPlayerState : initialPlayerState
 

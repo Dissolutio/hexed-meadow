@@ -96,5 +96,7 @@ declare module 'react-hexgrid' {
     ) => Hex[]
     static triangle: (mapSize: number) => Hex[]
     static hexagon: (mapRadius: number) => Hex[]
+    static rectangle: (mapWidth: number, mapHeight: number) => Hex[]
+    static orientedRectangle: (mapWidth: number, mapHeight: number) => Hex[]
   }
 }

@@ -173,6 +173,7 @@ export const MapHexes = ({ hexSize }) => {
               iconPlayerID={gameUnit.playerID}
             />
           )}
+          {isPlacementPhase && <HexIDText hexSize={hexSize} text={hex.id} />}
           {!isPlacementPhase && <HexIDText hexSize={hexSize} text={unitName} />}
         </g>
       </Hexagon>
