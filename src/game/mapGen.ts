@@ -14,7 +14,6 @@ export interface BoardHex {
   occupyingUnitID: string
   terrain: string
   altitude: number
-  horizontalMoveCost: number
 }
 export interface BoardHexes {
   [key: string]: BoardHex
@@ -70,14 +69,12 @@ export const makeHexID = (hex: Hex) => {
 }
 const fillHexInfo = (prev: BoardHexes, curr: Hex): BoardHexes => {
   const altitude = () => getRandomInt(1, 1)
-  const horizontalMoveCost = () => getRandomInt(1, 1)
   const boardHex = {
     ...curr,
     id: makeHexID(curr),
     occupyingUnitID: '',
     terrain: 'grass',
     altitude: altitude(),
-    horizontalMoveCost: horizontalMoveCost(),
   }
   return {
     ...prev,

@@ -138,7 +138,7 @@ export function getMoveCostToNeighbor(
 ): number {
   const altitudeDelta = end.altitude - startHex.altitude
   const heightCost = Math.max(altitudeDelta, 0)
-  const distanceCost = end.horizontalMoveCost
+  const distanceCost = 1
   const totalCost = heightCost + distanceCost
   return totalCost
 }
