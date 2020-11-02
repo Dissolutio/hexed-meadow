@@ -119,6 +119,11 @@ const StyledReactHexgrid = styled.div`
     fill: var(--sub-white);
     font-size: ${(props) => `${props.hexSize / 75}rem`};
   }
+  //🛠 Terrain Highlighting
+  .maphex__terrain--grass > g polygon {
+    fill: var(--neon-green);
+    fill-opacity: 0.2;
+  }
 
   //🛠 Hex Highlighting
 
@@ -131,10 +136,12 @@ const StyledReactHexgrid = styled.div`
   /* PAINT ALL HEXES */
   .hexagon-group {
     fill: var(--black);
-    @media (hover: hover) {
-      &:hover {
-        fill: var(--neon-orange);
-        fill-opacity: 0.6;
+    g polygon {
+      @media (hover: hover) {
+        &:hover {
+          fill: var(--neon-orange);
+          fill-opacity: 0.6;
+        }
       }
     }
   }
@@ -166,21 +173,25 @@ const StyledReactHexgrid = styled.div`
   }
   //🛠 PAINT MOVE HEXES
   /* PAINT SAFE MOVERANGE */
-  .maphex__move-safe > g {
+  .maphex__move-safe > g polygon {
     fill: var(--neon-green);
+    fill-opacity: 1;
   }
   /* PAINT ENGAGE MOVERANGE */
   .maphex__move-engage > g {
     fill: var(--neon-orange);
+    fill-opacity: 1;
   }
   /* PAINT DISENGAGE MOVERANGE */
   .maphex__move-disengage > g {
     fill: var(--neon-red);
+    fill-opacity: 1;
   }
   //🛠 PAINT ATTACK HEXES
   /* PAINT TARGETABLE ENEMY UNIT */
   .maphex__targetable-enemy > g polygon {
     fill: var(--neon-red);
+    fill-opacity: 1;
   }
 `
 
@@ -203,6 +214,10 @@ const StyledZoomControls = styled.span`
   left: 0%;
   padding-top: 36px;
   padding-left: 36px;
+  @media screen and (max-width: 1100px) {
+    padding-top: 14px;
+    padding-left: 14px;
+  }
   z-index: 2;
   button {
     background-color: var(--gunmetal-transparent);
@@ -210,5 +225,9 @@ const StyledZoomControls = styled.span`
   svg {
     width: 30px;
     height: 30px;
+    @media screen and (max-width: 1100px) {
+      width: 18px;
+      height: 18px;
+    }
   }
 `

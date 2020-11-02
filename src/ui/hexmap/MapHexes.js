@@ -71,6 +71,13 @@ export const MapHexes = ({ hexSize }) => {
   }
   function calcClassNames(hex) {
     let classNames = ''
+    //🛠 TERRAIN HEXES
+    const terrainTypes = {
+      grass: 'grass',
+    }
+    if (hex.terrain === terrainTypes.grass) {
+      classNames = classNames.concat(' maphex__terrain--grass ')
+    }
     //phase: Placement
     if (isPlacementPhase) {
       if (activeUnitID && isStartZoneHex(hex)) {
