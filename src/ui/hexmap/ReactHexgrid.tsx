@@ -1,10 +1,8 @@
 import React from 'react'
-
 import { HexGrid, Layout } from 'react-hexgrid'
 
 export const ReactHexgrid = ({ mapProps, children }) => {
   const { mapSize, width, height, hexSize, spacing } = mapProps
-
   if (!width || !height || !hexSize || !spacing) {
     return null
   }

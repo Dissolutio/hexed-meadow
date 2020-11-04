@@ -99,4 +99,10 @@ declare module 'react-hexgrid' {
     static rectangle: (mapWidth: number, mapHeight: number) => Hex[]
     static orientedRectangle: (mapWidth: number, mapHeight: number) => Hex[]
   }
+  type HexGridProps = {
+    width: number
+    height: number
+    viewBox: string
+  }
+  const HexGrid: React.FC<HexGridProps> = (props) => {}
 }
