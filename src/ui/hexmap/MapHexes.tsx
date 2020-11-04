@@ -5,23 +5,26 @@ import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 import { UnitIcon } from 'ui/UnitIcon'
 import { makeBlankMoveRange } from 'game/startingUnits'
 import { getBoardHexForUnit, getGameCardByID } from 'game/selectors'
+import { BoardHex } from '../../game/mapGen'
 
-export const MapHexes = ({ hexSize }) => {
+type MapHexesProps = {
+  hexSize: number
+}
+
+export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const {
     playerID,
-    boardHexes,
-    armyCards,
-    startZones,
-    gameUnits,
-    getMapHexUnit,
+    G,
+    // computed
     isMyTurn,
     isPlacementPhase,
     isRoundOfPlayPhase,
     isAttackingStage,
+    // state
     activeHexID,
     activeUnitID,
   } = useBoardContext()
-
+  const { boardHexes, armyCards, startZones, gameUnits } = G
   const { onClickBoardHex_placement } = usePlacementContext()
   const {
     onClickBoardHex__turn,
@@ -153,34 +156,37 @@ export const MapHexes = ({ hexSize }) => {
     return classNames
   }
   //!🌠 END hex classnames
-
-  return Object.values(boardHexes).map((hex, i) => {
-    const gameUnit = getMapHexUnit(hex)
-    const gameUnitCard = getGameCardByID(armyCards, gameUnit?.gameCardID)
-    const unitName = gameUnitCard?.name ?? ''
-    return (
-      <Hexagon
-        key={i}
-        {...hex}
-        onClick={(e, source) => onClickBoardHex(e, source.props)}
-        className={calcClassNames(hex)}
-      >
-        <g>
-          {gameUnit && (
-            <UnitIcon
-              hexSize={hexSize}
-              cardID={gameUnit.cardID}
-              iconPlayerID={gameUnit.playerID}
-            />
-          )}
-          {isPlacementPhase && <HexIDText hexSize={hexSize} text={hex.id} />}
-          {!isPlacementPhase && <HexIDText hexSize={hexSize} text={unitName} />}
-        </g>
-      </Hexagon>
-    )
-  })
+  const hexJSX = () => {
+    return Object.values(boardHexes).map((hex: BoardHex, i) => {
+      const gameUnit = gameUnits?.[hex.occupyingUnitID]
+      const gameUnitCard = getGameCardByID(armyCards, gameUnit?.gameCardID)
+      const unitName = gameUnitCard?.name ?? ''
+      return (
+        <Hexagon
+          key={i}
+          {...hex}
+          onClick={(e, source) => onClickBoardHex(e, source.props)}
+          className={calcClassNames(hex)}
+        >
+          <g>
+            {gameUnit && (
+              <UnitIcon
+                hexSize={hexSize}
+                cardID={gameUnit.cardID}
+                iconPlayerID={gameUnit.playerID}
+              />
+            )}
+            {isPlacementPhase && <HexIDText hexSize={hexSize} text={hex.id} />}
+            {!isPlacementPhase && (
+              <HexIDText hexSize={hexSize} text={unitName} />
+            )}
+          </g>
+        </Hexagon>
+      )
+    })
+  }
+  return <>{hexJSX()}</>
 }
-
 const HexIDText = ({ hexSize, text }) => {
   return (
     <Text className="maphex_altitude-text" y={hexSize * 0.6}>

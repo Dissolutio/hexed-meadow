@@ -12,8 +12,21 @@ export const playerIconColors = {
   0: 'var(--bee-yellow)',
   1: 'var(--butterfly-purple)',
 }
-
-export const UnitIcon = ({ cardID, hexSize, iconProps, iconPlayerID }) => {
+type UnitIconTypes = {
+  cardID: string
+  iconPlayerID?: string
+  hexSize?: number
+  iconProps?: {
+    x: string
+    y: string
+  }
+}
+export const UnitIcon: React.FC<UnitIconTypes> = ({
+  cardID,
+  hexSize,
+  iconProps,
+  iconPlayerID,
+}) => {
   if (!cardID) {
     return null
   }
@@ -57,7 +70,6 @@ export const CardUnitIcon = ({ unit }) => {
       iconProps={{
         x: '50',
         y: '50',
-        transform: '',
       }}
     />
   )

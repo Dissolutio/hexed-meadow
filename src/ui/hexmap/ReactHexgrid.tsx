@@ -1,11 +1,23 @@
 import React from 'react'
 import { HexGrid, Layout } from 'react-hexgrid'
 
-export const ReactHexgrid = ({ mapProps, children }) => {
-  const { mapSize, width, height, hexSize, spacing } = mapProps
-  if (!width || !height || !hexSize || !spacing) {
-    return null
-  }
+type ReactHexgridProps = {
+  mapSize: number
+  width: string | number
+  height: string | number
+  hexSize: number
+  spacing: number
+  children: any
+}
+
+export const ReactHexgrid = ({
+  mapSize,
+  width,
+  height,
+  hexSize,
+  spacing,
+  children,
+}: ReactHexgridProps) => {
   const halfVB = mapSize * -50
   const fullVB = mapSize * 100
   return (

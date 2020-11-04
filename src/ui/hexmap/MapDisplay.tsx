@@ -1,32 +1,29 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import Button from 'react-bootstrap/esm/Button'
-import { HiOutlineZoomIn, HiOutlineZoomOut } from 'react-icons/hi'
-
 import { useBoardContext, usePlacementContext } from 'ui/hooks'
 import { ReactHexgrid } from './ReactHexgrid'
 import { MapHexes } from './MapHexes'
+import { TurnCounter } from './TurnCounter'
+import { ZoomControls } from './ZoomControls'
 
 export const MapDisplay = () => {
-  const { isPlacementPhase, hexMap } = useBoardContext()
+  const { isPlacementPhase, G } = useBoardContext()
+  const { hexMap } = G
   const { onClickMapBackground__placement } = usePlacementContext()
-  const { mapSize } = hexMap
+  const mapSize = hexMap.mapSize
   const mapRef = useRef()
   const zoomInterval = 100
-
   const [mapState, setMapState] = React.useState(() => ({
     width: 100,
     height: 100,
     hexSize: mapSize <= 3 ? 15 : mapSize <= 5 ? 20 : mapSize <= 10 ? 25 : 25,
     spacing: 1.06,
   }))
-
   const handleClickMapBackground = () => {
     if (isPlacementPhase) {
       return onClickMapBackground__placement()
     }
   }
-
   const handleClickZoomIn = () => {
     const el = mapRef.current
     setMapState((mapState) => ({
@@ -36,24 +33,20 @@ export const MapDisplay = () => {
     }))
     if (el) {
       setTimeout(() => {
-        const el = mapRef.current
+        const el: any = mapRef.current
         el && el.scrollBy(2 * zoomInterval, 2 * zoomInterval)
       }, 1)
     }
   }
-
   const handleClickZoomOut = () => {
-    const el = mapRef.current
+    const el: any = mapRef.current
     setMapState((s) => ({
       ...s,
       width: s.width - zoomInterval,
       height: s.height - zoomInterval,
     }))
-    if (el) {
-      el.scrollBy(-2 * zoomInterval, -2 * zoomInterval)
-    }
+    el && el.scrollBy(-2 * zoomInterval, -2 * zoomInterval)
   }
-
   const mapProps = {
     mapSize,
     width: `${mapState.width}%`,
@@ -61,29 +54,35 @@ export const MapDisplay = () => {
     hexSize: mapState.hexSize,
     spacing: mapState.spacing,
   }
-
   return (
     <div style={{ position: 'relative', height: '100%' }}>
       <ZoomControls
-        mapState={mapState}
-        setMapState={setMapState}
         handleClickZoomIn={handleClickZoomIn}
         handleClickZoomOut={handleClickZoomOut}
       />
+      <TurnCounter />
       <StyledReactHexgrid
         onClick={handleClickMapBackground}
         hexSize={mapState.hexSize}
         ref={mapRef}
       >
-        <ReactHexgrid mapProps={mapProps}>
+        <ReactHexgrid
+          mapSize={mapSize}
+          width={`${mapState.width}%`}
+          height={`${mapState.height}%`}
+          hexSize={mapState.hexSize}
+          spacing={mapState.spacing}
+        >
           <MapHexes hexSize={mapState.hexSize} />
         </ReactHexgrid>
       </StyledReactHexgrid>
     </div>
   )
 }
-
-const StyledReactHexgrid = styled.div`
+type StyledReactHexgridProps = {
+  hexSize: number
+}
+const StyledReactHexgrid = styled.div<StyledReactHexgridProps>`
   height: 100%;
   position: relative;
   overflow: scroll;
@@ -192,42 +191,5 @@ const StyledReactHexgrid = styled.div`
   .maphex__targetable-enemy > g polygon {
     fill: var(--neon-red);
     fill-opacity: 1;
-  }
-`
-
-//🛠 DEV MAP TOOL
-const ZoomControls = ({ handleClickZoomIn, handleClickZoomOut }) => {
-  return (
-    <StyledZoomControls>
-      <Button size="sm" variant="dark" onClick={handleClickZoomOut}>
-        <HiOutlineZoomOut fill="transparent" stroke="var(--player-color)" />
-      </Button>
-      <Button size="sm" variant="dark" onClick={handleClickZoomIn}>
-        <HiOutlineZoomIn fill="transparent" stroke="var(--player-color)" />
-      </Button>
-    </StyledZoomControls>
-  )
-}
-const StyledZoomControls = styled.span`
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  padding-top: 36px;
-  padding-left: 36px;
-  @media screen and (max-width: 1100px) {
-    padding-top: 14px;
-    padding-left: 14px;
-  }
-  z-index: 2;
-  button {
-    background-color: var(--gunmetal-transparent);
-  }
-  svg {
-    width: 30px;
-    height: 30px;
-    @media screen and (max-width: 1100px) {
-      width: 18px;
-      height: 18px;
-    }
   }
 `
