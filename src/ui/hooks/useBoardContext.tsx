@@ -45,10 +45,6 @@ const BoardContextProvider = (props: BoardContextProps) => {
       (card: GameArmyCard) => card.gameCardID === gameCardID
     )
   }
-  const getGameUnitByID = (unitID: string) => {
-    const unit = G.gameUnits?.[unitID]
-    return { ...unit }
-  }
   const getBoardHexIDForUnitID = (unitID: string) => {
     const boardHexesArr: BoardHex[] = Object.values(G.boardHexes)
     return (
@@ -63,20 +59,6 @@ const BoardContextProvider = (props: BoardContextProps) => {
   const currentTurnGameCard = G.armyCards.find(
     (armyCard) => armyCard.gameCardID === currentTurnGameCardID
   )
-  //TODO: make getUnitForHex(hex)
-  function getMapHexUnit(hex: BoardHex) {
-    const unitID = hex.occupyingUnitID
-    const unit = getGameUnitByID(unitID)
-    const isMyUnit = belongsToPlayer(unit)
-    // TODO
-    // Track placement in Player State (secret state)
-    // for now, don't reveal enemy units in Placement phase
-    //TODO
-    if (isPlacementPhase && !isMyUnit) {
-      return null
-    }
-    return unit
-  }
 
   //🛠 ASSEMBLED BOARDSTATE
   const boardState = {
@@ -111,9 +93,7 @@ const BoardContextProvider = (props: BoardContextProps) => {
     //🛠 SELECTORS
     belongsToPlayer,
     getGameCardByID,
-    getGameUnitByID,
     getBoardHexIDForUnitID,
-    getMapHexUnit,
     activeUnit,
     currentTurnGameCardID,
     currentTurnGameCard,

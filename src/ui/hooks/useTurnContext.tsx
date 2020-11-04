@@ -25,7 +25,6 @@ export const TurnContextProvider = ({ children }) => {
     isAttackingStage,
     // SELECTORS
     getGameCardByID,
-    getGameUnitByID,
     getBoardHexIDForUnitID,
     currentTurnGameCardID,
     // STATE
@@ -57,7 +56,7 @@ export const TurnContextProvider = ({ children }) => {
     }
   }, [isAttackingStage])
 
-  const selectedUnit = getGameUnitByID(selectedUnitID)
+  const selectedUnit = gameUnits?.[selectedUnitID]
 
   const revealedGameCard = (): GameArmyCard => {
     const orderMarker = orderMarkers[currentPlayer].find(
