@@ -14,7 +14,6 @@ import { playerColorUrlEncoded } from './theme/theme'
 
 export const RoundOfPlayControls = () => {
   const { isMyTurn, isAttackingStage } = useBoardContext()
-  console.log(`RoundOfPlayControls -> isAttackingStage`, isAttackingStage)
   if (!isMyTurn) {
     return <TheirMoveUI />
   }
@@ -27,7 +26,8 @@ export const RoundOfPlayControls = () => {
 }
 
 const TheirMoveUI = () => {
-  const { currentOrderMarker, playerID } = useBoardContext()
+  const { G, playerID } = useBoardContext()
+  const { currentOrderMarker } = G
   const { revealedGameCard } = useTurnContext()
   return (
     <StyledWrapper playerID={playerID}>
@@ -42,21 +42,24 @@ const TheirMoveUI = () => {
 
 const MyMoveUI = () => {
   const {
-    myCards,
-    currentOrderMarker,
-    currentTurnGameCardID,
+    G,
+    ctx,
+    moves,
     playerID,
-    undo,
-    redo,
-    endCurrentPlayerTurn,
-    endCurrentMoveStage,
-    unitsMoved,
+    // computed
+    myCards,
+    currentTurnGameCardID,
   } = useBoardContext()
+
   const {
     selectedGameCardID,
     onSelectCard__turn,
     revealedGameCard,
   } = useTurnContext()
+
+  const { unitsMoved, currentOrderMarker } = G
+  const { undo, redo } = ctx
+  const { endCurrentMoveStage } = moves
 
   const hexagonBgDataUrl = hexagonsHeroPatternDataUrl({
     color: playerColorUrlEncoded(playerID),
@@ -87,9 +90,12 @@ const MyMoveUI = () => {
   }
   return (
     <StyledWrapper playerID={playerID}>
-      <h2>{`Your #${currentOrderMarker + 1}: ${revealedGameCard.name}`}</h2>
+      <h2>{`Your #${currentOrderMarker + 1}: ${
+        revealedGameCard?.name ?? ''
+      }`}</h2>
       <p>
-        You have moved {unitsMoved.length} / {revealedGameCard.figures} units{' '}
+        You have moved {unitsMoved.length} / {revealedGameCard?.figures ?? 0}{' '}
+        units{' '}
       </p>
       <PlayerCardsStyledUL>
         <ButtonWrapper>
@@ -122,7 +128,6 @@ const MyMoveUI = () => {
               iconProps={{
                 x: '50',
                 y: '50',
-                transform: '',
               }}
             />
             <div>{card.name}</div>
@@ -135,22 +140,27 @@ const MyMoveUI = () => {
 
 const MyAttackUI = () => {
   const {
+    G,
+    moves,
     playerID,
+    // computed
     myCards,
-    currentOrderMarker,
     currentTurnGameCardID,
-    endCurrentPlayerTurn,
-    unitsAttacked,
   } = useBoardContext()
+  const { endCurrentPlayerTurn } = moves
+  const { unitsAttacked, currentOrderMarker } = G
+
   const {
     selectedGameCardID,
     revealedGameCard,
     onSelectCard__turn,
   } = useTurnContext()
+
   const hexagonBgDataUrl = hexagonsHeroPatternDataUrl({
     color: playerColorUrlEncoded(playerID),
     opacity: 0.05,
   })
+
   const handleEndTurnButtonClick = () => {
     endCurrentPlayerTurn()
   }
@@ -170,11 +180,14 @@ const MyAttackUI = () => {
     const nonActiveTurnCards = clone.filter((card) => !isCurrentTurnCard(card))
     return [activeTurnCards, ...nonActiveTurnCards]
   }
+
   return (
     <StyledWrapper playerID={playerID}>
-      <h2>{`Your #${currentOrderMarker + 1}: ${revealedGameCard.name}`}</h2>
+      <h2>{`Your #${currentOrderMarker + 1}: ${
+        revealedGameCard?.name ?? ''
+      }`}</h2>
       <p>
-        You have used {unitsAttacked.length} / {revealedGameCard.figures}{' '}
+        You have used {unitsAttacked.length} / {revealedGameCard?.figures ?? 0}{' '}
         attacks{' '}
       </p>
       <PlayerCardsStyledUL>
@@ -198,7 +211,6 @@ const MyAttackUI = () => {
               iconProps={{
                 x: '50',
                 y: '50',
-                transform: '',
               }}
             />
             <div>{card.name}</div>
@@ -208,8 +220,10 @@ const MyAttackUI = () => {
     </StyledWrapper>
   )
 }
-
-const StyledWrapper = styled.div`
+type StyledWrapperProps = {
+  playerID: string
+}
+const StyledWrapper = styled.div<StyledWrapperProps>`
   width: 100%;
   height: 100%;
   color: ${(props) => props.theme.playerColors[props.playerID]};
@@ -234,7 +248,12 @@ const PlayerCardsStyledUL = styled.ul`
     margin: 0.3rem;
   }
 `
-const PlayerCardStyledLi = styled.li`
+type PlayerCardStyledLiProps = {
+  playerID: string
+  bg: string
+  isCurrentSelectedCard: boolean
+}
+const PlayerCardStyledLi = styled.li<PlayerCardStyledLiProps>`
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;

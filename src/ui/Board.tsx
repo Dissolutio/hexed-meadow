@@ -13,7 +13,7 @@ import { BottomConsole } from './layout/BottomConsole'
 import { MapDisplay } from './hexmap/MapDisplay'
 import { theme } from './theme/theme'
 
-export const Board = (props: BoardProps) => {
+export const Board: React.FunctionComponent<BoardProps> = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <BoardContextProvider {...props}>

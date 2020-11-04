@@ -3,23 +3,21 @@ import { BoardProps } from 'boardgame.io/react'
 import { phaseNames, stageNames } from 'game/constants'
 import { BoardHex } from 'game/mapGen'
 import { GameArmyCard } from 'game/startingUnits'
+import { GameState } from 'game/game'
 
-interface BoardContextProps extends BoardProps {
-  children: React.ReactNode
+type ContextProps = {
+  G: GameState
+  ctx: BoardProps['ctx']
+  moves: Function[]
+  playerID: string
 }
 
 const BoardContext = createContext(null)
 
-const BoardContextProvider = (props: BoardContextProps) => {
+const BoardContextProvider = (props) => {
   //🛠 PROPS
   const { G, ctx, moves, playerID } = props
-
-  //🛠 utility
-  function belongsToPlayer(thing: any) {
-    return thing?.playerID === playerID
-  }
-
-  //🛠 UI STATE
+  //🛠 STATE
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
   const [activeGameCardID, setActiveGameCardID] = useState('')
@@ -27,6 +25,9 @@ const BoardContextProvider = (props: BoardContextProps) => {
 
   //🛠 COMPUTED
 
+  function belongsToPlayer(thing: any) {
+    return thing?.playerID === playerID
+  }
   const myCards = G.armyCards.filter(belongsToPlayer)
   const myStartZone = G.startZones[playerID]
   const myUnits = Object.values(G.gameUnits).filter(belongsToPlayer)
@@ -63,9 +64,9 @@ const BoardContextProvider = (props: BoardContextProps) => {
   //🛠 ASSEMBLED BOARDSTATE
   const boardState = {
     playerID,
-    ...G,
-    ...moves,
-    ...ctx,
+    G,
+    moves,
+    ctx,
     undo: props.undo,
     redo: props.redo,
     //🛠 UI STATE
@@ -79,6 +80,7 @@ const BoardContextProvider = (props: BoardContextProps) => {
     setErrorMsg,
 
     //🛠 COMPUTED
+    belongsToPlayer,
     myCards,
     myStartZone,
     myUnits,
@@ -91,7 +93,6 @@ const BoardContextProvider = (props: BoardContextProps) => {
     isAttackingStage,
     isGameover,
     //🛠 SELECTORS
-    belongsToPlayer,
     getGameCardByID,
     getBoardHexIDForUnitID,
     activeUnit,

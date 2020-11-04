@@ -5,35 +5,36 @@ import { useBoardContext } from './useBoardContext'
 import { OrderMarker } from 'game/constants'
 import { getBoardHexForUnit } from '../../game/selectors'
 import { HexUtils } from 'react-hexgrid'
+import { GameState } from 'game/game'
 
 const TurnContext = React.createContext(null)
 
 export const TurnContextProvider = ({ children }) => {
   const {
     playerID,
-    // G
-    boardHexes,
-    armyCards,
-    gameUnits,
-    orderMarkers,
-    unitsMoved,
+    G,
+    ctx,
     // COMPUTED
     myOrderMarkers,
-    currentOrderMarker,
-    currentPlayer,
     isMyTurn,
     isAttackingStage,
     // SELECTORS
     getGameCardByID,
     getBoardHexIDForUnitID,
     currentTurnGameCardID,
-    // STATE
-    setActiveHexID,
     // MOVES
-    moveAction,
-    attackAction,
+    moves,
   } = useBoardContext()
 
+  const {
+    boardHexes,
+    armyCards,
+    gameUnits,
+    orderMarkers,
+    currentOrderMarker,
+  } = G
+  const { moveAction, attackAction } = moves
+  const { currentPlayer } = ctx
   // ! STATE
   const [selectedGameCardID, setSelectedGameCardID] = useState('')
   const [selectedUnitID, setSelectedUnitID] = useState('')
@@ -59,10 +60,12 @@ export const TurnContextProvider = ({ children }) => {
   const selectedUnit = gameUnits?.[selectedUnitID]
 
   const revealedGameCard = (): GameArmyCard => {
-    const orderMarker = orderMarkers[currentPlayer].find(
-      (om: OrderMarker) => om.order === currentOrderMarker.toString()
+    const orderMarker = orderMarkers?.[currentPlayer].find(
+      (om: OrderMarker) => om.order === currentOrderMarker?.toString()
     )
+    console.log(`revealedGameCard -> orderMarker`, orderMarker)
     const id = orderMarker ? orderMarker.gameCardID : ''
+    console.log(`revealedGameCard -> id`, id)
     return id ? getGameCardByID(id) : null
   }
   const revealedGameCardUnits = () => {

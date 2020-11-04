@@ -6,20 +6,23 @@ const PlacementContext = React.createContext(null)
 
 const PlacementContextProvider = ({ children }) => {
   const {
+    G,
     playerID,
-    boardHexes,
-    gameUnits,
+    moves,
+    // computed
     myUnits,
     myCards,
     myStartZone,
+    // ui state
     activeUnitID,
     setActiveUnitID,
     activeUnit,
     activeHexID,
     setActiveHexID,
     setErrorMsg,
-    placeUnitOnHex,
   } = useBoardContext()
+  const { boardHexes, gameUnits } = G
+  const { placeUnitOnHex } = moves
   const [placementUnits, setPlacementUnits] = useState(
     myInitialPlacementUnits()
   )
