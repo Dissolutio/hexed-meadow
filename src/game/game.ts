@@ -403,15 +403,19 @@ function attackAction(
   const skulls = attackRoll.filter((n) => n <= 3).length
   const defenseRoll = ctx.random.Die(6, defense)
   const shields = defenseRoll.filter((n) => n === 4 || n === 5).length
-  const wounds = skulls - shields
+  const wounds = Math.max(skulls - shields, 0)
   const isHit = wounds > 0
   const isFatal = wounds >= defenderLife
   console.log(`A:`, skulls, `D:`, shields, `wounds:`, wounds)
 
   // deal damage
   if (isHit && !isFatal) {
-    G.armyCards[defenderGameUnit.gameCardID].life = defenderLife - wounds
+    const gameCardIndex = G.armyCards.findIndex(
+      (card) => card?.gameCardID === defenderGameUnit.gameCardID
+    )
+    G.armyCards[gameCardIndex].life = defenderLife - wounds
   }
+  // kill unit, clear hex
   if (isFatal) {
     delete G.gameUnits[defenderGameUnit.unitID]
     G.boardHexes[defenderHex.id].occupyingUnitID = ''
