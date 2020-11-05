@@ -47,13 +47,6 @@ export const MapDisplay = () => {
     }))
     el && el.scrollBy(-2 * zoomInterval, -2 * zoomInterval)
   }
-  const mapProps = {
-    mapSize,
-    width: `${mapState.width}%`,
-    height: `${mapState.height}%`,
-    hexSize: mapState.hexSize,
-    spacing: mapState.spacing,
-  }
   return (
     <div style={{ position: 'relative', height: '100%' }}>
       <ZoomControls

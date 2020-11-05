@@ -8,9 +8,9 @@ import styled from 'styled-components'
 import Button from 'react-bootstrap/esm/Button'
 
 import { useBoardContext, useTurnContext } from 'ui/hooks'
-import { UnitIcon } from './UnitIcon'
-import { hexagonsHeroPatternDataUrl } from 'ui/layout/hexagonsHeroPatternDataUrl'
-import { playerColorUrlEncoded } from './theme/theme'
+import { UnitIcon } from '../icons/UnitIcon'
+import { hexagonsHeroPatternDataUrl } from 'assets/hexagonsHeroPatternDataUrl'
+import { playerColorUrlEncoded } from 'app/theme'
 
 export const RoundOfPlayControls = () => {
   const { isMyTurn, isAttackingStage } = useBoardContext()
@@ -118,7 +118,6 @@ const MyMoveUI = () => {
             onClick={() => handleArmyCardClick(card.gameCardID)}
             id={`mtui-${card.gameCardID}`}
             key={card.gameCardID}
-            playerID={card.playerID}
             bg={hexagonBgDataUrl}
             isCurrentSelectedCard={isCurrentSelectedCard(card)}
           >
@@ -201,7 +200,6 @@ const MyAttackUI = () => {
             onClick={() => handleArmyCardClick(card.gameCardID)}
             id={`mtui-${card.gameCardID}`}
             key={card.gameCardID}
-            playerID={card.playerID}
             bg={hexagonBgDataUrl}
             isCurrentSelectedCard={isCurrentSelectedCard(card)}
           >
@@ -249,7 +247,6 @@ const PlayerCardsStyledUL = styled.ul`
   }
 `
 type PlayerCardStyledLiProps = {
-  playerID: string
   bg: string
   isCurrentSelectedCard: boolean
 }
@@ -258,9 +255,9 @@ const PlayerCardStyledLi = styled.li<PlayerCardStyledLiProps>`
   flex-flow: column nowrap;
   justify-content: center;
   align-content: center;
-  color: ${(props) => props.theme.playerColors[props.playerID]};
-  border: 0.1px solid ${(props) => props.theme.playerColors[props.playerID]};
-  color: ${(props) => props.theme.playerColors[props.playerID]};
+  color: var(--player-color);
+  border: 0.1px solid var(--player-color);
+  color: var(--player-color);
   background-image: url("${(props) => props.bg}");
   box-shadow: ${(props) =>
     props.isCurrentSelectedCard

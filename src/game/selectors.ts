@@ -22,6 +22,11 @@ export function getBoardHexForUnit(unit: GameUnit, boardHexes: BoardHexes) {
   }
   return boardHex
 }
+export function getUnitForBoardHex(hex: BoardHex, gameUnits: GameUnits) {
+  const unitID = hex.occupyingUnitID
+  const unit = gameUnits?.[unitID]
+  return unit
+}
 
 export function getGameCardByID(armyCards: GameArmyCard[], gameCardID: string) {
   return armyCards.find((card: GameArmyCard) => card.gameCardID === gameCardID)

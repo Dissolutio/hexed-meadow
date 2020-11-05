@@ -3,12 +3,12 @@ import { Switch, Route, Link } from 'react-router-dom'
 import { Client, Lobby } from 'boardgame.io/react'
 import { SocketIO } from 'boardgame.io/multiplayer'
 
-import Board from '../ui/Board'
+import Board from './Board'
 import { HexedMeadow } from '../game/game'
 import { HelpPage } from '../ui/pages'
 import { FeedbackPage } from '../ui/pages/FeedbackPage'
 
-export const StagingApp = () => {
+export const DevAppSeparate = () => {
   return (
     <Switch>
       <Route exact path="/">

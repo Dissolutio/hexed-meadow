@@ -3,9 +3,9 @@ import { Switch, Route, Link } from 'react-router-dom'
 import { Client, Lobby } from 'boardgame.io/react'
 import { SocketIO } from 'boardgame.io/multiplayer'
 
-import Board from '../ui/Board'
-import { HexedMeadow } from '../game/game'
-import { HelpPage, FeedbackPage } from '../ui/pages'
+import Board from './Board'
+import { HexedMeadow } from 'game/game'
+import { HelpPage, FeedbackPage } from 'ui/pages'
 
 export const ProductionApp = () => {
   return (

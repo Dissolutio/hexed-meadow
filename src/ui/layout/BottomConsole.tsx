@@ -1,6 +1,10 @@
 import React from 'react'
 import { useBoardContext } from 'ui/hooks'
-import { PlacementControls, PlaceOrderMarkers, RoundOfPlayControls } from 'ui'
+import {
+  PlacementControls,
+  PlaceOrderMarkers,
+  RoundOfPlayControls,
+} from 'ui/controls'
 
 export const BottomConsole = () => {
   const {
@@ -9,9 +13,9 @@ export const BottomConsole = () => {
     isPlacementPhase,
     isRoundOfPlayPhase,
     isGameover,
-    gameover,
+    ctx,
   } = useBoardContext()
-
+  const { gameover } = ctx
   if (isPlacementPhase) {
     return <PlacementControls />
   }

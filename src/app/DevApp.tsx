@@ -3,9 +3,9 @@ import { Switch, Route } from 'react-router-dom'
 import { Client } from 'boardgame.io/react'
 import { Local } from 'boardgame.io/multiplayer'
 
-import Board from '../ui/Board'
-import { HexedMeadow } from '../game/game'
-import { HelpPage, FeedbackPage } from '../ui/pages'
+import Board from './Board'
+import { HexedMeadow } from 'game/game'
+import { HelpPage, FeedbackPage } from 'ui/pages'
 
 export const DevApp = () => {
   return (

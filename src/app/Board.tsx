@@ -6,14 +6,13 @@ import {
   BoardContextProvider,
   PlacementContextProvider,
   TurnContextProvider,
-} from './hooks'
-import { Layout } from './layout/Layout'
-import { AppNavbar } from './layout/AppNavbar'
-import { BottomConsole } from './layout/BottomConsole'
-import { MapDisplay } from './hexmap/MapDisplay'
-import { theme } from './theme/theme'
+} from 'ui/hooks'
+import { Layout, AppNavbar, BottomConsole } from 'ui/layout'
+import { MapDisplay } from 'ui/hexmap'
+import { theme } from './theme'
 
 export const Board: React.FunctionComponent<BoardProps> = (props) => {
+  console.log(`props`, props)
   return (
     <ThemeProvider theme={theme}>
       <BoardContextProvider {...props}>
