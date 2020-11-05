@@ -176,9 +176,9 @@ const MyAttackUI = () => {
     }
     //🛠 sort active card to top
     const clone = [...myCards]
-    const activeTurnCards = clone.find((card) => isCurrentTurnCard(card))
-    const nonActiveTurnCards = clone.filter((card) => !isCurrentTurnCard(card))
-    return [activeTurnCards, ...nonActiveTurnCards]
+    const myActiveCard = clone.find((card) => isCurrentTurnCard(card))
+    const myInactiveCards = clone.filter((card) => !isCurrentTurnCard(card))
+    return [myActiveCard, ...myInactiveCards]
   }
 
   return (
