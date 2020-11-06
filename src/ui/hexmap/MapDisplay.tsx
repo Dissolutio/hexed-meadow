@@ -9,7 +9,6 @@ import { ZoomControls } from './ZoomControls'
 export const MapDisplay = () => {
   const { isPlacementPhase, G } = useBoardContext()
   const { hexMap } = G
-  const { onClickMapBackground__placement } = usePlacementContext()
   const mapSize = hexMap.mapSize
   const mapRef = useRef()
   const zoomInterval = 100
@@ -19,11 +18,6 @@ export const MapDisplay = () => {
     hexSize: mapSize <= 3 ? 15 : mapSize <= 5 ? 20 : mapSize <= 10 ? 25 : 25,
     spacing: 1.06,
   }))
-  const handleClickMapBackground = () => {
-    if (isPlacementPhase) {
-      return onClickMapBackground__placement()
-    }
-  }
   const handleClickZoomIn = () => {
     const el = mapRef.current
     setMapState((mapState) => ({
@@ -54,11 +48,7 @@ export const MapDisplay = () => {
         handleClickZoomOut={handleClickZoomOut}
       />
       <TurnCounter />
-      <StyledReactHexgrid
-        onClick={handleClickMapBackground}
-        hexSize={mapState.hexSize}
-        ref={mapRef}
-      >
+      <StyledReactHexgrid hexSize={mapState.hexSize} ref={mapRef}>
         <ReactHexgrid
           mapSize={mapSize}
           width={`${mapState.width}%`}

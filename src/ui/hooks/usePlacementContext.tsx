@@ -85,11 +85,6 @@ const PlacementContextProvider = ({ children }) => {
       return
     }
   }
-  const onClickMapBackground__placement = () => {
-    if (activeHexID) {
-      setActiveHexID('')
-    }
-  }
   return (
     <PlacementContext.Provider
       value={{
@@ -99,7 +94,6 @@ const PlacementContextProvider = ({ children }) => {
         placeAvailablePlacementUnit,
         onClickPlacementUnit,
         onClickBoardHex_placement,
-        onClickMapBackground__placement,
       }}
     >
       {children}
