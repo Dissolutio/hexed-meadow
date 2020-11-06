@@ -18,9 +18,8 @@ export interface BoardHex {
 export interface BoardHexes {
   [key: string]: BoardHex
 }
-type StartZone = string[]
 export interface StartZones {
-  [key: string]: StartZone
+  [key: string]: string[]
 }
 export type HexMap = {
   mapShape: string

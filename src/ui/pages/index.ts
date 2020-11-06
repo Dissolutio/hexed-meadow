@@ -1,3 +1,4 @@
-export * from "./FeedbackPage";
-export * from "./HelpPage";
-export * from "./PageNavbar";
+export * from './FeedbackPage'
+export * from './StyledPageWrapper'
+export * from './HelpPage'
+export * from './PageNavbar'
