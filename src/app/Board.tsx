@@ -3,6 +3,7 @@ import { ThemeProvider } from 'styled-components'
 import { BoardProps } from 'boardgame.io/react'
 
 import {
+  BoardContextProps,
   BoardContextProvider,
   PlacementContextProvider,
   TurnContextProvider,
@@ -12,9 +13,17 @@ import { MapDisplay } from 'ui/hexmap'
 import { theme } from './theme'
 
 export const Board: React.FunctionComponent<BoardProps> = (props) => {
+  const boardContextProps: BoardContextProps = {
+    G: props.G,
+    ctx: props.ctx,
+    moves: props.moves,
+    playerID: props.playerID,
+    undo: props.undo,
+    redo: props.redo,
+  }
   return (
     <ThemeProvider theme={theme}>
-      <BoardContextProvider {...props}>
+      <BoardContextProvider {...boardContextProps}>
         <PlacementContextProvider>
           <TurnContextProvider>
             <Layout>

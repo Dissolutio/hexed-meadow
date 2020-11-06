@@ -1,20 +1,25 @@
 import React, { createContext, useContext, useState } from 'react'
 import { BoardProps } from 'boardgame.io/react'
-import { phaseNames, stageNames } from 'game/constants'
-import { GameState } from 'game/game'
 
-type ContextProps = {
-  G: GameState
-  ctx: BoardProps['ctx']
-  moves: Function[]
-  playerID: string
-}
+import { GameState } from 'game/game'
+import { getRevealedGameCard } from 'game/selectors'
+import { phaseNames, stageNames } from 'game/constants'
 
 const BoardContext = createContext(null)
 
-const BoardContextProvider = (props) => {
+export type BoardContextProps = {
+  G: GameState
+  playerID: string
+  ctx: BoardProps['ctx']
+  moves: BoardProps['moves']
+  undo: BoardProps['undo']
+  redo: BoardProps['redo']
+}
+
+const BoardContextProvider: React.FC<BoardContextProps> = (props) => {
+
   //🛠 PROPS
-  const { G, ctx, moves, playerID } = props
+  const { G, ctx, moves, playerID, undo, redo, children } = props
   //🛠 STATE
   const [activeHexID, setActiveHexID] = useState('')
   const [activeUnitID, setActiveUnitID] = useState('')
@@ -52,8 +57,8 @@ const BoardContextProvider = (props) => {
     G,
     moves,
     ctx,
-    undo: props.undo,
-    redo: props.redo,
+    undo: undo,
+    redo: redo,
     //🛠 UI STATE
     activeHexID,
     setActiveHexID,
@@ -84,9 +89,7 @@ const BoardContextProvider = (props) => {
   }
 
   return (
-    <BoardContext.Provider value={boardState}>
-      {props.children}
-    </BoardContext.Provider>
+    <BoardContext.Provider value={boardState}>{children}</BoardContext.Provider>
   )
 }
 
