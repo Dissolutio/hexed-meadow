@@ -12,7 +12,6 @@ import { MapDisplay } from 'ui/hexmap'
 import { theme } from './theme'
 
 export const Board: React.FunctionComponent<BoardProps> = (props) => {
-  console.log(`props`, props)
   return (
     <ThemeProvider theme={theme}>
       <BoardContextProvider {...props}>

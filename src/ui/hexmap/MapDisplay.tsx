@@ -79,8 +79,8 @@ const StyledReactHexgrid = styled.div<StyledReactHexgridProps>`
   scrollbar-width: thin;
   scrollbar-color: var(--player-color) var(--black);
   &::-webkit-scrollbar {
-    height: 0.7rem;
-    width: 0.7rem;
+    height: 0.2rem;
+    width: 0.2rem;
     background: var(--black);
   }
   &::-webkit-scrollbar-track {
