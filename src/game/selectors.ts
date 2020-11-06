@@ -11,16 +11,10 @@ import { BoardHexes, BoardHex, makeHexID } from './mapGen'
 import { OrderMarkers, OrderMarker, PlayerOrderMarkers } from './constants'
 import { cloneObject, deduplicateMoveRange } from './utilities'
 
-export function getBoardHexForUnit(unit: GameUnit, boardHexes: BoardHexes) {
-  if (!(unit && unit?.unitID)) {
-    return undefined
+export function getBoardHexForUnitID(unitID: string, boardHexes: BoardHexes) {
+  return {
+    ...Object.values(boardHexes).find((hex) => hex.occupyingUnitID === unitID),
   }
-  const boardHex = {
-    ...Object.values(boardHexes).find(
-      (hex) => hex.occupyingUnitID === unit?.unitID
-    ),
-  }
-  return boardHex
 }
 export function getUnitForBoardHex(hex: BoardHex, gameUnits: GameUnits) {
   const unitID = hex.occupyingUnitID
@@ -48,7 +42,7 @@ export function getMoveRangeForUnit(
   }
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
-  const startHex = getBoardHexForUnit(unit, boardHexes)
+  const startHex = getBoardHexForUnitID(unit?.unitID ?? '', boardHexes)
   initialMoveRange.denied.push(`${startHex.id}`)
   //*early out again?
   if (!startHex || !initialMovePoints) {

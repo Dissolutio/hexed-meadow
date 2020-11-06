@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useState } from 'react'
 import { BoardProps } from 'boardgame.io/react'
 import { phaseNames, stageNames } from 'game/constants'
-import { BoardHex } from 'game/mapGen'
-import { GameArmyCard } from 'game/startingUnits'
 import { GameState } from 'game/game'
 
 type ContextProps = {
@@ -41,14 +39,6 @@ const BoardContextProvider = (props) => {
     isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === stageNames.attacking
   const isGameover = Boolean(ctx.gameover)
   //🛠 SELECTORS
-  const getBoardHexIDForUnitID = (unitID: string) => {
-    const boardHexesArr: BoardHex[] = Object.values(G.boardHexes)
-    return (
-      boardHexesArr.find((boardHex) => {
-        return boardHex?.occupyingUnitID === unitID
-      })?.id ?? ''
-    )
-  }
   const activeUnit = G.gameUnits[activeUnitID]
   const currentTurnGameCardID =
     G.players?.[playerID]?.orderMarkers?.[G.currentOrderMarker] ?? ''
@@ -69,6 +59,7 @@ const BoardContextProvider = (props) => {
     setActiveHexID,
     activeUnitID,
     setActiveUnitID,
+    activeUnit,
     activeGameCardID,
     setActiveGameCardID,
     errorMsg,
@@ -88,8 +79,6 @@ const BoardContextProvider = (props) => {
     isAttackingStage,
     isGameover,
     //🛠 SELECTORS
-    getBoardHexIDForUnitID,
-    activeUnit,
     currentTurnGameCardID,
     currentTurnGameCard,
   }

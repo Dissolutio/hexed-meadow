@@ -3,7 +3,7 @@ import { HexUtils } from 'react-hexgrid'
 
 import { GameArmyCard, GameUnit, makeBlankMoveRange } from 'game/startingUnits'
 import {
-  getBoardHexForUnit,
+  getBoardHexForUnitID,
   getGameCardByID,
   getRevealedGameCard,
 } from 'game/selectors'
@@ -20,7 +20,6 @@ export const TurnContextProvider = ({ children }) => {
     isMyTurn,
     isAttackingStage,
     // SELECTORS
-    getBoardHexIDForUnitID,
     currentTurnGameCardID,
     // MOVES
     moves,
@@ -83,7 +82,7 @@ export const TurnContextProvider = ({ children }) => {
       .filter((unit: GameUnit) => unit.gameCardID === selectedGameCardID)
       .map((unit: GameUnit) => ({
         ...unit,
-        boardHexID: getBoardHexIDForUnitID(unit.unitID),
+        boardHexID: getBoardHexForUnitID(unit.unitID, boardHexes),
       }))
     return units
   }
@@ -144,7 +143,7 @@ export const TurnContextProvider = ({ children }) => {
       }
       // attack with selected unit
       if (selectedUnitID && isEndHexEnemyOccupied) {
-        const startHex = getBoardHexForUnit(selectedUnit, boardHexes)
+        const startHex = getBoardHexForUnitID(selectedUnitID, boardHexes)
         const gameCard: any = Object.values(armyCards).find(
           (armyCard: GameArmyCard) =>
             armyCard?.gameCardID === selectedGameCardID

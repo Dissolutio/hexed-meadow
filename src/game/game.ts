@@ -4,9 +4,8 @@ import { HexUtils } from 'react-hexgrid'
 
 import { rollD20Initiative } from './rollInitiative'
 import {
-  getBoardHexForUnit,
+  getBoardHexForUnitID,
   getGameCardByID,
-  // getUnrevealedGameCard,
   getMoveRangeForUnit,
   getThisTurnData,
 } from './selectors'
@@ -303,7 +302,7 @@ function moveAction(
   const { unitID, movePoints } = unit
   const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
   const endHexID = endHex.id
-  const startHex = getBoardHexForUnit(unit, G.boardHexes)
+  const startHex = getBoardHexForUnitID(unitID, G.boardHexes)
   const startHexID = startHex.id
   const currentMoveRange = getMoveRangeForUnit(unit, G.boardHexes, G.gameUnits)
   const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
@@ -354,7 +353,7 @@ function attackAction(
   const unitsAttacked = [...G.unitsAttacked]
   const attacksAllowed = unitGameCard.figures
   const attacksLeft = attacksAllowed - unitsAttacked.length
-  const attackerHex = getBoardHexForUnit(unit, G.boardHexes)
+  const attackerHex = getBoardHexForUnitID(unitID, G.boardHexes)
 
   //! EARLY OUTS
   // DISALLOW - no target
