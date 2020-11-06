@@ -5,7 +5,7 @@ import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 import { UnitIcon } from 'ui/icons/UnitIcon'
 import { makeBlankMoveRange } from 'game/startingUnits'
 import { getBoardHexForUnit, getGameCardByID } from 'game/selectors'
-import { BoardHex } from '../../game/mapGen'
+import { BoardHex } from 'game/mapGen'
 
 type MapHexesProps = {
   hexSize: number

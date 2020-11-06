@@ -172,7 +172,7 @@ export function getRevealedGameCard(
     (om: OrderMarker) => om.order === currentOrderMarker.toString()
   )
   const gameCardID = orderMarker?.gameCardID ?? ''
-  return gameCardID ? getGameCardByID(armyCards, gameCardID) : null
+  return getGameCardByID(armyCards, gameCardID)
 }
 
 export function getUnrevealedGameCard(
@@ -181,7 +181,7 @@ export function getUnrevealedGameCard(
   currentOrderMarker: number
 ) {
   const id = playerOrderMarkers[currentOrderMarker.toString()]
-  return id ? getGameCardByID(armyCards, id) : null
+  return getGameCardByID(armyCards, id)
 }
 
 export function getUnitHexEngagements(
@@ -198,6 +198,7 @@ export function getUnitHexEngagements(
   )
   return engagedUnitIDs
 }
+
 export function getThisTurnData(
   playerOrderMarkers: PlayerOrderMarkers,
   currentOrderMarker: number,

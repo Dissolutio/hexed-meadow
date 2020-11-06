@@ -41,11 +41,6 @@ const BoardContextProvider = (props) => {
     isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === stageNames.attacking
   const isGameover = Boolean(ctx.gameover)
   //🛠 SELECTORS
-  const getGameCardByID = (gameCardID: string) => {
-    return G.armyCards.find(
-      (card: GameArmyCard) => card.gameCardID === gameCardID
-    )
-  }
   const getBoardHexIDForUnitID = (unitID: string) => {
     const boardHexesArr: BoardHex[] = Object.values(G.boardHexes)
     return (
@@ -93,7 +88,6 @@ const BoardContextProvider = (props) => {
     isAttackingStage,
     isGameover,
     //🛠 SELECTORS
-    getGameCardByID,
     getBoardHexIDForUnitID,
     activeUnit,
     currentTurnGameCardID,

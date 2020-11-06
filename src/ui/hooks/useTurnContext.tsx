@@ -1,11 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react'
+import { HexUtils } from 'react-hexgrid'
 
 import { GameArmyCard, GameUnit, makeBlankMoveRange } from 'game/startingUnits'
+import {
+  getBoardHexForUnit,
+  getGameCardByID,
+  getRevealedGameCard,
+} from 'game/selectors'
 import { useBoardContext } from './useBoardContext'
-import { OrderMarker } from 'game/constants'
-import { getBoardHexForUnit } from '../../game/selectors'
-import { HexUtils } from 'react-hexgrid'
-import { GameState } from 'game/game'
 
 const TurnContext = React.createContext(null)
 
@@ -15,11 +17,9 @@ export const TurnContextProvider = ({ children }) => {
     G,
     ctx,
     // COMPUTED
-    myOrderMarkers,
     isMyTurn,
     isAttackingStage,
     // SELECTORS
-    getGameCardByID,
     getBoardHexIDForUnitID,
     currentTurnGameCardID,
     // MOVES
@@ -59,25 +59,16 @@ export const TurnContextProvider = ({ children }) => {
 
   const selectedUnit = gameUnits?.[selectedUnitID]
 
-  const revealedGameCard = (): GameArmyCard => {
-    const orderMarker = orderMarkers?.[currentPlayer].find(
-      (om: OrderMarker) => om.order === currentOrderMarker?.toString()
-    )
-    console.log(`revealedGameCard -> orderMarker`, orderMarker)
-    const id = orderMarker ? orderMarker.gameCardID : ''
-    console.log(`revealedGameCard -> id`, id)
-    return id ? getGameCardByID(id) : null
-  }
+  const revealedGameCard = getRevealedGameCard(
+    orderMarkers,
+    armyCards,
+    currentOrderMarker,
+    currentPlayer
+  )
   const revealedGameCardUnits = () => {
-    const gameCard = revealedGameCard()
-    const units = Object.values(gameUnits).filter(
-      (u: GameUnit) => u?.gameCardID === gameCard?.gameCardID
+    return Object.values(gameUnits).filter(
+      (u: GameUnit) => u?.gameCardID === revealedGameCard?.gameCardID
     )
-    return units
-  }
-  const unrevealedGameCard = () => {
-    const id = myOrderMarkers[currentOrderMarker]
-    return id ? getGameCardByID(id) : null
   }
 
   const selectedGameCard = () => {
@@ -176,9 +167,8 @@ export const TurnContextProvider = ({ children }) => {
         selectedGameCard: selectedGameCard(),
         selectedGameCardUnits: selectedGameCardUnits(),
         selectedUnit,
-        revealedGameCard: revealedGameCard(),
+        revealedGameCard,
         revealedGameCardUnits: revealedGameCardUnits(),
-        unrevealedGameCard: unrevealedGameCard(),
         // HANDLERS
         onClickBoardHex__turn,
         onSelectCard__turn,
