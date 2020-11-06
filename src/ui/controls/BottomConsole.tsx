@@ -1,9 +1,11 @@
 import React from 'react'
 import { useBoardContext } from 'ui/hooks'
 import {
+  TheirMoveUI,
+  MyMoveUI,
+  MyAttackUI,
   PlacementControls,
   PlaceOrderMarkers,
-  RoundOfPlayControls,
 } from 'ui/controls'
 
 export const BottomConsole = () => {
@@ -12,6 +14,8 @@ export const BottomConsole = () => {
     isOrderMarkerPhase,
     isPlacementPhase,
     isRoundOfPlayPhase,
+    isMyTurn,
+    isAttackingStage,
     isGameover,
     ctx,
   } = useBoardContext()
@@ -23,7 +27,15 @@ export const BottomConsole = () => {
     return <PlaceOrderMarkers />
   }
   if (isRoundOfPlayPhase) {
-    return <RoundOfPlayControls />
+    if (!isMyTurn) {
+      return <TheirMoveUI />
+    }
+    if (isMyTurn && !isAttackingStage) {
+      return <MyMoveUI />
+    }
+    if (isMyTurn && isAttackingStage) {
+      return <MyAttackUI />
+    }
   }
   if (isGameover) {
     const winnerID = gameover.winner

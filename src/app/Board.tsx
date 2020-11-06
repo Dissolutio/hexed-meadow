@@ -8,7 +8,8 @@ import {
   PlacementContextProvider,
   TurnContextProvider,
 } from 'ui/hooks'
-import { Layout, AppNavbar, BottomConsole } from 'ui/layout'
+import { Layout, AppNavbar } from 'ui/layout'
+import { BottomConsole } from 'ui/controls'
 import { MapDisplay } from 'ui/hexmap'
 import { theme } from './theme'
 

@@ -12,20 +12,7 @@ import { UnitIcon } from '../icons/UnitIcon'
 import { hexagonsHeroPatternDataUrl } from 'assets/hexagonsHeroPatternDataUrl'
 import { playerColorUrlEncoded } from 'app/theme'
 
-export const RoundOfPlayControls = () => {
-  const { isMyTurn, isAttackingStage } = useBoardContext()
-  if (!isMyTurn) {
-    return <TheirMoveUI />
-  }
-  if (isMyTurn && !isAttackingStage) {
-    return <MyMoveUI />
-  }
-  if (isMyTurn && isAttackingStage) {
-    return <MyAttackUI />
-  }
-}
-
-const TheirMoveUI = () => {
+export const TheirMoveUI = () => {
   const { G, playerID } = useBoardContext()
   const { currentOrderMarker } = G
   const { revealedGameCard } = useTurnContext()
@@ -40,7 +27,7 @@ const TheirMoveUI = () => {
   )
 }
 
-const MyMoveUI = () => {
+export const MyMoveUI = () => {
   const {
     G,
     ctx,
@@ -137,7 +124,7 @@ const MyMoveUI = () => {
   )
 }
 
-const MyAttackUI = () => {
+export const MyAttackUI = () => {
   const {
     G,
     moves,
