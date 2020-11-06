@@ -2,11 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { HexUtils } from 'react-hexgrid'
 
 import { GameArmyCard, GameUnit, makeBlankMoveRange } from 'game/startingUnits'
-import {
-  getBoardHexForUnitID,
-  getGameCardByID,
-  getRevealedGameCard,
-} from 'game/selectors'
+import { getBoardHexForUnitID, getRevealedGameCard } from 'game/selectors'
 import { useBoardContext } from './useBoardContext'
 
 const TurnContext = React.createContext(null)
@@ -46,14 +42,14 @@ export const TurnContextProvider = ({ children }) => {
       setSelectedGameCardID('')
       setSelectedUnitID('')
     }
-  }, [isMyTurn])
+  }, [isMyTurn, currentTurnGameCardID])
   // auto select card in attacking stage
   useEffect(() => {
     if (isAttackingStage) {
       setSelectedGameCardID(currentTurnGameCardID)
       setSelectedUnitID('')
     }
-  }, [isAttackingStage])
+  }, [isAttackingStage, currentTurnGameCardID])
 
   const selectedUnit = gameUnits?.[selectedUnitID]
   const revealedGameCard = getRevealedGameCard(

@@ -1,13 +1,13 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import { useBoardContext, usePlacementContext } from 'ui/hooks'
+import { useBoardContext } from 'ui/hooks'
 import { ReactHexgrid } from './ReactHexgrid'
 import { MapHexes } from './MapHexes'
 import { TurnCounter } from './TurnCounter'
 import { ZoomControls } from './ZoomControls'
 
 export const MapDisplay = () => {
-  const { isPlacementPhase, G } = useBoardContext()
+  const { G } = useBoardContext()
   const { hexMap } = G
   const mapSize = hexMap.mapSize
   const mapRef = useRef()

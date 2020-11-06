@@ -36,17 +36,16 @@ export const MyMoveUI = () => {
     // computed
     myCards,
   } = useBoardContext()
-
+  const { unitsMoved, currentOrderMarker } = G
+  const { undo, redo } = ctx
+  const { endCurrentMoveStage } = moves
   const {
     selectedGameCardID,
     currentTurnGameCardID,
     revealedGameCard,
     onSelectCard__turn,
   } = useTurnContext()
-
-  const { unitsMoved, currentOrderMarker } = G
-  const { undo, redo } = ctx
-  const { endCurrentMoveStage } = moves
+  console.log(`MyMoveUI -> currentTurnGameCardID`, currentTurnGameCardID)
 
   const hexagonBgDataUrl = hexagonsHeroPatternDataUrl({
     color: playerColorUrlEncoded(playerID),
@@ -131,7 +130,6 @@ export const MyAttackUI = () => {
     playerID,
     // computed
     myCards,
-    currentTurnGameCardID,
   } = useBoardContext()
   const { endCurrentPlayerTurn } = moves
   const { unitsAttacked, currentOrderMarker } = G
@@ -139,6 +137,7 @@ export const MyAttackUI = () => {
   const {
     selectedGameCardID,
     revealedGameCard,
+    currentTurnGameCardID,
     onSelectCard__turn,
   } = useTurnContext()
 
@@ -158,12 +157,15 @@ export const MyAttackUI = () => {
   }
   const myTurnCards = () => {
     const isCurrentTurnCard = (card) => {
+      console.log(
+        `isCurrentTurnCard -> currentTurnGameCardID`,
+        currentTurnGameCardID
+      )
       return card?.gameCardID === currentTurnGameCardID
     }
     //🛠 sort active card to top
-    const clone = [...myCards]
-    const myActiveCard = clone.find((card) => isCurrentTurnCard(card))
-    const myInactiveCards = clone.filter((card) => !isCurrentTurnCard(card))
+    const myActiveCard = myCards.find((card) => isCurrentTurnCard(card))
+    const myInactiveCards = myCards.filter((card) => !isCurrentTurnCard(card))
     return [myActiveCard, ...myInactiveCards]
   }
 

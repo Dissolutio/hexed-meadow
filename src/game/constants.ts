@@ -27,7 +27,6 @@ function makeInitialOrderMarkers(): OrderMarkers {
     return [...prev, { gameCardID: '', order: '' }]
   }, [])
   return {
-    //TODO increase player count
     '0': blankOrderMarkers,
     '1': blankOrderMarkers,
   }

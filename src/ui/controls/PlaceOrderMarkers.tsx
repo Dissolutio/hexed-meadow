@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useBoardContext } from 'ui/hooks'
-import { ArmyListStyle } from 'ui/layout/ArmyListStyle'
+import { ArmyListStyle } from 'ui/layout'
+
 export const PlaceOrderMarkers = () => {
   const { playerID, G, myCards, myOrderMarkers, moves } = useBoardContext()
   const { currentRound, orderMarkersReady } = G

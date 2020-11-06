@@ -1,10 +1,5 @@
-import {
-  GridGenerator,
-  Hex,
-  // , HexUtils
-} from 'react-hexgrid'
+import { GridGenerator, Hex } from 'react-hexgrid'
 import { gameUnits } from './startingUnits'
-import { getRandomInt } from './utilities'
 
 export interface BoardHex {
   id: string
@@ -129,23 +124,23 @@ function generateHexagon(mapSize): BoardHexes {
   const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
   return boardHexes
 }
-function generateOrientedRectangle(mapSize: number): BoardHexes {
-  const hexgridHexes = GridGenerator.orientedRectangle(mapSize, mapSize)
-  const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
-  return boardHexes
-}
-function generateRectangle(mapSize: number): BoardHexes {
-  const hexgridHexes = GridGenerator.rectangle(mapSize + 1, mapSize + 1)
-  const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
-  return boardHexes
-}
-function generateParallelogram(mapSize: number): BoardHexes {
-  const hexgridHexes = GridGenerator.parallelogram(
-    -mapSize - 2,
-    mapSize + 2,
-    -mapSize,
-    mapSize
-  )
-  const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
-  return boardHexes
-}
+// function generateOrientedRectangle(mapSize: number): BoardHexes {
+//   const hexgridHexes = GridGenerator.orientedRectangle(mapSize, mapSize)
+//   const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
+//   return boardHexes
+// }
+// function generateRectangle(mapSize: number): BoardHexes {
+//   const hexgridHexes = GridGenerator.rectangle(mapSize + 1, mapSize + 1)
+//   const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
+//   return boardHexes
+// }
+// function generateParallelogram(mapSize: number): BoardHexes {
+//   const hexgridHexes = GridGenerator.parallelogram(
+//     -mapSize - 2,
+//     mapSize + 2,
+//     -mapSize,
+//     mapSize
+//   )
+//   const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
+//   return boardHexes
+// }

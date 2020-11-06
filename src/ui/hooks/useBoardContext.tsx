@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState } from 'react'
 import { BoardProps } from 'boardgame.io/react'
-
+import { PlayerOrderMarkers } from 'game/constants'
 import { GameState } from 'game/game'
 import { phaseNames, stageNames } from 'game/constants'
+import { GameArmyCard, GameUnit } from 'game/startingUnits'
 
 const BoardContext = createContext(null)
 
@@ -24,20 +25,19 @@ const BoardContextProvider: React.FC<BoardContextProps> = (props) => {
   const [activeGameCardID, setActiveGameCardID] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   //🛠 COMPUTED
-  const belongsToPlayer = (thing: any) => thing?.playerID === playerID
-  const activeUnit = G.gameUnits[activeUnitID]
-  const myCards = G.armyCards.filter(belongsToPlayer)
-  const myStartZone = G.startZones[playerID]
-  const myUnits = Object.values(G.gameUnits).filter(belongsToPlayer)
-  const myCurrentStage = ctx.activePlayers?.[playerID] || ''
-  const myOrderMarkers = G.players?.[playerID]?.orderMarkers
-  const isMyTurn = ctx.currentPlayer === playerID
-  const isOrderMarkerPhase = ctx.phase === phaseNames.placeOrderMarkers
-  const isPlacementPhase = ctx.phase === phaseNames.placement
-  const isRoundOfPlayPhase = ctx.phase === phaseNames.roundOfPlay
-  const isAttackingStage =
+  const belongsToPlayer = (thing: any): boolean => thing?.playerID === playerID
+  const activeUnit: GameUnit = G.gameUnits[activeUnitID]
+  const myCards: GameArmyCard[] = G.armyCards.filter(belongsToPlayer)
+  const myStartZone: string[] = G.startZones[playerID]
+  const myUnits: GameUnit[] = Object.values(G.gameUnits).filter(belongsToPlayer)
+  const myOrderMarkers: PlayerOrderMarkers = G.players?.[playerID]?.orderMarkers
+  const isMyTurn: boolean = ctx.currentPlayer === playerID
+  const isOrderMarkerPhase: boolean = ctx.phase === phaseNames.placeOrderMarkers
+  const isPlacementPhase: boolean = ctx.phase === phaseNames.placement
+  const isRoundOfPlayPhase: boolean = ctx.phase === phaseNames.roundOfPlay
+  const isAttackingStage: boolean =
     isRoundOfPlayPhase && ctx.activePlayers?.[playerID] === stageNames.attacking
-  const isGameover = Boolean(ctx.gameover)
+  const isGameover: boolean = Boolean(ctx.gameover)
 
   //🛠 ASSEMBLED BOARDSTATE
   const boardState = {
@@ -63,7 +63,6 @@ const BoardContextProvider: React.FC<BoardContextProps> = (props) => {
     myStartZone,
     myUnits,
     isMyTurn,
-    myCurrentStage,
     myOrderMarkers,
     isOrderMarkerPhase,
     isPlacementPhase,

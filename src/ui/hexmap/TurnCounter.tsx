@@ -1,33 +1,28 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useBoardContext, usePlacementContext } from 'ui/hooks'
+import { useBoardContext } from 'ui/hooks'
 
-interface Props {}
-
-export const TurnCounter = (props: Props) => {
-  return <div></div>
+export const TurnCounter = () => {
+  const { G } = useBoardContext()
+  const { currentRound, currentOrderMarker } = G
+  return (
+    <StyledTurnCounter>
+      <div>Round: {currentRound + 1}</div>
+      <div>Order marker: {currentOrderMarker + 1}</div>
+    </StyledTurnCounter>
+  )
 }
 
 const StyledTurnCounter = styled.span`
   position: absolute;
   top: 0%;
-  left: 30%;
+  right: 0%;
   padding-top: 36px;
-  padding-left: 36px;
+  padding-right: 36px;
   @media screen and (max-width: 1100px) {
     padding-top: 14px;
     padding-left: 14px;
   }
+  font-size: 0.8rem;
   z-index: 2;
-  button {
-    background-color: var(--gunmetal-transparent);
-  }
-  svg {
-    width: 30px;
-    height: 30px;
-    @media screen and (max-width: 1100px) {
-      width: 18px;
-      height: 18px;
-    }
-  }
 `
