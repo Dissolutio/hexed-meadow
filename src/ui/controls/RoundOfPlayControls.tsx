@@ -48,13 +48,13 @@ const MyMoveUI = () => {
     playerID,
     // computed
     myCards,
-    currentTurnGameCardID,
   } = useBoardContext()
 
   const {
     selectedGameCardID,
-    onSelectCard__turn,
+    currentTurnGameCardID,
     revealedGameCard,
+    onSelectCard__turn,
   } = useTurnContext()
 
   const { unitsMoved, currentOrderMarker } = G
@@ -80,9 +80,9 @@ const MyMoveUI = () => {
     }
     //🛠 sort active card to top
     const clone = [...myCards]
-    const activeTurnCards = clone.find((card) => isCurrentTurnCard(card))
+    const thisTurnCard = clone.find((card) => isCurrentTurnCard(card))
     const nonActiveTurnCards = clone.filter((card) => !isCurrentTurnCard(card))
-    return [activeTurnCards, ...nonActiveTurnCards]
+    return [thisTurnCard, ...nonActiveTurnCards]
   }
 
   const isCurrentSelectedCard = (card) => {

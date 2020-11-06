@@ -19,12 +19,9 @@ export const TurnContextProvider = ({ children }) => {
     // COMPUTED
     isMyTurn,
     isAttackingStage,
-    // SELECTORS
-    currentTurnGameCardID,
     // MOVES
     moves,
   } = useBoardContext()
-
   const {
     boardHexes,
     armyCards,
@@ -34,11 +31,13 @@ export const TurnContextProvider = ({ children }) => {
   } = G
   const { moveAction, attackAction } = moves
   const { currentPlayer } = ctx
-  // ! STATE
+  //🛠 STATE
   const [selectedGameCardID, setSelectedGameCardID] = useState('')
   const [selectedUnitID, setSelectedUnitID] = useState('')
-
-  //🛠 auto select my turn card, auto deselect card on end turn
+  const currentTurnGameCardID =
+    G.players?.[playerID]?.orderMarkers?.[G.currentOrderMarker] ?? ''
+  //🛠 EFFECTS
+  // auto select card on turn begin, auto deselect card on end turn
   useEffect(() => {
     if (isMyTurn) {
       setSelectedGameCardID(currentTurnGameCardID)
@@ -47,8 +46,8 @@ export const TurnContextProvider = ({ children }) => {
       setSelectedGameCardID('')
       setSelectedUnitID('')
     }
-  }, [isMyTurn, currentTurnGameCardID])
-  //🛠 auto select my turn card in attacking stage
+  }, [isMyTurn])
+  // auto select card in attacking stage
   useEffect(() => {
     if (isAttackingStage) {
       setSelectedGameCardID(currentTurnGameCardID)
@@ -57,7 +56,6 @@ export const TurnContextProvider = ({ children }) => {
   }, [isAttackingStage])
 
   const selectedUnit = gameUnits?.[selectedUnitID]
-
   const revealedGameCard = getRevealedGameCard(
     orderMarkers,
     armyCards,
@@ -69,7 +67,6 @@ export const TurnContextProvider = ({ children }) => {
       (u: GameUnit) => u?.gameCardID === revealedGameCard?.gameCardID
     )
   }
-
   const selectedGameCard = () => {
     const armyCardsArr = Object.values(armyCards)
     const gameCard = armyCardsArr.find(
@@ -83,9 +80,8 @@ export const TurnContextProvider = ({ children }) => {
     )
     return units
   }
-
-  function onSelectCard__turn(gameCardID) {
-    // DESELECT IF ALREADY SELECTED
+  function onSelectCard__turn(gameCardID: string) {
+    // deselect if already selected
     if (gameCardID === selectedGameCardID) {
       setSelectedGameCardID('')
       return
@@ -93,7 +89,6 @@ export const TurnContextProvider = ({ children }) => {
     setSelectedGameCardID(gameCardID)
     return
   }
-
   function onClickBoardHex__turn(event, sourceHex) {
     event.stopPropagation()
     const boardHex = boardHexes[sourceHex.id]
@@ -160,6 +155,8 @@ export const TurnContextProvider = ({ children }) => {
         // STATE
         selectedGameCardID,
         selectedUnitID,
+        // COMPUTED
+        currentTurnGameCardID,
         selectedGameCard: selectedGameCard(),
         selectedGameCardUnits: selectedGameCardUnits(),
         selectedUnit,
