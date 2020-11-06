@@ -78,12 +78,9 @@ export const TurnContextProvider = ({ children }) => {
     return gameCard
   }
   const selectedGameCardUnits = () => {
-    const units = Object.values(gameUnits)
-      .filter((unit: GameUnit) => unit.gameCardID === selectedGameCardID)
-      .map((unit: GameUnit) => ({
-        ...unit,
-        boardHexID: getBoardHexForUnitID(unit.unitID, boardHexes),
-      }))
+    const units = Object.values(gameUnits).filter(
+      (unit: GameUnit) => unit.gameCardID === selectedGameCardID
+    )
     return units
   }
 

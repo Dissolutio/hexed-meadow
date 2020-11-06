@@ -59,10 +59,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   }
 
   const isSelectedCardUnitHex = (hex) => {
-    const selectedCardBoardHexIDArr = selectedGameCardUnits.map(
-      (unit) => unit?.boardHexID ?? ''
-    )
-    return selectedCardBoardHexIDArr.includes(hex.id)
+    const unitIDs = selectedGameCardUnits.map((u) => u.unitID)
+    return unitIDs.includes(hex.occupyingUnitID)
   }
 
   const isSelectedUnitHex = (hex) => {
