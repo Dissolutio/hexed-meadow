@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { HexUtils } from 'react-hexgrid'
 
 import { GameArmyCard, GameUnit, makeBlankMoveRange } from 'game/startingUnits'
@@ -12,6 +12,11 @@ export const TurnContextProvider = ({ children }) => {
     playerID,
     G,
     ctx,
+    //STATE
+    selectedUnitID,
+    setSelectedUnitID,
+    selectedGameCardID,
+    setSelectedGameCardID,
     // COMPUTED
     isMyTurn,
     isAttackingStage,
@@ -27,29 +32,32 @@ export const TurnContextProvider = ({ children }) => {
   } = G
   const { moveAction, attackAction } = moves
   const { currentPlayer } = ctx
-  //🛠 STATE
-  const [selectedGameCardID, setSelectedGameCardID] = useState('')
-  const [selectedUnitID, setSelectedUnitID] = useState('')
   const currentTurnGameCardID =
     G.players?.[playerID]?.orderMarkers?.[G.currentOrderMarker] ?? ''
+
   //🛠 EFFECTS
-  // auto select card on turn begin, auto deselect card on end turn
   useEffect(() => {
+    // auto select card on turn begin
     if (isMyTurn) {
+      // auto select card AND deselect units on attack begin
+      if (isAttackingStage) {
+        setSelectedGameCardID(currentTurnGameCardID)
+        setSelectedUnitID('')
+      }
       setSelectedGameCardID(currentTurnGameCardID)
     }
+    //  auto deselect card/units on end turn
     if (!isMyTurn) {
       setSelectedGameCardID('')
       setSelectedUnitID('')
     }
-  }, [isMyTurn, currentTurnGameCardID])
-  // auto select card in attacking stage
-  useEffect(() => {
-    if (isAttackingStage) {
-      setSelectedGameCardID(currentTurnGameCardID)
-      setSelectedUnitID('')
-    }
-  }, [isAttackingStage, currentTurnGameCardID])
+  }, [
+    isMyTurn,
+    isAttackingStage,
+    currentTurnGameCardID,
+    setSelectedGameCardID,
+    setSelectedUnitID,
+  ])
 
   const selectedUnit = gameUnits?.[selectedUnitID]
   const revealedGameCard = getRevealedGameCard(
@@ -150,7 +158,6 @@ export const TurnContextProvider = ({ children }) => {
       value={{
         // STATE
         selectedGameCardID,
-        selectedUnitID,
         // COMPUTED
         currentTurnGameCardID,
         selectedGameCard: selectedGameCard(),

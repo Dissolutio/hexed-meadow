@@ -21,12 +21,12 @@ const BoardContextProvider: React.FC<BoardContextProps> = (props) => {
   const { G, ctx, moves, playerID, undo, redo, children } = props
   //🛠 STATE
   const [activeHexID, setActiveHexID] = useState('')
-  const [activeUnitID, setActiveUnitID] = useState('')
-  const [activeGameCardID, setActiveGameCardID] = useState('')
+  const [selectedUnitID, setSelectedUnitID] = useState('')
+  const [selectedGameCardID, setSelectedGameCardID] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
   //🛠 COMPUTED
   const belongsToPlayer = (thing: any): boolean => thing?.playerID === playerID
-  const activeUnit: GameUnit = G.gameUnits[activeUnitID]
+  const activeUnit: GameUnit = G.gameUnits[selectedUnitID]
   const myCards: GameArmyCard[] = G.armyCards.filter(belongsToPlayer)
   const myStartZone: string[] = G.startZones[playerID]
   const myUnits: GameUnit[] = Object.values(G.gameUnits).filter(belongsToPlayer)
@@ -50,14 +50,14 @@ const BoardContextProvider: React.FC<BoardContextProps> = (props) => {
     //STATE
     activeHexID,
     setActiveHexID,
-    activeUnitID,
-    setActiveUnitID,
-    activeUnit,
-    activeGameCardID,
-    setActiveGameCardID,
+    selectedUnitID,
+    setSelectedUnitID,
+    selectedGameCardID,
+    setSelectedGameCardID,
     errorMsg,
     setErrorMsg,
     //COMPUTED
+    activeUnit,
     belongsToPlayer,
     myCards,
     myStartZone,

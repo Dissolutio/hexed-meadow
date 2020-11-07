@@ -5,7 +5,7 @@ import { ArmyListStyle } from 'ui/layout'
 
 export const PlacementControls = () => {
   const { placementUnits, onClickPlacementUnit } = usePlacementContext()
-  const { playerID, G, moves, activeUnitID } = useBoardContext()
+  const { playerID, G, moves, selectedUnitID } = useBoardContext()
   const { placementReady } = G
   const { confirmPlacementReady } = moves
   const makeReady = () => {
@@ -13,7 +13,7 @@ export const PlacementControls = () => {
   }
   const isReady = placementReady[playerID] === true
   const selectedStyle = (unitID) => {
-    if (activeUnitID === unitID) {
+    if (selectedUnitID === unitID) {
       return {
         boxShadow: `0 0 2px var(--white)`,
         border: `1px solid var(--white)`,

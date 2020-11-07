@@ -22,7 +22,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     isAttackingStage,
     // state
     activeHexID,
-    activeUnitID,
+    selectedUnitID,
   } = useBoardContext()
   const { boardHexes, armyCards, startZones, gameUnits } = G
   const { onClickBoardHex_placement } = usePlacementContext()
@@ -30,7 +30,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     onClickBoardHex__turn,
     selectedGameCard,
     selectedGameCardUnits,
-    selectedUnitID,
     selectedUnit,
     revealedGameCardUnits,
   } = useTurnContext()
@@ -81,7 +80,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     }
     //phase: Placement
     if (isPlacementPhase) {
-      if (activeUnitID && isStartZoneHex(hex)) {
+      if (selectedUnitID && isStartZoneHex(hex)) {
         classNames = classNames.concat(' maphex__start-zone--placement ')
       }
       if (isSelectedPlacementHex(hex)) {

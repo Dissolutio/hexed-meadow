@@ -30,22 +30,22 @@ export const TheirMoveUI = () => {
 export const MyMoveUI = () => {
   const {
     G,
-    ctx,
     moves,
     playerID,
+    undo,
+    redo,
+    //state
+    selectedGameCardID,
     // computed
     myCards,
   } = useBoardContext()
   const { unitsMoved, currentOrderMarker } = G
-  const { undo, redo } = ctx
   const { endCurrentMoveStage } = moves
   const {
-    selectedGameCardID,
     currentTurnGameCardID,
     revealedGameCard,
     onSelectCard__turn,
   } = useTurnContext()
-  console.log(`MyMoveUI -> currentTurnGameCardID`, currentTurnGameCardID)
 
   const hexagonBgDataUrl = hexagonsHeroPatternDataUrl({
     color: playerColorUrlEncoded(playerID),
@@ -70,7 +70,6 @@ export const MyMoveUI = () => {
     const nonActiveTurnCards = clone.filter((card) => !isCurrentTurnCard(card))
     return [thisTurnCard, ...nonActiveTurnCards]
   }
-
   const isCurrentSelectedCard = (card) => {
     return card?.gameCardID === selectedGameCardID
   }
@@ -89,7 +88,7 @@ export const MyMoveUI = () => {
             END MOVE
           </Button>
           <span>
-            <Button variant="secondary" onClick={() => undo()}>
+            <Button variant="secondary" onClick={undo}>
               <HiOutlineArrowCircleLeft />
               <span>UNDO</span>
             </Button>
@@ -128,6 +127,8 @@ export const MyAttackUI = () => {
     G,
     moves,
     playerID,
+    //state
+    selectedGameCardID,
     // computed
     myCards,
   } = useBoardContext()
@@ -135,7 +136,6 @@ export const MyAttackUI = () => {
   const { unitsAttacked, currentOrderMarker } = G
 
   const {
-    selectedGameCardID,
     revealedGameCard,
     currentTurnGameCardID,
     onSelectCard__turn,
@@ -157,10 +157,6 @@ export const MyAttackUI = () => {
   }
   const myTurnCards = () => {
     const isCurrentTurnCard = (card) => {
-      console.log(
-        `isCurrentTurnCard -> currentTurnGameCardID`,
-        currentTurnGameCardID
-      )
       return card?.gameCardID === currentTurnGameCardID
     }
     //🛠 sort active card to top

@@ -15,8 +15,8 @@ const PlacementContextProvider = ({ children }) => {
     myStartZone,
     activeUnit,
     // ui state
-    activeUnitID,
-    setActiveUnitID,
+    selectedUnitID,
+    setSelectedUnitID,
     setActiveHexID,
     setErrorMsg,
   } = useBoardContext()
@@ -49,10 +49,10 @@ const PlacementContextProvider = ({ children }) => {
   }
   function onClickPlacementUnit(unitID) {
     // either deselect unit, or select unit and deselect active hex
-    if (unitID === activeUnitID) {
-      setActiveUnitID('')
+    if (unitID === selectedUnitID) {
+      setSelectedUnitID('')
     } else {
-      setActiveUnitID(unitID)
+      setSelectedUnitID(unitID)
       setActiveHexID('')
     }
   }
@@ -62,21 +62,21 @@ const PlacementContextProvider = ({ children }) => {
     const hexID = sourceHex.id
     const isInStartZone = myStartZone.includes(hexID)
     //  No unit, select hex
-    if (!activeUnitID) {
+    if (!selectedUnitID) {
       setActiveHexID(hexID)
       setErrorMsg('')
       return
     }
     // have unit, clicked in start zone, place unit
-    if (activeUnitID && isInStartZone) {
+    if (selectedUnitID && isInStartZone) {
       placeUnitOnHex(hexID, activeUnit)
       placeAvailablePlacementUnit(activeUnit)
-      setActiveUnitID('')
+      setSelectedUnitID('')
       setErrorMsg('')
       return
     }
     // have unit, clicked hex outside start zone, error
-    if (activeUnitID && !isInStartZone) {
+    if (selectedUnitID && !isInStartZone) {
       setErrorMsg(
         'Invalid hex selected. You must place units inside your start zone.'
       )
