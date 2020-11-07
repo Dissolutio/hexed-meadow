@@ -8,7 +8,7 @@ import {
   makeBlankMoveRange,
 } from './startingUnits'
 import { BoardHexes, BoardHex, makeHexID } from './mapGen'
-import { OrderMarkers, OrderMarker, PlayerOrderMarkers } from './constants'
+import { OrderMarkers, OrderMarker } from './constants'
 import { cloneObject, deduplicateMoveRange } from './utilities'
 
 export function getBoardHexForUnitID(unitID: string, boardHexes: BoardHexes) {
@@ -143,10 +143,9 @@ export function getMoveCostToNeighbor(
 }
 
 export function getUnitsForCard(
-  gameCard: GameArmyCard,
+  gameCardID: string,
   gameUnits: GameUnits
 ): GameUnit[] {
-  const gameCardID = gameCard.gameCardID
   const gameUnitsClone: GameUnits = cloneObject(gameUnits)
   return (
     Object.values(gameUnitsClone)
@@ -191,17 +190,4 @@ export function getUnitHexEngagements(
     (id) => gameUnits[id].playerID !== playerID
   )
   return engagedUnitIDs
-}
-
-export function getThisTurnData(
-  playerOrderMarkers: PlayerOrderMarkers,
-  currentOrderMarker: number,
-  armyCards: GameArmyCard[],
-  gameUnits: GameUnits
-) {
-  const thisTurnGameCard = {
-    ...getUnrevealedGameCard(playerOrderMarkers, armyCards, currentOrderMarker),
-  }
-  const thisTurnUnits = [...getUnitsForCard(thisTurnGameCard, gameUnits)]
-  return { thisTurnGameCard, thisTurnUnits }
 }

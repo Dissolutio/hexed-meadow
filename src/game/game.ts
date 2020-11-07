@@ -7,7 +7,8 @@ import {
   getBoardHexForUnitID,
   getGameCardByID,
   getMoveRangeForUnit,
-  getThisTurnData,
+  getUnitsForCard,
+  getUnrevealedGameCard,
 } from './selectors'
 import {
   gameUnits,
@@ -181,14 +182,13 @@ export const HexedMeadow = {
         //onBegin
         onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
           // Reveal order marker
-          const gameCardID =
+          const revealedGameCardID =
             G.players[ctx.currentPlayer].orderMarkers[
               G.currentOrderMarker.toString()
             ]
           const indexToReveal = G.orderMarkers[ctx.currentPlayer].findIndex(
-            (om: OrderMarker) => {
-              return om.gameCardID === gameCardID && om.order === ''
-            }
+            (om: OrderMarker) =>
+              om.gameCardID === revealedGameCardID && om.order === ''
           )
           if (indexToReveal >= 0) {
             G.orderMarkers[ctx.currentPlayer][
@@ -196,19 +196,23 @@ export const HexedMeadow = {
             ].order = G.currentOrderMarker.toString()
           }
           // Assign move points/ranges
-          const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
-          const { thisTurnGameCard, thisTurnUnits } = getThisTurnData(
-            playersOrderMarkers,
-            G.currentOrderMarker,
+          const currentPlayersOrderMarkers =
+            G.players[ctx.currentPlayer].orderMarkers
+          const unrevealedGameCard = getUnrevealedGameCard(
+            currentPlayersOrderMarkers,
             G.armyCards,
+            G.currentOrderMarker
+          )
+          const currentTurnUnits = getUnitsForCard(
+            unrevealedGameCard.gameCardID,
             G.gameUnits
           )
-          const movePoints = thisTurnGameCard.move
+          const movePoints = unrevealedGameCard.move
           let newGameUnits = { ...G.gameUnits }
 
           //🛠 loop thru this turns units
-          thisTurnUnits.length &&
-            thisTurnUnits.forEach((unit: GameUnit) => {
+          currentTurnUnits.length &&
+            currentTurnUnits.forEach((unit: GameUnit) => {
               const { unitID } = unit
               // move points
               const unitWithMovePoints = {
@@ -323,13 +327,16 @@ function moveAction(
   const newMovePoints = movePoints - moveCost
   newGameUnits[unitID].movePoints = newMovePoints
   // update move ranges for this turn's units
-  const { thisTurnUnits } = getThisTurnData(
+  const unrevealedGameCard = getUnrevealedGameCard(
     playersOrderMarkers,
-    G.currentOrderMarker,
     G.armyCards,
-    newGameUnits
+    G.currentOrderMarker
   )
-  thisTurnUnits.forEach((unit: GameUnit) => {
+  const currentTurnUnits = getUnitsForCard(
+    unrevealedGameCard.gameCardID,
+    G.gameUnits
+  )
+  currentTurnUnits.forEach((unit: GameUnit) => {
     const { unitID } = unit
     const moveRange = getMoveRangeForUnit(unit, newBoardHexes, newGameUnits)
     newGameUnits[unitID].moveRange = moveRange
