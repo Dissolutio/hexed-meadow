@@ -1,9 +1,19 @@
 import React, { useContext, useState } from 'react'
 import { useBoardContext } from './useBoardContext'
 import { BoardHex } from 'game/mapGen'
+import { ArmyCard, GameUnit } from 'game/startingUnits'
 
 const PlacementContext = React.createContext(null)
 
+const usePlacementContext = () => {
+  return {
+    ...useContext(PlacementContext),
+  }
+}
+
+export type PlacementUnits = GameUnit & {
+  name: string
+}
 const PlacementContextProvider = ({ children }) => {
   const {
     G,
@@ -22,31 +32,33 @@ const PlacementContextProvider = ({ children }) => {
   } = useBoardContext()
   const { boardHexes, gameUnits } = G
   const { placeUnitOnHex } = moves
-  const [placementUnits, setPlacementUnits] = useState(
-    myInitialPlacementUnits()
-  )
-  function myInitialPlacementUnits() {
+  //🛠 STATE
+  const [placementUnits, setPlacementUnits] = useState((): PlacementUnits[] => {
     const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
       .map((bH: BoardHex) => bH.occupyingUnitID)
       .filter((id) => {
         return id && gameUnits[id].playerID === playerID
       })
-    return myUnits
-      .filter((unit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
+    const units = myUnits
+      .filter((unit: GameUnit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
       .map((unit) => {
-        const armyCard = myCards.find((card) => card.cardID === unit.cardID)
+        const armyCard = myCards.find(
+          (card: ArmyCard) => card.cardID === unit.cardID
+        )
         return {
           ...unit,
           name: armyCard.name,
         }
       })
-  }
-  const placeAvailablePlacementUnit = (unit) => {
+    return units
+  })
+  const removeUnitFromAvailable = (unit) => {
     const newState = placementUnits.filter((u) => {
       return !(u.unitID === unit.unitID)
     })
     setPlacementUnits(newState)
   }
+  //🛠 HANDLERS
   function onClickPlacementUnit(unitID) {
     // either deselect unit, or select unit and deselect active hex
     if (unitID === selectedUnitID) {
@@ -70,7 +82,7 @@ const PlacementContextProvider = ({ children }) => {
     // have unit, clicked in start zone, place unit
     if (selectedUnitID && isInStartZone) {
       placeUnitOnHex(hexID, activeUnit)
-      placeAvailablePlacementUnit(activeUnit)
+      removeUnitFromAvailable(activeUnit)
       setSelectedUnitID('')
       setErrorMsg('')
       return
@@ -83,13 +95,14 @@ const PlacementContextProvider = ({ children }) => {
       return
     }
   }
+
   return (
     <PlacementContext.Provider
       value={{
         // PLACEMENT STATE
         placementUnits,
         setPlacementUnits,
-        placeAvailablePlacementUnit,
+        removeUnitFromAvailable,
         onClickPlacementUnit,
         onClickBoardHex_placement,
       }}
@@ -98,9 +111,5 @@ const PlacementContextProvider = ({ children }) => {
     </PlacementContext.Provider>
   )
 }
-const usePlacementContext = () => {
-  return {
-    ...useContext(PlacementContext),
-  }
-}
+
 export { PlacementContextProvider, usePlacementContext }

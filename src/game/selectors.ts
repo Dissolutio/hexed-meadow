@@ -11,26 +11,61 @@ import { BoardHexes, BoardHex, makeHexID } from './mapGen'
 import { OrderMarkers, OrderMarker } from './constants'
 import { cloneObject, deduplicateMoveRange } from './utilities'
 
-export function getBoardHexForUnitID(unitID: string, boardHexes: BoardHexes) {
+export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
   return {
     ...Object.values(boardHexes).find((hex) => hex.occupyingUnitID === unitID),
   }
 }
-export function getUnitForBoardHex(hex: BoardHex, gameUnits: GameUnits) {
-  const unitID = hex.occupyingUnitID
+export function selectUnitForHex(
+  hexID: string,
+  gameUnits: GameUnits,
+  boardHexes: BoardHexes
+) {
+  const hex = boardHexes?.[hexID]
+  const unitID = hex?.occupyingUnitID
   const unit = gameUnits?.[unitID]
   return unit
 }
-
-export function getGameCardByID(armyCards: GameArmyCard[], gameCardID: string) {
+export function selectGameCardByID(
+  armyCards: GameArmyCard[],
+  gameCardID: string
+) {
   return armyCards.find((card: GameArmyCard) => card.gameCardID === gameCardID)
 }
-
-export function getUnitByID(unitID: string, gameUnits: GameUnits) {
-  return gameUnits?.[unitID]
+export function selectUnitsForCard(
+  gameCardID: string,
+  gameUnits: GameUnits
+): GameUnit[] {
+  const gameUnitsClone: GameUnits = cloneObject(gameUnits)
+  return (
+    Object.values(gameUnitsClone)
+      .filter((u) => u.gameCardID === gameCardID)
+      // deproxy array
+      .map((u) => ({ ...u }))
+  )
 }
-
-export function getMoveRangeForUnit(
+export function selectRevealedGameCard(
+  orderMarkers: OrderMarkers,
+  armyCards: GameArmyCard[],
+  currentOrderMarker: number,
+  currentPlayer: string
+) {
+  const orderMarker = orderMarkers[currentPlayer].find(
+    (om: OrderMarker) => om.order === currentOrderMarker.toString()
+  )
+  const gameCardID = orderMarker?.gameCardID ?? ''
+  return selectGameCardByID(armyCards, gameCardID)
+}
+export function selectUnrevealedGameCard(
+  playerOrderMarkers: { [order: string]: string },
+  armyCards: GameArmyCard[],
+  currentOrderMarker: number
+) {
+  const id = playerOrderMarkers[currentOrderMarker.toString()]
+  return selectGameCardByID(armyCards, id)
+}
+// Related ⤵
+export function calcUnitMoveRange(
   unit: GameUnit,
   boardHexes: BoardHexes,
   gameUnits: GameUnits
@@ -42,7 +77,7 @@ export function getMoveRangeForUnit(
   }
   const playerID = unit?.playerID
   const initialMovePoints = unit?.movePoints ?? 0
-  const startHex = getBoardHexForUnitID(unit?.unitID ?? '', boardHexes)
+  const startHex = selectHexForUnit(unit?.unitID ?? '', boardHexes)
   initialMoveRange.denied.push(`${startHex.id}`)
   //*early out again?
   if (!startHex || !initialMovePoints) {
@@ -67,7 +102,7 @@ export function getMoveRangeForUnit(
     initialMoveRange: MoveRange,
     gameUnits: GameUnits
   ): MoveRange {
-    const neighbors = getNeighbors(startHex, boardHexes)
+    const neighbors = selectHexNeighbors(startHex.id, boardHexes)
     //*early out
     if (movePoints <= 0) {
       return initialMoveRange
@@ -78,7 +113,7 @@ export function getMoveRangeForUnit(
         const endHexUnitID = end.occupyingUnitID
         const endHexUnit = { ...gameUnits[endHexUnitID] }
         const endHexUnitPlayerID = endHexUnit.playerID
-        const moveCost = getMoveCostToNeighbor(startHex, end)
+        const moveCost = calcMoveCostBetweenNeighbors(startHex, end)
         const movePointsLeftAfterMove = movePoints - moveCost
         const isEndHexOccupied = Boolean(endHexUnitID)
         const isTooCostly = movePointsLeftAfterMove < 0
@@ -117,11 +152,11 @@ export function getMoveRangeForUnit(
     return nextResults
   }
 }
-
-export function getNeighbors(
-  startHex: BoardHex,
+export function selectHexNeighbors(
+  startHexID: string,
   boardHexes: BoardHexes
 ): BoardHex[] {
+  const startHex = boardHexes[startHexID]
   return HexUtils.neighbours(startHex)
     .map((hex) => {
       const id = makeHexID(hex)
@@ -130,8 +165,7 @@ export function getNeighbors(
     })
     .filter((item) => Boolean(item))
 }
-
-export function getMoveCostToNeighbor(
+export function calcMoveCostBetweenNeighbors(
   startHex: BoardHex,
   end: BoardHex
 ): number {
@@ -141,49 +175,13 @@ export function getMoveCostToNeighbor(
   const totalCost = heightCost + distanceCost
   return totalCost
 }
-
-export function getUnitsForCard(
-  gameCardID: string,
-  gameUnits: GameUnits
-): GameUnit[] {
-  const gameUnitsClone: GameUnits = cloneObject(gameUnits)
-  return (
-    Object.values(gameUnitsClone)
-      .filter((u) => u.gameCardID === gameCardID)
-      // deproxy array
-      .map((u) => ({ ...u }))
-  )
-}
-
-export function getRevealedGameCard(
-  orderMarkers: OrderMarkers,
-  armyCards: GameArmyCard[],
-  currentOrderMarker: number,
-  currentPlayer: string
-) {
-  const orderMarker = orderMarkers[currentPlayer].find(
-    (om: OrderMarker) => om.order === currentOrderMarker.toString()
-  )
-  const gameCardID = orderMarker?.gameCardID ?? ''
-  return getGameCardByID(armyCards, gameCardID)
-}
-
-export function getUnrevealedGameCard(
-  playerOrderMarkers: { [order: string]: string },
-  armyCards: GameArmyCard[],
-  currentOrderMarker: number
-) {
-  const id = playerOrderMarkers[currentOrderMarker.toString()]
-  return getGameCardByID(armyCards, id)
-}
-
-export function getUnitHexEngagements(
-  hex: BoardHex,
+export function selectEngagementsForHex(
+  hexID: string,
   playerID: string,
   boardHexes: BoardHexes,
   gameUnits: GameUnits
 ) {
-  const adjacentUnitIDs = getNeighbors(hex, boardHexes)
+  const adjacentUnitIDs = selectHexNeighbors(hexID, boardHexes)
     .filter((h) => h.occupyingUnitID)
     .map((h) => h.occupyingUnitID)
   const engagedUnitIDs = adjacentUnitIDs.filter(

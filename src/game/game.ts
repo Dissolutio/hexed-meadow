@@ -4,11 +4,11 @@ import { HexUtils } from 'react-hexgrid'
 
 import { rollD20Initiative } from './rollInitiative'
 import {
-  getBoardHexForUnitID,
-  getGameCardByID,
-  getMoveRangeForUnit,
-  getUnitsForCard,
-  getUnrevealedGameCard,
+  selectHexForUnit,
+  selectGameCardByID,
+  calcUnitMoveRange,
+  selectUnitsForCard,
+  selectUnrevealedGameCard,
 } from './selectors'
 import {
   gameUnits,
@@ -38,7 +38,7 @@ import {
 
 let isDevMode = true
 //! TOGGLE DEV MODE HERE
-// isDevMode = false
+isDevMode = false
 //!
 
 if (process.env.NODE_ENV === 'production') {
@@ -146,7 +146,7 @@ export const HexedMeadow = {
       },
       next: phaseNames.roundOfPlay,
     },
-    //PHASE-ROUND OF PLAY
+    //PHASE-ROUND OF PLAY - after last turn, end RoundOfPlay phase, go to PlaceOrderMarkers phase ⤵
     [phaseNames.roundOfPlay]: {
       //onBegin
       onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
@@ -164,6 +164,7 @@ export const HexedMeadow = {
         )
         //🛠 Roll Initiative
         const initiativeRoll = rollD20Initiative(['0', '1'])
+        console.count(initiativeRoll)
         G.initiative = initiativeRoll
         G.currentOrderMarker = 0
       },
@@ -198,12 +199,12 @@ export const HexedMeadow = {
           // Assign move points/ranges
           const currentPlayersOrderMarkers =
             G.players[ctx.currentPlayer].orderMarkers
-          const unrevealedGameCard = getUnrevealedGameCard(
+          const unrevealedGameCard = selectUnrevealedGameCard(
             currentPlayersOrderMarkers,
             G.armyCards,
             G.currentOrderMarker
           )
-          const currentTurnUnits = getUnitsForCard(
+          const currentTurnUnits = selectUnitsForCard(
             unrevealedGameCard.gameCardID,
             G.gameUnits
           )
@@ -221,7 +222,7 @@ export const HexedMeadow = {
               }
               newGameUnits[unitID] = unitWithMovePoints
               // move range
-              const moveRange = getMoveRangeForUnit(
+              const moveRange = calcUnitMoveRange(
                 unitWithMovePoints,
                 G.boardHexes,
                 newGameUnits
@@ -252,7 +253,7 @@ export const HexedMeadow = {
           if (isLastTurn && !isLastOrderMarker) {
             G.currentOrderMarker++
           }
-          //🛠 end phase after last turn
+          //🛠 END RoundOfPlay phase after last turn
           if (isLastTurn && isLastOrderMarker) {
             ctx.events.setPhase(phaseNames.placeOrderMarkers)
           }
@@ -306,9 +307,9 @@ function moveAction(
   const { unitID, movePoints } = unit
   const playersOrderMarkers = G.players[ctx.currentPlayer].orderMarkers
   const endHexID = endHex.id
-  const startHex = getBoardHexForUnitID(unitID, G.boardHexes)
+  const startHex = selectHexForUnit(unitID, G.boardHexes)
   const startHexID = startHex.id
-  const currentMoveRange = getMoveRangeForUnit(unit, G.boardHexes, G.gameUnits)
+  const currentMoveRange = calcUnitMoveRange(unit, G.boardHexes, G.gameUnits)
   const isInSafeMoveRange = currentMoveRange.safe.includes(endHexID)
   const moveCost = HexUtils.distance(startHex, endHex)
   // clone G
@@ -327,18 +328,18 @@ function moveAction(
   const newMovePoints = movePoints - moveCost
   newGameUnits[unitID].movePoints = newMovePoints
   // update move ranges for this turn's units
-  const unrevealedGameCard = getUnrevealedGameCard(
+  const unrevealedGameCard = selectUnrevealedGameCard(
     playersOrderMarkers,
     G.armyCards,
     G.currentOrderMarker
   )
-  const currentTurnUnits = getUnitsForCard(
+  const currentTurnUnits = selectUnitsForCard(
     unrevealedGameCard.gameCardID,
     G.gameUnits
   )
   currentTurnUnits.forEach((unit: GameUnit) => {
     const { unitID } = unit
-    const moveRange = getMoveRangeForUnit(unit, newBoardHexes, newGameUnits)
+    const moveRange = calcUnitMoveRange(unit, newBoardHexes, newGameUnits)
     newGameUnits[unitID].moveRange = moveRange
   })
   //🛠 Make the move
@@ -354,13 +355,13 @@ function attackAction(
   defenderHex: BoardHex
 ) {
   const { unitID } = unit
-  const unitGameCard = getGameCardByID(G.armyCards, unit.gameCardID)
+  const unitGameCard = selectGameCardByID(G.armyCards, unit.gameCardID)
   const unitRange = unitGameCard.range
   const unitsMoved = [...G.unitsMoved]
   const unitsAttacked = [...G.unitsAttacked]
   const attacksAllowed = unitGameCard.figures
   const attacksLeft = attacksAllowed - unitsAttacked.length
-  const attackerHex = getBoardHexForUnitID(unitID, G.boardHexes)
+  const attackerHex = selectHexForUnit(unitID, G.boardHexes)
 
   //! EARLY OUTS
   // DISALLOW - no target
@@ -398,7 +399,7 @@ function attackAction(
   //🛠 ALLOW
   const attack = unitGameCard.attack
   const defenderGameUnit = G.gameUnits[defenderHex.occupyingUnitID]
-  const defenderGameCard = getGameCardByID(
+  const defenderGameCard = selectGameCardByID(
     G.armyCards,
     defenderGameUnit.gameCardID
   )

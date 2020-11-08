@@ -16,6 +16,29 @@ export type BoardContextProps = {
   redo: BoardProps['redo']
 }
 
+export type BoardCtxValue = BoardContextProps & {
+  activeHexID: string
+  setActiveHexID: () => void
+  selectedUnitID: string
+  setSelectedUnitID: () => void
+  selectedGameCardID: string
+  setSelectedGameCardID: () => void
+  errorMsg: string
+  setErrorMsg: () => void
+  belongsToPlayer: () => boolean
+  activeUnit: GameUnit
+  myCards: GameArmyCard[]
+  myStartZone: string[]
+  myUnits: GameUnit[]
+  myOrderMarkers: PlayerOrderMarkers
+  isMyTurn: boolean
+  isOrderMarkerPhase: boolean
+  isPlacementPhase: boolean
+  isRoundOfPlayPhase: boolean
+  isAttackingStage: boolean
+  isGameover: boolean
+}
+
 const BoardContextProvider: React.FC<BoardContextProps> = (props) => {
   //🛠 PROPS
   const { G, ctx, moves, playerID, undo, redo, children } = props

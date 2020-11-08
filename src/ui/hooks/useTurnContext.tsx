@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { HexUtils } from 'react-hexgrid'
 
 import { GameArmyCard, GameUnit, makeBlankMoveRange } from 'game/startingUnits'
-import { getBoardHexForUnitID, getRevealedGameCard } from 'game/selectors'
+import { selectHexForUnit, selectRevealedGameCard } from 'game/selectors'
 import { useBoardContext } from './useBoardContext'
 
 const TurnContext = React.createContext(null)
@@ -12,6 +12,7 @@ export const TurnContextProvider = ({ children }) => {
     playerID,
     G,
     ctx,
+    moves,
     //STATE
     selectedUnitID,
     setSelectedUnitID,
@@ -20,8 +21,6 @@ export const TurnContextProvider = ({ children }) => {
     // COMPUTED
     isMyTurn,
     isAttackingStage,
-    // MOVES
-    moves,
   } = useBoardContext()
   const {
     boardHexes,
@@ -32,9 +31,9 @@ export const TurnContextProvider = ({ children }) => {
   } = G
   const { moveAction, attackAction } = moves
   const { currentPlayer } = ctx
+
   const currentTurnGameCardID =
     G.players?.[playerID]?.orderMarkers?.[G.currentOrderMarker] ?? ''
-
   //🛠 EFFECTS
   useEffect(() => {
     // auto select card on turn begin
@@ -58,9 +57,9 @@ export const TurnContextProvider = ({ children }) => {
     setSelectedGameCardID,
     setSelectedUnitID,
   ])
-
+  //🛠 COMPUTED
   const selectedUnit = gameUnits?.[selectedUnitID]
-  const revealedGameCard = getRevealedGameCard(
+  const revealedGameCard = selectRevealedGameCard(
     orderMarkers,
     armyCards,
     currentOrderMarker,
@@ -84,6 +83,7 @@ export const TurnContextProvider = ({ children }) => {
     )
     return units
   }
+  //🛠 HANDLERS
   function onSelectCard__turn(gameCardID: string) {
     // deselect if already selected
     if (gameCardID === selectedGameCardID) {
@@ -139,7 +139,7 @@ export const TurnContextProvider = ({ children }) => {
       }
       // attack with selected unit
       if (selectedUnitID && isEndHexEnemyOccupied) {
-        const startHex = getBoardHexForUnitID(selectedUnitID, boardHexes)
+        const startHex = selectHexForUnit(selectedUnitID, boardHexes)
         const gameCard: any = Object.values(armyCards).find(
           (armyCard: GameArmyCard) =>
             armyCard?.gameCardID === selectedGameCardID

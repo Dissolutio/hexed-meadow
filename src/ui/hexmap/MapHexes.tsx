@@ -4,7 +4,7 @@ import { Hexagon, HexUtils, Text } from 'react-hexgrid'
 import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 import { UnitIcon } from 'ui/icons/UnitIcon'
 import { makeBlankMoveRange } from 'game/startingUnits'
-import { getBoardHexForUnitID, getGameCardByID } from 'game/selectors'
+import { selectHexForUnit, selectGameCardByID } from 'game/selectors'
 import { BoardHex } from 'game/mapGen'
 
 type MapHexesProps = {
@@ -119,7 +119,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
           isEndHexOccupied && endHexUnitPlayerID !== playerID
         // If unit selected, hex is enemy occupied...
         if (selectedUnitID && isEndHexEnemyOccupied) {
-          const startHex = getBoardHexForUnitID(selectedUnitID, boardHexes)
+          const startHex = selectHexForUnit(selectedUnitID, boardHexes)
           const isInRange =
             HexUtils.distance(startHex, hex) <= selectedGameCard.range
           // ... and is in range
@@ -156,7 +156,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const hexJSX = () => {
     return Object.values(boardHexes).map((hex: BoardHex, i) => {
       const gameUnit = gameUnits?.[hex.occupyingUnitID]
-      const gameUnitCard = getGameCardByID(armyCards, gameUnit?.gameCardID)
+      const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)
       const unitName = gameUnitCard?.name ?? ''
       return (
         <Hexagon
