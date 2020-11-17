@@ -383,7 +383,8 @@ function attackAction(
   }
   // DISALLOW - attack must be used by a moved unit
   const isMovedUnit = unitsMoved.includes(unitID)
-  const isOpenAttack = attacksLeft > unitsMoved.length
+  const isOpenAttack =
+    attacksLeft > unitsMoved.filter((id) => !unitsAttacked.includes(id)).length
   const isUsableAttack = isMovedUnit || isOpenAttack
   if (!isUsableAttack) {
     console.log(`attack must be used by a moved unit`)
