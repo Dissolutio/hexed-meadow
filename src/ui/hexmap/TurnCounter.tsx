@@ -3,12 +3,24 @@ import styled from 'styled-components'
 import { useBoardContext } from 'ui/hooks'
 
 export const TurnCounter = () => {
-  const { G } = useBoardContext()
+  const {
+    G,
+    isPlacementPhase,
+    isOrderMarkerPhase,
+    isRoundOfPlayPhase,
+  } = useBoardContext()
   const { currentRound, currentOrderMarker } = G
+
   return (
     <StyledTurnCounter>
-      <div>Round: {currentRound + 1}</div>
-      <div>Order marker: {currentOrderMarker + 1}</div>
+      {isPlacementPhase && <div>Phase: Army Placement</div>}
+      {isOrderMarkerPhase && <div>Phase: Place Order Markers</div>}
+      {isRoundOfPlayPhase && (
+        <>
+          <div>Round: {currentRound + 1}</div>
+          <div>Order marker: {currentOrderMarker + 1}</div>
+        </>
+      )}
     </StyledTurnCounter>
   )
 }
