@@ -27,7 +27,6 @@ export const playerColorUrlEncoded = (playerID: string) => {
 
 export const theme = {
   colors,
-  cssPlayerColor: 'var(--player-color)',
   playerColors: {
     '0': colors.beeYellow,
     '1': colors.butterflyPurple,
