@@ -1,19 +1,19 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
 import { PageNavbar } from './PageNavbar'
 import { StyledPageWrapper } from './StyledPageWrapper'
 
-export const HelpPage = () => {
+export const RulesPage = () => {
   return (
     <>
       <PageNavbar />
       <StyledPageWrapper>
-        <h1>Help Page</h1>
-        <p>
-          <Link to="/rules">Game Rules</Link>
-        </p>
+        <h1>Rules</h1>
+        <GameRulesJsx />
       </StyledPageWrapper>
     </>
   )
+}
+const GameRulesJsx = () => {
+  return <div>I am the GameRulesJsx</div>
 }

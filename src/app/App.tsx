@@ -1,11 +1,11 @@
 import React from 'react'
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { Client, Lobby } from 'boardgame.io/react'
 import { Local, SocketIO } from 'boardgame.io/multiplayer'
 
 import { HexedMeadow } from 'game/game'
 import { Board } from './Board'
-import { FeedbackPage, HelpPage } from 'ui/pages'
+import { PageRoutes } from './PageRoutes'
 
 const isDev = process.env.NODE_ENV === 'development'
 const withSeperateServer = Boolean(process.env.REACT_APP_WITH_SEPERATE_SERVER)
@@ -20,8 +20,7 @@ export const App = () => {
     </BrowserRouter>
   )
 }
-
-const clientOpts = () => ({
+const clientOpts = {
   game: HexedMeadow,
   numPlayers: 2,
   board: Board,
@@ -35,8 +34,10 @@ const clientOpts = () => ({
     ? (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
       (window as any).__REDUX_DEVTOOLS_EXTENSION__()
     : null,
+}
+const GameClient = Client({
+  ...clientOpts,
 })
-
 // DEV - local multiplayer, no server, no lobby
 const DevApp = () => {
   return (
@@ -49,9 +50,6 @@ const DevApp = () => {
     </Switch>
   )
 }
-const GameClient = Client({
-  ...clientOpts(),
-})
 // SEPARATE - lobby & client that connect to the node server in ~/devserver.js
 const DevAppSeparate = () => {
   return (
@@ -59,22 +57,7 @@ const DevAppSeparate = () => {
       <Route exact path="/">
         <DevSeparateLobby />
       </Route>
-      <Route exact path="/example">
-        <Link to="/team0">Bees!</Link>
-        <Link to="/team1">Butterflies!</Link>
-      </Route>
-      <Route exact path="/team0">
-        <GameClient matchID="example" playerID={'0'} />
-      </Route>
-      <Route exact path="/team1">
-        <GameClient matchID="example" playerID={'1'} />
-      </Route>
-      <Route path="/help">
-        <HelpPage />
-      </Route>
-      <Route path="/feedback">
-        <FeedbackPage />
-      </Route>
+      <PageRoutes />
     </Switch>
   )
 }
@@ -98,34 +81,7 @@ const ProductionApp = () => {
       <Route exact path="/">
         <ProductionLobby />
       </Route>
-      <Route exact path="/example">
-        <Link to="/team0">Bees!</Link>
-        <Link to="/team1">Butterflies!</Link>
-      </Route>
-      <Route exact path="/team0">
-        <GameClient />
-      </Route>
-      <Route exact path="/team1">
-        <GameClient />
-      </Route>
-      <Route exact path="/help">
-        <HelpPage />
-      </Route>
-      <Route exact path="/feedback">
-        <FeedbackPage />
-      </Route>
-    </Switch>
-  )
-}
-const PageRoutes = () => {
-  return (
-    <Switch>
-      <Route exact path="/help">
-        <HelpPage />
-      </Route>
-      <Route exact path="/feedback">
-        <FeedbackPage />
-      </Route>
+      <PageRoutes />
     </Switch>
   )
 }
