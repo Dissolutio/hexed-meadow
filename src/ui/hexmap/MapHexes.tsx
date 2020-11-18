@@ -47,29 +47,29 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     }
   }
 
-  // !🌠 START hex classnames
-  const isStartZoneHex = (hex) => {
-    const myStartZone = startZones[playerID]
-    return Boolean(myStartZone.includes(hex.id))
-  }
-
-  const isSelectedPlacementHex = (hex) => {
-    return isPlacementPhase && hex.id === activeHexID
-  }
-
-  const isSelectedCardUnitHex = (hex) => {
-    const unitIDs = selectedGameCardUnits.map((u) => u.unitID)
-    return unitIDs.includes(hex.occupyingUnitID)
-  }
-
-  const isSelectedUnitHex = (hex) => {
-    return hex.occupyingUnitID && hex.occupyingUnitID === selectedUnitID
-  }
-  const activeEnemyUnitIDs = revealedGameCardUnits.map((u) => u.unitID)
-  const isOpponentsActiveUnitHex = (hex) => {
-    return activeEnemyUnitIDs.includes(hex.occupyingUnitID)
-  }
+  //🛠 classnames
   function calcClassNames(hex) {
+    const isStartZoneHex = (hex) => {
+      const myStartZone = startZones[playerID]
+      return Boolean(myStartZone.includes(hex.id))
+    }
+
+    const isSelectedPlacementHex = (hex) => {
+      return isPlacementPhase && hex.id === activeHexID
+    }
+
+    const isSelectedCardUnitHex = (hex) => {
+      const unitIDs = selectedGameCardUnits.map((u) => u.unitID)
+      return unitIDs.includes(hex.occupyingUnitID)
+    }
+
+    const isSelectedUnitHex = (hex) => {
+      return hex.occupyingUnitID && hex.occupyingUnitID === selectedUnitID
+    }
+    const activeEnemyUnitIDs = revealedGameCardUnits.map((u) => u.unitID)
+    const isOpponentsActiveUnitHex = (hex) => {
+      return activeEnemyUnitIDs.includes(hex.occupyingUnitID)
+    }
     let classNames = ''
     //🛠 TERRAIN HEXES
     const terrainTypes = {
@@ -80,9 +80,19 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     }
     //phase: Placement
     if (isPlacementPhase) {
-      if (selectedUnitID && isStartZoneHex(hex)) {
+      //🛠 paint all player startzones
+      // TODO make this work for however many players
+      if (startZones?.['0'].includes(hex.id)) {
+        classNames = classNames.concat(` maphex__startzone--player0 `)
+      }
+      if (startZones?.['1'].includes(hex.id)) {
+        classNames = classNames.concat(` maphex__startzone--player1 `)
+      }
+      //🛠 highlight placeable hexes
+      if (selectedUnitID && isStartZoneHex(hex) && !hex.occupyingUnitID) {
         classNames = classNames.concat(' maphex__start-zone--placement ')
       }
+      //🛠 highlight active hex
       if (isSelectedPlacementHex(hex)) {
         classNames = classNames.concat(' maphex__selected--active ')
       }
@@ -152,10 +162,12 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
 
     return classNames
   }
-  //!🌠 END hex classnames
+
   const hexJSX = () => {
     return Object.values(boardHexes).map((hex: BoardHex, i) => {
       const gameUnit = gameUnits?.[hex.occupyingUnitID]
+      const isShowableUnit =
+        !isPlacementPhase || gameUnit?.playerID === playerID
       const gameUnitCard = selectGameCardByID(armyCards, gameUnit?.gameCardID)
       const unitName = gameUnitCard?.name ?? ''
       return (
@@ -166,7 +178,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
           className={calcClassNames(hex)}
         >
           <g>
-            {gameUnit && (
+            {gameUnit && isShowableUnit && (
               <UnitIcon
                 hexSize={hexSize}
                 cardID={gameUnit.cardID}

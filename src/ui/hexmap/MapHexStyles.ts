@@ -67,10 +67,28 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     }
   }
 
-  /* HIGHLIGHT STARTZONE HEX */
+  //🛠 HIGHLIGHT PLAYER STARTZONES
+  .maphex__startzone--player0 > g polygon {
+    stroke: var(--bee-yellow);
+    stroke-width: 0.3;
+    @media screen and (max-width: 1100px) {
+      stroke-width: 0.4;
+    }
+  }
+  .maphex__startzone--player1 > g polygon {
+    stroke: var(--butterfly-purple);
+    stroke-width: 0.3;
+    @media screen and (max-width: 1100px) {
+      stroke-width: 0.4;
+    }
+  }
+  //🛠 HIGHLIGHT PLACEABLE HEXES
   .maphex__start-zone--placement > g polygon {
     stroke: var(--player-color);
     stroke-width: 0.6;
+    @media screen and (max-width: 1100px) {
+      stroke-width: 0.8;
+    }
   }
   /* HIGHLIGHT SELECTED HEXES */
   .maphex__selected--active > g polygon {
@@ -92,6 +110,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     stroke: var(--neon-red);
     stroke-width: 0.6;
   }
+
   //🛠 PAINT MOVE HEXES
   /* PAINT SAFE MOVERANGE */
   .maphex__move-safe > g polygon {
