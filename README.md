@@ -15,7 +15,7 @@ Runs the CRA app with a BGIO Local server setup, where the players are playing o
 
 _DEVELOPMENT NOTE_: In `src/game/game.ts` you can toggle the `isDevMode` variable, setting up initial game state for development.
 
-### `npm start-separate`
+### `npm run devstart`
 
 Starts the CRA app but points the BGIO Client to a locally hosted BGIO Server.
 
@@ -27,7 +27,7 @@ Watches your `src/game` folder, compiles and outputs the .js into the `server` f
 
 Runs the node server in `devserver.js`, and restarts when it or the game files change.
 
-The devserver does _NOT_ serve the front-end app, that must be started in another terminal with `npm run start-separate`.
+The devserver does _NOT_ serve the front-end app, that must be started in another terminal with `npm run devstart`.
 
 ### `npm test`
 
@@ -53,7 +53,7 @@ Also see the [BGIO docs on deployment](https://boardgame.io/documentation/#/depl
 
 I currently just have a `Procfile` in the root that reads `web: node -r esm server.js`, and the whole repo is off to Heroku, super easy.
 
-### `npm run serve-build`
+### `npm run server`
 
 Test your build locally! This will run the node server from `server.js`, which is the deployment server file. This server is configured to serve the front-end app from the `build` folder when we navigate to http://localhost:8000/ .
 

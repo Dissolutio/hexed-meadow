@@ -32,10 +32,10 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start-separate": "REACT_APP_WITH_SEPARATE_SERVER=1 npm start",
+    "devstart": "REACT_APP_WITH_SEPARATE_SERVER=1 npm start",
     "devserver": "run-p nodemon-devserver compile-game-files:watch",
     "build": "npm-run-all --continue-on-error compile-game-files cra-build",
-    "serve-build": "node -r esm server.js",
+    "server": "node -r esm server.js",
     "cra-build": "react-scripts build",
     "compile-game-files": "tsc ./src/game/*.ts --outDir ./server --downlevelIteration true --skipLibCheck true",
     "compile-game-files:watch": "watch 'npm run compile-game-files' ./src/game",
