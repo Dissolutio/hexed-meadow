@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import { Client, Lobby } from 'boardgame.io/react'
+import { Client, Lobby as BgioLobby } from 'boardgame.io/react'
 import { Local, SocketIO } from 'boardgame.io/multiplayer'
 
 import { HexedMeadow } from 'game/game'
@@ -8,18 +8,61 @@ import { Board } from './Board'
 import { PageRoutes } from './PageRoutes'
 
 const isDev = process.env.NODE_ENV === 'development'
-const withSeperateServer = Boolean(process.env.REACT_APP_WITH_SEPERATE_SERVER)
+const withSeperateServer = Boolean(process.env.REACT_APP_WITH_SEPARATE_SERVER)
 const isProduction = process.env.NODE_ENV === 'production'
 
 export const App = () => {
+  const { protocol, hostname, port } = window.location
+  const serverAddress = isProduction
+    ? `${protocol}//${hostname}:${port}`
+    : `http://localhost:8000`
+  const importedGames = [{ game: HexedMeadow, board: Board }]
   return (
     <BrowserRouter>
+      {/* DEV - local multiplayer, no server, no lobby */}
       {isDev && !withSeperateServer && <DevApp />}
-      {isDev && withSeperateServer && <DevAppSeparate />}
-      {isProduction && <ProductionApp />}
+      {/* SEPARATE - lobby & client that connect to the node server in ~/devserver.js */}
+      {isDev && withSeperateServer && (
+        <Lobby serverAddress={serverAddress} importedGames={importedGames} />
+      )}
+      {/* PROD - lobby & client for build and deployment as static asset for node server in ~/server.js */}
+      {isProduction && (
+        <Lobby serverAddress={serverAddress} importedGames={importedGames} />
+      )}
     </BrowserRouter>
   )
 }
+
+const DevApp = () => {
+  return (
+    <Switch>
+      <Route exact path="/">
+        <GameClient matchID="matchID" playerID={'0'} />
+        <GameClient matchID="matchID" playerID={'1'} />
+      </Route>
+      <PageRoutes />
+    </Switch>
+  )
+}
+
+const Lobby = ({ serverAddress, importedGames }) => {
+  return (
+    <Switch>
+      <Route exact path="/">
+        <div>
+          <h1>Hexed Meadow</h1>
+          <BgioLobby
+            gameServer={serverAddress}
+            lobbyServer={serverAddress}
+            gameComponents={importedGames}
+          />
+        </div>
+      </Route>
+      <PageRoutes />
+    </Switch>
+  )
+}
+
 const clientOpts = {
   game: HexedMeadow,
   numPlayers: 2,
@@ -38,65 +81,3 @@ const clientOpts = {
 const GameClient = Client({
   ...clientOpts,
 })
-// DEV - local multiplayer, no server, no lobby
-const DevApp = () => {
-  return (
-    <Switch>
-      <Route exact path="/">
-        <GameClient matchID="matchID" playerID={'0'} />
-        <GameClient matchID="matchID" playerID={'1'} />
-      </Route>
-      <PageRoutes />
-    </Switch>
-  )
-}
-// SEPARATE - lobby & client that connect to the node server in ~/devserver.js
-const DevAppSeparate = () => {
-  return (
-    <Switch>
-      <Route exact path="/">
-        <DevSeparateLobby />
-      </Route>
-      <PageRoutes />
-    </Switch>
-  )
-}
-const DevSeparateLobby = () => {
-  const importedGames = [{ game: HexedMeadow, board: Board }]
-  return (
-    <div>
-      <h1>Lobby</h1>
-      <Lobby
-        gameServer={`http://localhost:8000`}
-        lobbyServer={`http://localhost:8000`}
-        gameComponents={importedGames}
-      />
-    </div>
-  )
-}
-// PROD - lobby & client for build and deployment as static asset for node server in ~/server.js
-const ProductionApp = () => {
-  return (
-    <Switch>
-      <Route exact path="/">
-        <ProductionLobby />
-      </Route>
-      <PageRoutes />
-    </Switch>
-  )
-}
-const ProductionLobby = () => {
-  const { protocol, hostname, port } = window.location
-  const server = `${protocol}//${hostname}:${port}`
-  const importedGames = [{ game: HexedMeadow, board: Board }]
-  return (
-    <div>
-      <h1>Hexed Meadow</h1>
-      <Lobby
-        gameServer={server}
-        lobbyServer={server}
-        gameComponents={importedGames}
-      />
-    </div>
-  )
-}
