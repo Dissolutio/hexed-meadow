@@ -23,7 +23,9 @@ export type HexMap = {
   hexHeight: number
   hexWidth: number
 }
-
+export const BoardHexTerrains = {
+  grass: 'grass',
+}
 export function makeHexagonShapedMap(
   mapSize: number,
   isDevMode: boolean,

@@ -5,7 +5,7 @@ import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 import { UnitIcon } from 'ui/icons/UnitIcon'
 import { makeBlankMoveRange } from 'game/startingUnits'
 import { selectHexForUnit, selectGameCardByID } from 'game/selectors'
-import { BoardHex } from 'game/mapGen'
+import { BoardHex, BoardHexTerrains } from 'game/mapGen'
 
 type MapHexesProps = {
   hexSize: number
@@ -48,34 +48,31 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   }
 
   //🛠 classnames
-  function calcClassNames(hex) {
-    const isStartZoneHex = (hex) => {
+  function calcClassNames(hex: BoardHex) {
+    const isStartZoneHex = (hex: BoardHex) => {
       const myStartZone = startZones[playerID]
       return Boolean(myStartZone.includes(hex.id))
     }
 
-    const isSelectedPlacementHex = (hex) => {
+    const isSelectedPlacementHex = (hex: BoardHex) => {
       return isPlacementPhase && hex.id === activeHexID
     }
 
-    const isSelectedCardUnitHex = (hex) => {
+    const isSelectedCardUnitHex = (hex: BoardHex) => {
       const unitIDs = selectedGameCardUnits.map((u) => u.unitID)
       return unitIDs.includes(hex.occupyingUnitID)
     }
 
-    const isSelectedUnitHex = (hex) => {
+    const isSelectedUnitHex = (hex: BoardHex) => {
       return hex.occupyingUnitID && hex.occupyingUnitID === selectedUnitID
     }
     const activeEnemyUnitIDs = revealedGameCardUnits.map((u) => u.unitID)
-    const isOpponentsActiveUnitHex = (hex) => {
+    const isOpponentsActiveUnitHex = (hex: BoardHex) => {
       return activeEnemyUnitIDs.includes(hex.occupyingUnitID)
     }
     let classNames = ''
     //🛠 TERRAIN HEXES
-    const terrainTypes = {
-      grass: 'grass',
-    }
-    if (hex.terrain === terrainTypes.grass) {
+    if (hex.terrain === BoardHexTerrains.grass) {
       classNames = classNames.concat(' maphex__terrain--grass ')
     }
     //phase: Placement
