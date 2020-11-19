@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 
 type MapHexStylesProps = {
@@ -8,13 +7,13 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   height: 100%;
   position: relative;
   overflow: scroll;
-  //🛠 Targets the react-hexgrid svg wrapper
+  // react-hexgrid svg element
   svg.grid {
     position: absolute;
     top: 0%;
     left: 0%;
   }
-  //🛠 Style scrollbars
+  //🛠 Style Map Scrollbars
   scrollbar-width: thin;
   scrollbar-color: var(--player-color) var(--black);
   &::-webkit-scrollbar {
@@ -34,27 +33,18 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   &::-webkit-scrollbar-corner {
     background: var(--black);
   }
-
   //🛠 Style Hex Text
   .maphex_altitude-text {
     fill: var(--sub-white);
     font-size: ${(props) => `${props.hexSize / 75}rem`};
   }
-  //🛠 Terrain Highlighting
-  .maphex__terrain--grass > g polygon {
-    fill: var(--neon-green);
-    fill-opacity: 0.2;
-  }
-
-  //🛠 Hex Highlighting
-
-  /* HIGHLIGHT ALL HEXES */
+  //🛠 All Hex Styles
+  // highlight all hexes
   svg g polygon {
     stroke: var(--player-color);
     stroke-width: 0.01;
   }
-
-  /* PAINT ALL HEXES */
+  // paint all hexes
   .hexagon-group {
     fill: var(--black);
     g polygon {
@@ -66,8 +56,20 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
       }
     }
   }
+  //
+  //🛠 Hex Terrain
+  .maphex__terrain--grass > g polygon {
+    fill: var(--neon-green);
+    fill-opacity: 0.2;
+  }
+  //🛠 Selected Map Hex
+  .maphex__selected--active > g polygon {
+    stroke: var(--white);
+    stroke-width: 0.6;
+  }
 
-  //🛠 HIGHLIGHT PLAYER STARTZONES
+  // PHASE: PLACEMENT
+  // highlight all player startzones
   .maphex__startzone--player0 > g polygon {
     stroke: var(--bee-yellow);
     stroke-width: 0.3;
@@ -82,7 +84,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
       stroke-width: 0.4;
     }
   }
-  //🛠 HIGHLIGHT PLACEABLE HEXES
+  // highlight placeable hexes for selected unit
   .maphex__start-zone--placement > g polygon {
     stroke: var(--player-color);
     stroke-width: 0.6;
@@ -90,45 +92,42 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
       stroke-width: 0.8;
     }
   }
-  /* HIGHLIGHT SELECTED HEXES */
-  .maphex__selected--active > g polygon {
-    stroke: var(--white);
-    stroke-width: 0.6;
-  }
-  /* HIGHLIGHT SELECTABLE UNITS */
+  // PHASE: ROP-all stages
+  // highlight selectable units
   .maphex__selected-card-unit--selectable > g polygon {
     stroke: var(--sub-white);
     stroke-width: 0.6;
   }
-  /* HIGHLIGHT SELECTED UNIT */
+  // highlight selected unit
   .maphex__selected-card-unit--active > g polygon {
     stroke: var(--player-color);
     stroke-width: 0.6;
   }
-  /* HIGHLIGHT ACTIVE ENEMY UNIT */
+  // PHASE: ROP-opponent's turn
+  // highlight active enemy unit
   .maphex__opponents-active-unit > g polygon {
     stroke: var(--neon-red);
     stroke-width: 0.6;
   }
 
-  //🛠 PAINT MOVE HEXES
-  /* PAINT SAFE MOVERANGE */
+  //PHASE: ROP-move
+  // paint safe moverange
   .maphex__move-safe > g polygon {
     fill: var(--neon-green);
     fill-opacity: 1;
   }
-  /* PAINT ENGAGE MOVERANGE */
+  // paint engage moverange
   .maphex__move-engage > g {
     fill: var(--neon-orange);
     fill-opacity: 1;
   }
-  /* PAINT DISENGAGE MOVERANGE */
+  // paint disengage moverange
   .maphex__move-disengage > g {
     fill: var(--neon-red);
     fill-opacity: 1;
   }
-  //🛠 PAINT ATTACK HEXES
-  /* PAINT TARGETABLE ENEMY UNIT */
+  //PHASE: ROP-attack
+  // paint targetable enemy unit
   .maphex__targetable-enemy > g polygon {
     fill: var(--neon-red);
     fill-opacity: 1;
