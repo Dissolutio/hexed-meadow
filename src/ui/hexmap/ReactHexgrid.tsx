@@ -18,13 +18,13 @@ export const ReactHexgrid = ({
   spacing,
   children,
 }: ReactHexgridProps) => {
-  const halfVB = mapSize * -50
-  const fullVB = mapSize * 100
+  const halfViewBox = mapSize * -50
+  const fullViewBox = mapSize * 100
   return (
     <HexGrid
       width={width}
       height={height}
-      viewBox={`${halfVB} ${halfVB} ${fullVB} ${fullVB}`}
+      viewBox={`${halfViewBox} ${halfViewBox} ${fullViewBox} ${fullViewBox}`}
     >
       <Layout
         size={{

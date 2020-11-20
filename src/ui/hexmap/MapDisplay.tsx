@@ -1,10 +1,13 @@
 import React, { useRef } from 'react'
+import styled from 'styled-components'
 import { useBoardContext } from 'ui/hooks'
-import { ReactHexgrid } from './ReactHexgrid'
-import { MapHexStyles } from './MapHexStyles'
-import { MapHexes } from './MapHexes'
-import { TurnCounter } from './TurnCounter'
-import { ZoomControls } from './ZoomControls'
+import {
+  ReactHexgrid,
+  MapHexStyles,
+  MapHexes,
+  TurnCounter,
+  ZoomControls,
+} from './'
 
 export const MapDisplay = () => {
   const { G } = useBoardContext()
@@ -42,7 +45,7 @@ export const MapDisplay = () => {
     el && el.scrollBy(-2 * zoomInterval, -2 * zoomInterval)
   }
   return (
-    <div style={{ position: 'relative', height: '100%' }}>
+    <MapStyle>
       <ZoomControls
         handleClickZoomIn={handleClickZoomIn}
         handleClickZoomOut={handleClickZoomOut}
@@ -59,6 +62,10 @@ export const MapDisplay = () => {
           <MapHexes hexSize={mapState.hexSize} />
         </ReactHexgrid>
       </MapHexStyles>
-    </div>
+    </MapStyle>
   )
 }
+
+const MapStyle = styled.div`
+  height: 100%;
+`

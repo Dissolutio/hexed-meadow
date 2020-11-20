@@ -1,11 +1,11 @@
 import React from 'react'
 import { useBoardContext } from 'ui/hooks'
 import {
-  TheirMoveUI,
-  MyMoveUI,
-  MyAttackUI,
+  RopIdleControls,
+  RopMoveControls,
+  RopAttackControls,
   PlacementControls,
-  PlaceOrderMarkers,
+  PlaceOrderMarkersControls,
 } from 'ui/controls'
 
 export const BottomConsole = () => {
@@ -24,17 +24,17 @@ export const BottomConsole = () => {
     return <PlacementControls />
   }
   if (isOrderMarkerPhase) {
-    return <PlaceOrderMarkers />
+    return <PlaceOrderMarkersControls />
   }
   if (isRoundOfPlayPhase) {
     if (!isMyTurn) {
-      return <TheirMoveUI />
+      return <RopIdleControls />
     }
     if (isMyTurn && !isAttackingStage) {
-      return <MyMoveUI />
+      return <RopMoveControls />
     }
     if (isMyTurn && isAttackingStage) {
-      return <MyAttackUI />
+      return <RopAttackControls />
     }
   }
   if (isGameover) {
