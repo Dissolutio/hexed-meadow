@@ -1,19 +1,12 @@
 import React, { useState } from 'react'
 import { useBoardContext } from 'ui/hooks'
-import { ArmyListStyle } from 'ui/layout/ArmyListStyle'
+import { ArmyListStyle } from 'ui/layout'
 
 export const PlaceOrderMarkers = () => {
-  const {
-    playerID,
-    currentRound,
-    orderMarkersReady,
-    myCards,
-    myOrderMarkers,
-    confirmOrderMarkersReady,
-    placeOrderMarker,
-  } = useBoardContext()
+  const { playerID, G, myCards, myOrderMarkers, moves } = useBoardContext()
+  const { currentRound, orderMarkersReady } = G
+  const { confirmOrderMarkersReady, placeOrderMarker } = moves
   const [activeMarker, setActiveMarker] = useState('')
-
   const selectOrderMarker = (orderMarker) => {
     setActiveMarker(orderMarker)
   }
@@ -34,7 +27,6 @@ export const PlaceOrderMarkers = () => {
       return {}
     }
   }
-
   const makeReady = () => {
     confirmOrderMarkersReady({ playerID })
   }
@@ -57,7 +49,6 @@ export const PlaceOrderMarkers = () => {
         </>
       )
     }
-
     return (
       <>
         <h2>{`Place your order markers for Round ${currentRound + 1}:`}</h2>
@@ -78,7 +69,7 @@ export const PlaceOrderMarkers = () => {
           {myCards.map((card) => (
             <li key={card.gameCardID}>
               <button
-                style={selectedStyle(card.gameCardID)}
+                // style={selectedStyle(card.gameCardID)}
                 onClick={() => selectCard(card.gameCardID)}
               >
                 <span>{card.name}</span>
@@ -90,7 +81,7 @@ export const PlaceOrderMarkers = () => {
     )
   }
   return (
-    <ArmyListStyle playerID={playerID}>
+    <ArmyListStyle>
       <Content />
     </ArmyListStyle>
   )

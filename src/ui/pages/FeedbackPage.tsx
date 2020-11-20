@@ -1,15 +1,16 @@
 import React from 'react'
-import Container from 'react-bootstrap/Container'
+
 import { PageNavbar } from './PageNavbar'
+import { StyledPageWrapper } from './StyledPageWrapper'
 
 export const FeedbackPage = () => {
   return (
-    <Container fluid className="app-theme">
+    <>
       <PageNavbar />
-      <Container>
+      <StyledPageWrapper>
         <h1>Submit Feedback</h1>
         <p>Feedback Form coming soon!</p>
-      </Container>
-    </Container>
+      </StyledPageWrapper>
+    </>
   )
 }

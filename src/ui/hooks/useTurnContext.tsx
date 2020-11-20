@@ -1,67 +1,75 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
+import { HexUtils } from 'react-hexgrid'
 
 import { GameArmyCard, GameUnit, makeBlankMoveRange } from 'game/startingUnits'
+import { selectHexForUnit, selectRevealedGameCard } from 'game/selectors'
 import { useBoardContext } from './useBoardContext'
-import { OrderMarker } from 'game/constants'
 
 const TurnContext = React.createContext(null)
 
 export const TurnContextProvider = ({ children }) => {
   const {
+    playerID,
+    G,
+    ctx,
+    moves,
+    //STATE
+    selectedUnitID,
+    setSelectedUnitID,
+    selectedGameCardID,
+    setSelectedGameCardID,
+    // COMPUTED
+    isMyTurn,
+    isAttackingStage,
+  } = useBoardContext()
+  const {
     boardHexes,
     armyCards,
     gameUnits,
     orderMarkers,
-    myOrderMarkers,
-    isMyTurn,
-    getGameCardByID,
-    getGameUnitByID,
-    getBoardHexIDForUnitID,
-    currentTurnGameCardID,
     currentOrderMarker,
-    currentPlayer,
-    // STATE
-    setActiveHexID,
-    // MOVES
-    moveAction,
-  } = useBoardContext()
+  } = G
+  const { moveAction, attackAction } = moves
+  const { currentPlayer } = ctx
 
-  // ! STATE
-  const [selectedGameCardID, setSelectedGameCardID] = useState('')
-  const [selectedUnitID, setSelectedUnitID] = useState('')
-
-  //🛠 auto select my turn card, auto deselect card on end turn
+  const currentTurnGameCardID =
+    G.players?.[playerID]?.orderMarkers?.[G.currentOrderMarker] ?? ''
+  //🛠 EFFECTS
   useEffect(() => {
+    // auto select card on turn begin
     if (isMyTurn) {
+      // auto select card AND deselect units on attack begin
+      if (isAttackingStage) {
+        setSelectedGameCardID(currentTurnGameCardID)
+        setSelectedUnitID('')
+      }
       setSelectedGameCardID(currentTurnGameCardID)
     }
+    //  auto deselect card/units on end turn
     if (!isMyTurn) {
       setSelectedGameCardID('')
       setSelectedUnitID('')
     }
-  }, [isMyTurn, currentTurnGameCardID])
-
-  const selectedUnit = getGameUnitByID(selectedUnitID)
-
-  const revealedGameCard = (): GameArmyCard => {
-    const orderMarker = orderMarkers[currentPlayer].find(
-      (om: OrderMarker) => om.order === currentOrderMarker.toString()
-    )
-    const id = orderMarker ? orderMarker.gameCardID : ''
-    return id ? getGameCardByID(id) : null
-  }
+  }, [
+    isMyTurn,
+    isAttackingStage,
+    currentTurnGameCardID,
+    setSelectedGameCardID,
+    setSelectedUnitID,
+  ])
+  //🛠 COMPUTED
+  const selectedUnit = gameUnits?.[selectedUnitID]
+  const revealedGameCard = selectRevealedGameCard(
+    orderMarkers,
+    armyCards,
+    currentOrderMarker,
+    currentPlayer
+  )
   const revealedGameCardUnits = () => {
-    const gameCard = revealedGameCard()
-    const units = Object.values(gameUnits).filter(
-      (u: GameUnit) => u?.gameCardID === gameCard?.gameCardID
+    return Object.values(gameUnits).filter(
+      (u: GameUnit) => u?.gameCardID === revealedGameCard?.gameCardID
     )
-    return units
   }
-  const unrevealedGameCard = () => {
-    const id = myOrderMarkers[currentOrderMarker]
-    return id ? getGameCardByID(id) : null
-  }
-
   const selectedGameCard = () => {
     const armyCardsArr = Object.values(armyCards)
     const gameCard = armyCardsArr.find(
@@ -70,17 +78,14 @@ export const TurnContextProvider = ({ children }) => {
     return gameCard
   }
   const selectedGameCardUnits = () => {
-    const units = Object.values(gameUnits)
-      .filter((unit: GameUnit) => unit.gameCardID === selectedGameCardID)
-      .map((unit: GameUnit) => ({
-        ...unit,
-        boardHexID: getBoardHexIDForUnitID(unit.unitID),
-      }))
+    const units = Object.values(gameUnits).filter(
+      (unit: GameUnit) => unit.gameCardID === selectedGameCardID
+    )
     return units
   }
-
-  function onSelectCard__turn(gameCardID) {
-    // DESELECT IF ALREADY SELECTED
+  //🛠 HANDLERS
+  function onSelectCard__turn(gameCardID: string) {
+    // deselect if already selected
     if (gameCardID === selectedGameCardID) {
       setSelectedGameCardID('')
       return
@@ -88,37 +93,62 @@ export const TurnContextProvider = ({ children }) => {
     setSelectedGameCardID(gameCardID)
     return
   }
-
   function onClickBoardHex__turn(event, sourceHex) {
-    // Prevent propagation to onClickMapBackground__turn
     event.stopPropagation()
-
-    const occupyingUnitID = boardHexes[sourceHex.id].occupyingUnitID
-    const unitOnHex: GameUnit = gameUnits[occupyingUnitID]
+    const boardHex = boardHexes[sourceHex.id]
+    const occupyingUnitID = boardHex.occupyingUnitID
+    const isEndHexOccupied = Boolean(occupyingUnitID)
+    const unitOnHex: GameUnit = { ...gameUnits[occupyingUnitID] }
+    const endHexUnitPlayerID = unitOnHex.playerID
     const isUnitReadyToSelect =
       unitOnHex?.gameCardID === selectedGameCardID &&
       selectedGameCardID === currentTurnGameCardID
     const isUnitSelected = unitOnHex?.unitID === selectedUnitID
-    // * repeated from moveAction function
-    const isEndHexOccupied = Boolean(occupyingUnitID)
-    //TURN MyTurn
-    if (isMyTurn) {
+
+    //🛠 MOVE STAGE
+    if (isMyTurn && !isAttackingStage) {
       const moveRange = selectedUnit?.moveRange ?? makeBlankMoveRange()
       const { safe, engage, disengage } = moveRange
       const allMoves = [safe, disengage, engage].flat()
       const isInMoveRange = allMoves.includes(sourceHex.id)
-      //🛠 unit selected, clicked valid hex, make move
+      // move selected unit
       if (selectedUnitID && isInMoveRange && !isEndHexOccupied) {
         moveAction(selectedUnit, boardHexes[sourceHex.id])
       }
-      //🛠 clicked another selectable unit, select that unit
+      // select unit
       if (isUnitReadyToSelect) {
         setSelectedUnitID(unitOnHex.unitID)
       }
-      //🛠 clicked currently selected unit, de-select the unit (to none selected)
-      // TODO Do something else besides deselect unit
+      // deselect unit
       if (isUnitSelected) {
         setSelectedUnitID('')
+      }
+    }
+    //🛠 ATTACK STAGE
+    if (isMyTurn && isAttackingStage) {
+      const isEndHexEnemyOccupied =
+        isEndHexOccupied && endHexUnitPlayerID !== playerID
+
+      // select unit
+      if (isUnitReadyToSelect) {
+        setSelectedUnitID(unitOnHex.unitID)
+      }
+      // deselect unit
+      if (isUnitSelected) {
+        setSelectedUnitID('')
+      }
+      // attack with selected unit
+      if (selectedUnitID && isEndHexEnemyOccupied) {
+        const startHex = selectHexForUnit(selectedUnitID, boardHexes)
+        const gameCard: any = Object.values(armyCards).find(
+          (armyCard: GameArmyCard) =>
+            armyCard?.gameCardID === selectedGameCardID
+        )
+        const isInRange =
+          HexUtils.distance(startHex, boardHex) <= gameCard?.range ?? false
+        if (isInRange) {
+          attackAction(selectedUnit, boardHexes[sourceHex.id])
+        }
       }
     }
   }
@@ -128,13 +158,13 @@ export const TurnContextProvider = ({ children }) => {
       value={{
         // STATE
         selectedGameCardID,
-        selectedUnitID,
+        // COMPUTED
+        currentTurnGameCardID,
         selectedGameCard: selectedGameCard(),
         selectedGameCardUnits: selectedGameCardUnits(),
         selectedUnit,
-        revealedGameCard: revealedGameCard(),
+        revealedGameCard,
         revealedGameCardUnits: revealedGameCardUnits(),
-        unrevealedGameCard: unrevealedGameCard(),
         // HANDLERS
         onClickBoardHex__turn,
         onSelectCard__turn,

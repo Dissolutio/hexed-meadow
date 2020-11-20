@@ -1,15 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useBoardContext } from 'ui/hooks'
-import { playerColorUrlEncoded } from 'ui/theme/theme'
-import { contourLinesBG } from './contourLinesBG'
+import { playerColorUrlEncoded } from 'app/theme'
+import { contourLinesBG } from 'assets/contourLinesBG'
 
 export const Layout = ({ children }) => {
   const { playerID } = useBoardContext()
   const contourLinesBgDataUrlStr = contourLinesBG({
     color: playerColorUrlEncoded(playerID),
   })
-
   return (
     <>
       <LayoutContainer
@@ -24,8 +23,11 @@ export const Layout = ({ children }) => {
     </>
   )
 }
-
-const LayoutContainer = styled.div`
+type LayoutContainerProps = {
+  playerID: string
+  bg: string
+}
+const LayoutContainer = styled.div<LayoutContainerProps>`
 //🛠 SET PLAYER THEME COLOR
   --player-color:  ${(props) => props.theme.playerColors[props.playerID]};
   position: relative;

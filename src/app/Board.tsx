@@ -3,20 +3,28 @@ import { ThemeProvider } from 'styled-components'
 import { BoardProps } from 'boardgame.io/react'
 
 import {
+  BoardContextProps,
   BoardContextProvider,
   PlacementContextProvider,
   TurnContextProvider,
-} from './hooks'
-import { Layout } from './layout/Layout'
-import { AppNavbar } from './layout/AppNavbar'
-import { BottomConsole } from './layout/BottomConsole'
-import { MapDisplay } from './hexmap/MapDisplay'
-import { theme } from './theme/theme'
+} from 'ui/hooks'
+import { Layout, AppNavbar } from 'ui/layout'
+import { BottomConsole } from 'ui/controls'
+import { MapDisplay } from 'ui/hexmap'
+import { theme } from './theme'
 
-export const Board = (props: BoardProps) => {
+export const Board: React.FunctionComponent<BoardProps> = (props) => {
+  const boardContextProps: BoardContextProps = {
+    G: props.G,
+    ctx: props.ctx,
+    moves: props.moves,
+    playerID: props.playerID,
+    undo: props.undo,
+    redo: props.redo,
+  }
   return (
     <ThemeProvider theme={theme}>
-      <BoardContextProvider {...props}>
+      <BoardContextProvider {...boardContextProps}>
         <PlacementContextProvider>
           <TurnContextProvider>
             <Layout>

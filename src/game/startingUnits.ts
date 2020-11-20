@@ -50,6 +50,7 @@ export const armyCards: GameArmyCard[] = Object.values(hexedMeadowCards).map(
 export const gameUnits: GameUnits = cardsToUnits(armyCards)
 
 function fillGameCardInfo(card: GameArmyCard): GameArmyCard {
+  // the uniquifier is included to allow future use of more than one of a card (For uncommon cards, or perhaps repeat use of unique cards)
   let uniquifier = 0
   const newCard = {
     ...card,

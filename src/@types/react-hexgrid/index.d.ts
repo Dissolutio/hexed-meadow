@@ -10,6 +10,34 @@ declare module 'react-hexgrid' {
     readonly r: number
     readonly s: number
   }
+  type HexagonProps = {
+    q: number
+    r: number
+    s: number
+    fill?: string
+    cellStyle?: string | {}
+    className?: string
+    data?: {}
+    onMouseEnter?: React.EventHandler
+    onMouseOver?: React.EventHandler
+    onMouseLeave?: React.EventHandler
+    onClick?: React.EventHandler
+    onDragStart?: React.EventHandler
+    onDragEnd?: React.EventHandler
+    onDragOver?: React.EventHandler
+    onDrop?: React.EventHandler
+    children?: React.ReactNode
+  }
+
+  const Hexagon: React.FC<HexagonProps> = (props) => React.ReactNode
+  type TextProps = {
+    children: React.ReactNode
+    x?: string | number
+    y?: string | number
+    className?: string
+  }
+  const Text: React.FC<TextProps> = (props) => React.ReactNode
+
   class Orientation {
     constructor(
       f0: number,
@@ -96,5 +124,13 @@ declare module 'react-hexgrid' {
     ) => Hex[]
     static triangle: (mapSize: number) => Hex[]
     static hexagon: (mapRadius: number) => Hex[]
+    static rectangle: (mapWidth: number, mapHeight: number) => Hex[]
+    static orientedRectangle: (mapWidth: number, mapHeight: number) => Hex[]
   }
+  type HexGridProps = {
+    width: string | number
+    height: string | number
+    viewBox: string
+  }
+  const HexGrid: React.FC<HexGridProps> = (props) => {}
 }

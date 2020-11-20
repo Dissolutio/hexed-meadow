@@ -1,57 +1,70 @@
 import React, { useContext, useState } from 'react'
 import { useBoardContext } from './useBoardContext'
-import { BoardHex } from '../../game/mapGen'
+import { BoardHex } from 'game/mapGen'
+import { ArmyCard, GameUnit } from 'game/startingUnits'
 
 const PlacementContext = React.createContext(null)
 
+const usePlacementContext = () => {
+  return {
+    ...useContext(PlacementContext),
+  }
+}
+
+export type PlacementUnits = GameUnit & {
+  name: string
+}
 const PlacementContextProvider = ({ children }) => {
   const {
+    G,
     playerID,
-    boardHexes,
-    gameUnits,
+    moves,
+    // computed
     myUnits,
     myCards,
     myStartZone,
-    activeUnitID,
-    setActiveUnitID,
     activeUnit,
-    activeHexID,
+    // ui state
+    selectedUnitID,
+    setSelectedUnitID,
     setActiveHexID,
     setErrorMsg,
-    placeUnitOnHex,
   } = useBoardContext()
-  const [placementUnits, setPlacementUnits] = useState(
-    myInitialPlacementUnits()
-  )
-  function myInitialPlacementUnits() {
+  const { boardHexes, gameUnits } = G
+  const { placeUnitOnHex } = moves
+  //🛠 STATE
+  const [placementUnits, setPlacementUnits] = useState((): PlacementUnits[] => {
     const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
       .map((bH: BoardHex) => bH.occupyingUnitID)
       .filter((id) => {
         return id && gameUnits[id].playerID === playerID
       })
-    return myUnits
-      .filter((unit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
+    const units = myUnits
+      .filter((unit: GameUnit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
       .map((unit) => {
-        const armyCard = myCards.find((card) => card.cardID === unit.cardID)
+        const armyCard = myCards.find(
+          (card: ArmyCard) => card.cardID === unit.cardID
+        )
         return {
           ...unit,
           name: armyCard.name,
         }
       })
-  }
-  const placeAvailablePlacementUnit = (unit) => {
+    return units
+  })
+  const removeUnitFromAvailable = (unit) => {
     const newState = placementUnits.filter((u) => {
       return !(u.unitID === unit.unitID)
     })
     setPlacementUnits(newState)
   }
+  //🛠 HANDLERS
   function onClickPlacementUnit(unitID) {
     // either deselect unit, or select unit and deselect active hex
-    if (unitID === activeUnitID) {
-      console.log(`onClickPlacementUnit -> DESELECT`)
-      setActiveUnitID('')
+    if (unitID === selectedUnitID) {
+      setSelectedUnitID('')
     } else {
-      setActiveUnitID(unitID)
+      setSelectedUnitID(unitID)
       setActiveHexID('')
     }
   }
@@ -61,51 +74,42 @@ const PlacementContextProvider = ({ children }) => {
     const hexID = sourceHex.id
     const isInStartZone = myStartZone.includes(hexID)
     //  No unit, select hex
-    if (!activeUnitID) {
+    if (!selectedUnitID) {
       setActiveHexID(hexID)
       setErrorMsg('')
       return
     }
     // have unit, clicked in start zone, place unit
-    if (activeUnitID && isInStartZone) {
+    if (selectedUnitID && isInStartZone) {
       placeUnitOnHex(hexID, activeUnit)
-      placeAvailablePlacementUnit(activeUnit)
-      setActiveUnitID('')
+      removeUnitFromAvailable(activeUnit)
+      setSelectedUnitID('')
       setErrorMsg('')
       return
     }
     // have unit, clicked hex outside start zone, error
-    if (activeUnitID && !isInStartZone) {
+    if (selectedUnitID && !isInStartZone) {
       setErrorMsg(
         'Invalid hex selected. You must place units inside your start zone.'
       )
       return
     }
   }
-  const onClickMapBackground__placement = () => {
-    if (activeHexID) {
-      setActiveHexID('')
-    }
-  }
+
   return (
     <PlacementContext.Provider
       value={{
         // PLACEMENT STATE
         placementUnits,
         setPlacementUnits,
-        placeAvailablePlacementUnit,
+        removeUnitFromAvailable,
         onClickPlacementUnit,
         onClickBoardHex_placement,
-        onClickMapBackground__placement,
       }}
     >
       {children}
     </PlacementContext.Provider>
   )
 }
-const usePlacementContext = () => {
-  return {
-    ...useContext(PlacementContext),
-  }
-}
+
 export { PlacementContextProvider, usePlacementContext }

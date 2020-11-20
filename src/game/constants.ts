@@ -7,6 +7,7 @@ export const phaseNames = {
 export const stageNames = {
   placeOrderMarkers: 'placeOrderMarkers',
   placingUnits: 'placingUnits',
+  attacking: 'attacking',
 }
 
 export const OM_COUNT = 3
@@ -26,7 +27,6 @@ function makeInitialOrderMarkers(): OrderMarkers {
     return [...prev, { gameCardID: '', order: '' }]
   }, [])
   return {
-    //TODO increase player count
     '0': blankOrderMarkers,
     '1': blankOrderMarkers,
   }
