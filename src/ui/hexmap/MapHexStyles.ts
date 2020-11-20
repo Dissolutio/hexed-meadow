@@ -7,12 +7,6 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   height: 100%;
   position: relative;
   overflow: scroll;
-  // react-hexgrid svg element
-  svg.grid {
-    position: absolute;
-    top: 0%;
-    left: 0%;
-  }
   //🛠 Style Map Scrollbars
   scrollbar-width: thin;
   scrollbar-color: var(--player-color) var(--black);
@@ -93,7 +87,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     }
   }
   // PHASE: ROP-all stages
-  // highlight selectable units
+  // highlight selectable units for selected card
   .maphex__selected-card-unit--selectable > g polygon {
     stroke: var(--sub-white);
     stroke-width: 0.6;
@@ -109,7 +103,6 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     stroke: var(--neon-red);
     stroke-width: 0.6;
   }
-
   //PHASE: ROP-move
   // paint safe moverange
   .maphex__move-safe > g polygon {
