@@ -38,7 +38,7 @@ import {
 
 let isDevMode = true
 //! TOGGLE DEV MODE HERE
-isDevMode = false
+// isDevMode = false
 //!
 
 if (process.env.NODE_ENV === 'production') {
