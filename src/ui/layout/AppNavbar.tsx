@@ -43,6 +43,9 @@ export const AppNavbar = () => {
           <Nav.Link as={Link} to={'/help'}>
             Help
           </Nav.Link>
+          <Nav.Link as={Link} to={'/rules'}>
+            Rules
+          </Nav.Link>
           <Nav.Link as={Link} to={'/feedback'}>
             Feedback
           </Nav.Link>
