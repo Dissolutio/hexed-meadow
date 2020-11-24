@@ -49,13 +49,13 @@ const LayoutBottom = styled.div`
   display: flex;
   flex-flow: column nowrap;
   width: 100%;
-  min-height: calc(100vh - 60vh - 46px);
+  min-height: calc(100vh - 50vh - 46px);
   padding: 5px;
   margin: 0;
 `
 const LayoutMiddle = styled.div`
   width: 100%;
-  height: 60vh;
+  height: 50vh;
   position: relative;
   overflow: auto;
 `
