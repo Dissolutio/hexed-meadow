@@ -8,10 +8,10 @@ export const PlacementControls = () => {
   const { playerID, G, moves, selectedUnitID } = useBoardContext()
   const { placementReady } = G
   const { confirmPlacementReady } = moves
+  const isReady = placementReady[playerID] === true
   const makeReady = () => {
     confirmPlacementReady({ playerID })
   }
-  const isReady = placementReady[playerID] === true
   const selectedStyle = (unitID: string) => {
     if (selectedUnitID === unitID) {
       return {
@@ -22,27 +22,18 @@ export const PlacementControls = () => {
       return {}
     }
   }
-  //! RETURN CONFIRM DONE
+  //🛠 RETURN CONFIRM DONE
   if (placementUnits.length === 0 && !isReady) {
-    return (
-      <ArmyListStyle>
-        <p>Done placing your units?</p>
-        <button onClick={makeReady}>CONFIRM PLACEMENT</button>
-      </ArmyListStyle>
-    )
+    return <ConfirmReady makeReady={makeReady} />
   }
-  //! RETURN WAITING
+  //🛠 RETURN WAITING
   if (isReady) {
-    return (
-      <ArmyListStyle>
-        <p>Waiting for opponents to finish placing armies...</p>
-      </ArmyListStyle>
-    )
+    return <WaitingForOpponent />
   }
+  //🛠 RETURN PLACEMENT UI
   return (
     <ArmyListStyle>
-      <h2>Place your army within your start zone</h2>
-      <p />
+      <h2>Place each unit in your start zone.</h2>
       <ul>
         {placementUnits &&
           placementUnits.map((unit) => (
@@ -57,6 +48,22 @@ export const PlacementControls = () => {
             </li>
           ))}
       </ul>
+    </ArmyListStyle>
+  )
+}
+
+const ConfirmReady = ({ makeReady }) => {
+  return (
+    <ArmyListStyle>
+      <p>Done placing your units?</p>
+      <button onClick={makeReady}>CONFIRM PLACEMENT</button>
+    </ArmyListStyle>
+  )
+}
+const WaitingForOpponent = () => {
+  return (
+    <ArmyListStyle>
+      <p>Waiting for opponents to finish placing armies...</p>
     </ArmyListStyle>
   )
 }
