@@ -38,7 +38,6 @@ const LayoutContainer = styled.div<LayoutContainerProps>`
   padding: 0;
   margin: 0;
   color: var(--player-color);
-  background-color: var(--gunmetal);
   background-image: url("${(props) => props.bg}");
 `
 const LayoutTop = styled.div`
@@ -51,7 +50,6 @@ const LayoutBottom = styled.div`
   flex-flow: column nowrap;
   width: 100%;
   min-height: calc(100vh - 60vh - 46px);
-  background: var(--black);
   padding: 5px;
   margin: 0;
 `
