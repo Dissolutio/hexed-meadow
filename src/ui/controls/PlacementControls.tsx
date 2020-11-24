@@ -12,7 +12,7 @@ export const PlacementControls = () => {
     confirmPlacementReady({ playerID })
   }
   const isReady = placementReady[playerID] === true
-  const selectedStyle = (unitID) => {
+  const selectedStyle = (unitID: string) => {
     if (selectedUnitID === unitID) {
       return {
         boxShadow: `0 0 2px var(--white)`,

@@ -1,11 +1,16 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, {
+  createContext,
+  ReactChildren,
+  useContext,
+  useState,
+} from 'react'
 import { BoardProps } from 'boardgame.io/react'
 import { PlayerOrderMarkers } from 'game/constants'
 import { GameState } from 'game/game'
 import { phaseNames, stageNames } from 'game/constants'
 import { GameArmyCard, GameUnit } from 'game/startingUnits'
 
-const BoardContext = createContext(null)
+const BoardContext = createContext<Partial<BoardContextValue>>({})
 
 export type BoardContextProps = {
   G: GameState
@@ -14,18 +19,21 @@ export type BoardContextProps = {
   moves: BoardProps['moves']
   undo: BoardProps['undo']
   redo: BoardProps['redo']
+  children?: React.ReactChild
 }
 
-export type BoardCtxValue = BoardContextProps & {
+export type BoardContextValue = BoardContextProps & {
+  // state
   activeHexID: string
-  setActiveHexID: () => void
+  setActiveHexID: React.Dispatch<React.SetStateAction<string>>
   selectedUnitID: string
-  setSelectedUnitID: () => void
+  setSelectedUnitID: React.Dispatch<React.SetStateAction<string>>
   selectedGameCardID: string
-  setSelectedGameCardID: () => void
+  setSelectedGameCardID: React.Dispatch<React.SetStateAction<string>>
   errorMsg: string
-  setErrorMsg: () => void
-  belongsToPlayer: () => boolean
+  setErrorMsg: React.Dispatch<React.SetStateAction<string>>
+  // computed
+  belongsToPlayer: (thing: any) => boolean
   activeUnit: GameUnit
   myCards: GameArmyCard[]
   myStartZone: string[]
@@ -39,7 +47,7 @@ export type BoardCtxValue = BoardContextProps & {
   isGameover: boolean
 }
 
-const BoardContextProvider: React.FC<BoardContextProps> = (props) => {
+const BoardContextProvider = (props: BoardContextProps) => {
   //🛠 PROPS
   const { G, ctx, moves, playerID, undo, redo, children } = props
   //🛠 STATE

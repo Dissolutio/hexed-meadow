@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { SyntheticEvent } from 'react'
 import { Hexagon, HexUtils, Text } from 'react-hexgrid'
 
 import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
@@ -38,7 +38,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const selectedUnitMoveRange = selectedUnit?.moveRange ?? makeBlankMoveRange()
 
   //🛠 handlers
-  const onClickBoardHex = (event, sourceHex) => {
+  const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {
     if (isPlacementPhase) {
       onClickBoardHex_placement(event, sourceHex)
     }

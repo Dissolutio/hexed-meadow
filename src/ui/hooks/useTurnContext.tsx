@@ -1,14 +1,37 @@
-import React, { useContext, useEffect } from 'react'
+import React, {
+  createContext,
+  SyntheticEvent,
+  useContext,
+  useEffect,
+} from 'react'
 import { HexUtils } from 'react-hexgrid'
 
 import { GameArmyCard, GameUnit, makeBlankMoveRange } from 'game/startingUnits'
 import { selectHexForUnit, selectRevealedGameCard } from 'game/selectors'
 import { useBoardContext } from './useBoardContext'
+import { BoardHex } from 'game/mapGen'
 
-const TurnContext = React.createContext(null)
+const TurnContext = createContext<Partial<TurnContextValue>>({})
+
+type TurnContextValue = {
+  // computed
+  currentTurnGameCardID: string
+  selectedUnit: GameUnit
+  revealedGameCard: GameArmyCard
+  revealedGameCardUnits: GameUnit[]
+  selectedGameCard: GameArmyCard
+  selectedGameCardUnits: GameUnit[]
+  // handlers
+  onSelectCard__turn: (gameCardID: string) => void
+  onClickBoardHex__turn: (
+    event: React.SyntheticEvent,
+    sourceHex: BoardHex
+  ) => void
+}
 
 export const TurnContextProvider = ({ children }) => {
   const {
+    // BGIO board props
     playerID,
     G,
     ctx,
@@ -65,24 +88,15 @@ export const TurnContextProvider = ({ children }) => {
     currentOrderMarker,
     currentPlayer
   )
-  const revealedGameCardUnits = () => {
-    return Object.values(gameUnits).filter(
-      (u: GameUnit) => u?.gameCardID === revealedGameCard?.gameCardID
-    )
-  }
-  const selectedGameCard = () => {
-    const armyCardsArr = Object.values(armyCards)
-    const gameCard = armyCardsArr.find(
-      (armyCard: GameArmyCard) => armyCard?.gameCardID === selectedGameCardID
-    )
-    return gameCard
-  }
-  const selectedGameCardUnits = () => {
-    const units = Object.values(gameUnits).filter(
-      (unit: GameUnit) => unit.gameCardID === selectedGameCardID
-    )
-    return units
-  }
+  const revealedGameCardUnits = Object.values(gameUnits).filter(
+    (u: GameUnit) => u?.gameCardID === revealedGameCard?.gameCardID
+  )
+  const selectedGameCard = Object.values(armyCards).find(
+    (armyCard: GameArmyCard) => armyCard?.gameCardID === selectedGameCardID
+  )
+  const selectedGameCardUnits = Object.values(gameUnits).filter(
+    (unit: GameUnit) => unit.gameCardID === selectedGameCardID
+  )
   //🛠 HANDLERS
   function onSelectCard__turn(gameCardID: string) {
     // deselect if already selected
@@ -93,7 +107,7 @@ export const TurnContextProvider = ({ children }) => {
     setSelectedGameCardID(gameCardID)
     return
   }
-  function onClickBoardHex__turn(event, sourceHex) {
+  function onClickBoardHex__turn(event: SyntheticEvent, sourceHex: BoardHex) {
     event.stopPropagation()
     const boardHex = boardHexes[sourceHex.id]
     const occupyingUnitID = boardHex.occupyingUnitID
@@ -156,15 +170,13 @@ export const TurnContextProvider = ({ children }) => {
   return (
     <TurnContext.Provider
       value={{
-        // STATE
-        selectedGameCardID,
         // COMPUTED
         currentTurnGameCardID,
-        selectedGameCard: selectedGameCard(),
-        selectedGameCardUnits: selectedGameCardUnits(),
+        selectedGameCard,
+        selectedGameCardUnits,
         selectedUnit,
         revealedGameCard,
-        revealedGameCardUnits: revealedGameCardUnits(),
+        revealedGameCardUnits,
         // HANDLERS
         onClickBoardHex__turn,
         onSelectCard__turn,
@@ -175,7 +187,7 @@ export const TurnContextProvider = ({ children }) => {
   )
 }
 
-export const useTurnContext = (): any => {
+export const useTurnContext = () => {
   return {
     ...useContext(TurnContext),
   }

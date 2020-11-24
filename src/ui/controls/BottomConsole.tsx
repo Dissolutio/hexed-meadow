@@ -20,6 +20,7 @@ export const BottomConsole = () => {
     ctx,
   } = useBoardContext()
   const { gameover } = ctx
+
   if (isPlacementPhase) {
     return <PlacementControls />
   }
