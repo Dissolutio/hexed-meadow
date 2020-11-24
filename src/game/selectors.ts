@@ -9,7 +9,6 @@ import {
 } from './startingUnits'
 import { BoardHexes, BoardHex, makeHexID } from './mapGen'
 import { OrderMarkers, OrderMarker } from './constants'
-import { cloneObject, deduplicateMoveRange } from './utilities'
 
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
   return {
@@ -36,9 +35,8 @@ export function selectUnitsForCard(
   gameCardID: string,
   gameUnits: GameUnits
 ): GameUnit[] {
-  const gameUnitsClone: GameUnits = cloneObject(gameUnits)
   return (
-    Object.values(gameUnitsClone)
+    Object.values(gameUnits)
       .filter((u) => u.gameCardID === gameCardID)
       // deproxy array
       .map((u) => ({ ...u }))
@@ -123,7 +121,14 @@ export function calcUnitMoveRange(
           endHexUnitID && endHexUnitPlayerID === playerID
         )
         const isUnpassable = isTooCostly || isEndHexEnemyOccupied
-
+        const deduplicateMoveRange = (result: MoveRange): MoveRange => {
+          return {
+            safe: [...new Set(result.safe)],
+            engage: [...new Set(result.engage)],
+            disengage: [...new Set(result.disengage)],
+            denied: [...new Set(result.denied)],
+          }
+        }
         if (isUnpassable || isEndHexFriendlyOccupied) {
           result.denied.push(endHexID)
         } else {
