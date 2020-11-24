@@ -19,7 +19,7 @@ export const MapDisplay = () => {
     width: 100,
     height: 100,
     hexSize: mapSize <= 3 ? 15 : mapSize <= 5 ? 20 : mapSize <= 10 ? 25 : 25,
-    spacing: 1.06,
+    spacing: 1.15,
   }))
   const handleClickZoomIn = () => {
     const el = mapRef.current
