@@ -6,7 +6,11 @@ import React, {
 } from 'react'
 import { HexUtils } from 'react-hexgrid'
 
-import { GameArmyCard, GameUnit, makeBlankMoveRange } from 'game/startingUnits'
+import {
+  GameArmyCard,
+  GameUnit,
+  generateBlankMoveRange,
+} from 'game/startingUnits'
 import { selectHexForUnit, selectRevealedGameCard } from 'game/selectors'
 import { useBoardContext } from './useBoardContext'
 import { BoardHex } from 'game/mapGen'
@@ -121,7 +125,7 @@ export const TurnContextProvider = ({ children }) => {
 
     //🛠 MOVE STAGE
     if (isMyTurn && !isAttackingStage) {
-      const moveRange = selectedUnit?.moveRange ?? makeBlankMoveRange()
+      const moveRange = selectedUnit?.moveRange ?? generateBlankMoveRange()
       const { safe, engage, disengage } = moveRange
       const allMoves = [safe, disengage, engage].flat()
       const isInMoveRange = allMoves.includes(sourceHex.id)

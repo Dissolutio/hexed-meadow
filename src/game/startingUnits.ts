@@ -40,7 +40,7 @@ export type MoveRange = {
   denied: string[]
 }
 
-export function makeBlankMoveRange(): MoveRange {
+export function generateBlankMoveRange(): MoveRange {
   return { safe: [], engage: [], disengage: [], denied: [] }
 }
 //🛠 INITIAL ARMY CARDS

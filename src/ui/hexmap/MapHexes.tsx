@@ -3,7 +3,7 @@ import { Hexagon, HexUtils, Text } from 'react-hexgrid'
 
 import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
 import { UnitIcon } from 'ui/icons/UnitIcon'
-import { makeBlankMoveRange } from 'game/startingUnits'
+import { generateBlankMoveRange } from 'game/startingUnits'
 import { selectHexForUnit, selectGameCardByID } from 'game/selectors'
 import { BoardHex, BoardHexTerrains } from 'game/mapGen'
 
@@ -35,7 +35,8 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
   } = useTurnContext()
 
   //🛠 computed
-  const selectedUnitMoveRange = selectedUnit?.moveRange ?? makeBlankMoveRange()
+  const selectedUnitMoveRange =
+    selectedUnit?.moveRange ?? generateBlankMoveRange()
 
   //🛠 handlers
   const onClickBoardHex = (event: SyntheticEvent, sourceHex: BoardHex) => {

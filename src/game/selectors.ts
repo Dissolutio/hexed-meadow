@@ -5,7 +5,7 @@ import {
   GameUnits,
   GameUnit,
   MoveRange,
-  makeBlankMoveRange,
+  generateBlankMoveRange,
 } from './startingUnits'
 import { BoardHexes, BoardHex, makeHexID } from './mapGen'
 import { OrderMarkers, OrderMarker } from './constants'
@@ -68,7 +68,7 @@ export function calcUnitMoveRange(
   boardHexes: BoardHexes,
   gameUnits: GameUnits
 ): MoveRange {
-  const initialMoveRange = makeBlankMoveRange()
+  const initialMoveRange = generateBlankMoveRange()
   //*early out
   if (!unit) {
     return initialMoveRange

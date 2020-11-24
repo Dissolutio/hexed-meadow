@@ -16,7 +16,7 @@ import {
   GameArmyCard,
   GameUnits,
   GameUnit,
-  makeBlankMoveRange,
+  generateBlankMoveRange,
 } from './startingUnits'
 import {
   makeHexagonShapedMap,
@@ -255,7 +255,7 @@ export const HexedMeadow = {
           //🛠 reset unit move points and ranges
           Object.keys(G.gameUnits).forEach((uid) => {
             G.gameUnits[uid].movePoints = 0
-            G.gameUnits[uid].moveRange = { ...makeBlankMoveRange() }
+            G.gameUnits[uid].moveRange = { ...generateBlankMoveRange() }
           })
           //🛠 handle turns & order markers
           const isLastTurn = ctx.playOrderPos === ctx.numPlayers - 1
