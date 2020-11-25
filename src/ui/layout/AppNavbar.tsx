@@ -13,7 +13,7 @@ export const AppNavbar = () => {
   const opponentPlayerID = playerID === '0' ? '1' : '0'
   const isProductionApp = process.env.NODE_ENV === 'production'
   return (
-    <StyledTopConsole collapseOnSelect expand="lg" playerID={playerID}>
+    <StyledTopConsole collapseOnSelect expand="lg">
       <Navbar.Brand
         href={
           isProductionApp
@@ -30,13 +30,7 @@ export const AppNavbar = () => {
         aria-controls="responsive-navbar-nav"
         label="Toggle navigation"
       >
-        <StyledSpan>
-          <svg viewBox="0 0 100 70" width="20" height="20">
-            <rect width="100" height="10" rx="8" strokeWidth="1" />
-            <rect y="30" width="100" height="10" rx="8" strokeWidth="1" />
-            <rect y="60" width="100" height="10" rx="8" strokeWidth="1" />
-          </svg>
-        </StyledSpan>
+        <MenuButton />
       </Navbar.Toggle>
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="ml-auto">
@@ -54,9 +48,10 @@ export const AppNavbar = () => {
     </StyledTopConsole>
   )
 }
-const _StyledTopConsole = ({ playerID, ...rest }) => <Navbar {...rest} />
 
-const StyledTopConsole = styled(_StyledTopConsole)`
+// const _StyledTopConsole = ({ playerID, ...rest }) => <Navbar {...rest} />
+
+const StyledTopConsole = styled(Navbar)`
   background-color: var(--black);
   padding: 4px 16px 0px 16px;
   z-index: 10;
@@ -76,7 +71,18 @@ const StyledTopConsole = styled(_StyledTopConsole)`
     background-color: var(--black);
   }
 `
-const StyledSpan = styled.span`
+const MenuButton = () => {
+  return (
+    <SvgSpanStyle>
+      <svg viewBox="0 0 100 70" width="20" height="20">
+        <rect width="100" height="10" rx="8" strokeWidth="1" />
+        <rect y="30" width="100" height="10" rx="8" strokeWidth="1" />
+        <rect y="60" width="100" height="10" rx="8" strokeWidth="1" />
+      </svg>
+    </SvgSpanStyle>
+  )
+}
+const SvgSpanStyle = styled.span`
   svg rect {
     fill: var(--player-color);
     stroke: var(--player-color);
