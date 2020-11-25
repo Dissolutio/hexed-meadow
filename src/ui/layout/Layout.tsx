@@ -28,8 +28,11 @@ type LayoutContainerProps = {
   bg: string
 }
 const LayoutContainer = styled.div<LayoutContainerProps>`
-//🛠 SET PLAYER THEME COLOR
+//🛠 SET CSS VARS
   --player-color:  ${(props) => props.theme.playerColors[props.playerID]};
+  --navbar-height: 46px;
+  --navbar-logo-height: 32px;
+  
   position: relative;
   display: flex;
   flex-direction: column;
@@ -42,20 +45,20 @@ const LayoutContainer = styled.div<LayoutContainerProps>`
 `
 const LayoutTop = styled.div`
   width: 100%;
-  height: 46px;
+  height: var(--navbar-height);
   background: var(--black);
-`
-const LayoutBottom = styled.div`
-  display: flex;
-  flex-flow: column nowrap;
-  width: 100%;
-  min-height: calc(100vh - 50vh - 46px);
-  padding: 5px;
-  margin: 0;
 `
 const LayoutMiddle = styled.div`
   width: 100%;
   height: 50vh;
   position: relative;
   overflow: auto;
+`
+const LayoutBottom = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  width: 100%;
+  min-height: calc(100vh - 50vh - var(--navbar-height));
+  padding: 5px;
+  margin: 0;
 `

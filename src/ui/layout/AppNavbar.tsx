@@ -108,6 +108,6 @@ const PlayerTeamLogo = ({ playerID, ...rest }) => {
 }
 
 const PlayerTeamLogoImg = styled.img`
-  height: 32px;
+  height: var(--navbar-logo-height);
   width: auto;
 `
