@@ -1,14 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useBoardContext } from 'ui/hooks'
+import { useG, useCtx } from 'ui/hooks'
 
 export const TurnCounter = () => {
-  const {
-    G,
-    isPlacementPhase,
-    isOrderMarkerPhase,
-    isRoundOfPlayPhase,
-  } = useBoardContext()
+  const { G } = useG()
+  const { ctx } = useCtx()
+
+  const { isPlacementPhase, isOrderMarkerPhase, isRoundOfPlayPhase } = ctx
   const { currentRound, currentOrderMarker } = G
 
   return (

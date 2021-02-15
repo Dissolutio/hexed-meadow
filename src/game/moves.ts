@@ -13,14 +13,25 @@ import { GameUnits, GameUnit } from './startingUnits'
 import { BoardHexes, BoardHex } from './mapGen'
 import { stageNames } from './constants'
 
+export const moves = {
+  endCurrentMoveStage,
+  endCurrentPlayerTurn,
+  moveAction,
+  attackAction,
+  placeUnitOnHex,
+  confirmPlacementReady,
+  placeOrderMarker,
+  confirmOrderMarkersReady,
+} 
+
 //phase:___RoundOfPlay
-export function endCurrentMoveStage(G: GameState, ctx: BoardProps['ctx']) {
+function endCurrentMoveStage(G: GameState, ctx: BoardProps['ctx']) {
   ctx.events.setStage(stageNames.attacking)
 }
-export function endCurrentPlayerTurn(G: GameState, ctx: BoardProps['ctx']) {
+function endCurrentPlayerTurn(G: GameState, ctx: BoardProps['ctx']) {
   ctx.events.endTurn()
 }
-export function moveAction(
+function moveAction(
   G: GameState,
   ctx: BoardProps['ctx'],
   unit: GameUnit,
@@ -70,7 +81,7 @@ export function moveAction(
     G.gameUnits = { ...newGameUnits }
   }
 }
-export function attackAction(
+function attackAction(
   G: GameState,
   ctx: BoardProps['ctx'],
   unit: GameUnit,
@@ -154,7 +165,7 @@ export function attackAction(
   G.unitsAttacked = unitsAttacked
 }
 //phase:___Placement
-export function placeUnitOnHex(
+function placeUnitOnHex(
   G: GameState,
   ctx: BoardProps['ctx'],
   hexId: string,
@@ -162,7 +173,7 @@ export function placeUnitOnHex(
 ) {
   G.boardHexes[hexId].occupyingUnitID = unit?.unitID ?? ''
 }
-export function confirmPlacementReady(
+function confirmPlacementReady(
   G: GameState,
   ctx: BoardProps['ctx'],
   { playerID }
@@ -170,14 +181,14 @@ export function confirmPlacementReady(
   G.placementReady[playerID] = true
 }
 //phase:___PlaceOrderMarkers
-export function placeOrderMarker(
+function placeOrderMarker(
   G: GameState,
   ctx: BoardProps['ctx'],
   { playerID, orderMarker, gameCardID }
 ) {
   G.players[playerID].orderMarkers[orderMarker] = gameCardID
 }
-export function confirmOrderMarkersReady(
+function confirmOrderMarkersReady(
   G: GameState,
   ctx: BoardProps['ctx'],
   { playerID }

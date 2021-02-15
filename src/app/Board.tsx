@@ -1,40 +1,52 @@
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import { BoardProps } from 'boardgame.io/react'
-
 import {
-  BoardContextProps,
-  BoardContextProvider,
+  PlayerIDProvider,
+  GProvider,
+  MovesProvider,
+  CtxProvider,
+  MapContextProvider,
+  UIContextProvider,
   PlacementContextProvider,
-  TurnContextProvider,
+  PlayContextProvider,
 } from 'ui/hooks'
 import { Layout, AppNavbar } from 'ui/layout'
 import { BottomConsole } from 'ui/controls'
 import { MapDisplay } from 'ui/hexmap'
 import { theme } from './theme'
 
-export const Board: React.FunctionComponent<BoardProps> = (props) => {
-  const boardContextProps: BoardContextProps = {
-    G: props.G,
-    ctx: props.ctx,
-    moves: props.moves,
-    playerID: props.playerID,
-    undo: props.undo,
-    redo: props.redo,
-  }
+export const Board: React.FunctionComponent<BoardProps> = ({
+  playerID,
+  G,
+  ctx,
+  moves,
+  undo,
+  redo,
+}) => {
   return (
     <ThemeProvider theme={theme}>
-      <BoardContextProvider {...boardContextProps}>
-        <PlacementContextProvider>
-          <TurnContextProvider>
-            <Layout>
-              <AppNavbar />
-              <MapDisplay />
-              <BottomConsole />
-            </Layout>
-          </TurnContextProvider>
-        </PlacementContextProvider>
-      </BoardContextProvider>
+      <PlayerIDProvider playerID={playerID}>
+        <GProvider G={G}>
+          <CtxProvider ctx={ctx}>
+            <MovesProvider moves={moves} undo={undo} redo={redo}>
+              <MapContextProvider>
+                <UIContextProvider>
+                  <PlacementContextProvider>
+                    <PlayContextProvider>
+                      <Layout>
+                        <AppNavbar />
+                        <MapDisplay />
+                        <BottomConsole />
+                      </Layout>
+                    </PlayContextProvider>
+                  </PlacementContextProvider>
+                </UIContextProvider>
+              </MapContextProvider>
+            </MovesProvider>
+          </CtxProvider>
+        </GProvider>
+      </PlayerIDProvider>
     </ThemeProvider>
   )
 }

@@ -1,11 +1,21 @@
 import React from 'react'
-import { useBoardContext, usePlacementContext } from 'ui/hooks'
+import {
+  usePlayerID,
+  useMoves,
+  useG,
+  useUIContext,
+  usePlacementContext,
+} from 'ui/hooks'
 import { CardUnitIcon } from 'ui/icons'
 import { ArmyListStyle } from 'ui/layout'
 
 export const PlacementControls = () => {
+  const { playerID } = usePlayerID()
+  const { G } = useG()
+  const { moves } = useMoves()
+  const { selectedUnitID } = useUIContext()
   const { placementUnits, onClickPlacementUnit } = usePlacementContext()
-  const { playerID, G, moves, selectedUnitID } = useBoardContext()
+
   const { placementReady } = G
   const { confirmPlacementReady } = moves
   const isReady = placementReady[playerID] === true

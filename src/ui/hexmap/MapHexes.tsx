@@ -1,7 +1,15 @@
 import React, { SyntheticEvent } from 'react'
 import { Hexagon, HexUtils, Text } from 'react-hexgrid'
 
-import { useBoardContext, usePlacementContext, useTurnContext } from 'ui/hooks'
+import {
+  usePlayerID,
+  useG,
+  useCtx,
+  useUIContext,
+  useMapContext,
+  usePlacementContext,
+  usePlayContext,
+} from 'ui/hooks'
 import { UnitIcon } from 'ui/icons/UnitIcon'
 import { generateBlankMoveRange } from 'game/startingUnits'
 import { selectHexForUnit, selectGameCardByID } from 'game/selectors'
@@ -12,19 +20,11 @@ type MapHexesProps = {
 }
 
 export const MapHexes = ({ hexSize }: MapHexesProps) => {
-  const {
-    playerID,
-    G,
-    // computed
-    isMyTurn,
-    isPlacementPhase,
-    isRoundOfPlayPhase,
-    isAttackingStage,
-    // state
-    activeHexID,
-    selectedUnitID,
-  } = useBoardContext()
-  const { boardHexes, armyCards, startZones, gameUnits } = G
+  const { playerID } = usePlayerID()
+  const { G } = useG()
+  const { selectedUnitID } = useUIContext()
+  const { selectedMapHex } = useMapContext()
+  const { ctx } = useCtx()
   const { onClickBoardHex_placement } = usePlacementContext()
   const {
     onClickBoardHex__turn,
@@ -32,7 +32,15 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     selectedGameCardUnits,
     selectedUnit,
     revealedGameCardUnits,
-  } = useTurnContext()
+  } = usePlayContext()
+
+  const {
+    isMyTurn,
+    isPlacementPhase,
+    isRoundOfPlayPhase,
+    isAttackingStage,
+  } = ctx
+  const { boardHexes, armyCards, startZones, gameUnits } = G
 
   //🛠 computed
   const selectedUnitMoveRange =
@@ -55,7 +63,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
       return Boolean(myStartZone.includes(hex.id))
     }
     const isSelectedHex = (hex: BoardHex) => {
-      return hex.id === activeHexID
+      return hex.id === selectedMapHex
     }
     const isSelectedCard = (hex: BoardHex) => {
       const unitIDs = selectedGameCardUnits.map((u) => u.unitID)

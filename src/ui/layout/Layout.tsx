@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useBoardContext } from 'ui/hooks'
+import { usePlayerID } from 'ui/hooks'
 import { playerColorUrlEncoded } from 'app/theme'
 import { contourLinesBG } from 'assets/contourLinesBG'
 
 export const Layout = ({ children }) => {
-  const { playerID } = useBoardContext()
+  const { playerID } = usePlayerID()
   const contourLinesBgDataUrlStr = contourLinesBG({
     color: playerColorUrlEncoded(playerID),
   })

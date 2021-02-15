@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
-import { useBoardContext } from 'ui/hooks'
+import { usePlayerID } from 'ui/hooks'
 import beesBigLogo from 'assets/beesBigLogo.png'
 import butterfliesLogo from 'assets/butterfliesLogo.png'
 
 export const AppNavbar = () => {
-  const { playerID } = useBoardContext()
+  const { playerID } = usePlayerID()
   const opponentPlayerID = playerID === '0' ? '1' : '0'
   const isProductionApp = process.env.NODE_ENV === 'production'
   return (

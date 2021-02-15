@@ -12,12 +12,12 @@ import {
   generateBlankMoveRange,
 } from 'game/startingUnits'
 import { selectHexForUnit, selectRevealedGameCard } from 'game/selectors'
-import { useBoardContext } from './useBoardContext'
 import { BoardHex } from 'game/mapGen'
+import { usePlayerID, useMoves, useG, useCtx, useUIContext } from 'ui/hooks'
 
-const TurnContext = createContext<Partial<TurnContextValue>>({})
+const PlayContext = createContext<Partial<PlayContextValue>>({})
 
-type TurnContextValue = {
+type PlayContextValue = {
   // computed
   currentTurnGameCardID: string
   selectedUnit: GameUnit
@@ -33,22 +33,18 @@ type TurnContextValue = {
   ) => void
 }
 
-export const TurnContextProvider = ({ children }) => {
+export const PlayContextProvider = ({ children }) => {
+  const { playerID } = usePlayerID()
+  const { G } = useG()
+  const { ctx } = useCtx()
+  const { moves } = useMoves()
   const {
-    // BGIO board props
-    playerID,
-    G,
-    ctx,
-    moves,
-    //STATE
     selectedUnitID,
     setSelectedUnitID,
     selectedGameCardID,
     setSelectedGameCardID,
-    // COMPUTED
-    isMyTurn,
-    isAttackingStage,
-  } = useBoardContext()
+  } = useUIContext()
+
   const {
     boardHexes,
     armyCards,
@@ -56,8 +52,8 @@ export const TurnContextProvider = ({ children }) => {
     orderMarkers,
     currentOrderMarker,
   } = G
+  const { currentPlayer, isMyTurn, isAttackingStage } = ctx
   const { moveAction, attackAction } = moves
-  const { currentPlayer } = ctx
 
   const currentTurnGameCardID =
     G.players?.[playerID]?.orderMarkers?.[G.currentOrderMarker] ?? ''
@@ -172,7 +168,7 @@ export const TurnContextProvider = ({ children }) => {
   }
 
   return (
-    <TurnContext.Provider
+    <PlayContext.Provider
       value={{
         // COMPUTED
         currentTurnGameCardID,
@@ -187,12 +183,12 @@ export const TurnContextProvider = ({ children }) => {
       }}
     >
       {children}
-    </TurnContext.Provider>
+    </PlayContext.Provider>
   )
 }
 
-export const useTurnContext = () => {
+export const usePlayContext = () => {
   return {
-    ...useContext(TurnContext),
+    ...useContext(PlayContext),
   }
 }

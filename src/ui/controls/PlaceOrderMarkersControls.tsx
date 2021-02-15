@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import { useBoardContext } from 'ui/hooks'
+import { usePlayerID, useMoves, useG } from 'ui/hooks'
 import { ArmyListStyle } from 'ui/layout'
 
 export const PlaceOrderMarkersControls = () => {
-  const { playerID, G, myCards, myOrderMarkers, moves } = useBoardContext()
+  const { playerID } = usePlayerID()
+  const { G, myCards, myOrderMarkers } = useG()
+  const { moves } = useMoves()
+
   const { currentRound, orderMarkersReady } = G
   const { confirmOrderMarkersReady, placeOrderMarker } = moves
   const [activeMarker, setActiveMarker] = useState('')

@@ -1,11 +1,8 @@
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
 import { BoardProps } from 'boardgame.io/react'
-import { HexUtils } from 'react-hexgrid'
 
 import { rollD20Initiative } from './rollInitiative'
 import {
-  selectHexForUnit,
-  selectGameCardByID,
   calcUnitMoveRange,
   selectUnitsForCard,
   selectUnrevealedGameCard,
@@ -23,7 +20,6 @@ import {
   BoardHexes,
   HexMap,
   StartZones,
-  BoardHex,
 } from './mapGen'
 import {
   phaseNames,
@@ -35,16 +31,7 @@ import {
   devPlayerState,
   OrderMarker,
 } from './constants'
-import {
-  endCurrentMoveStage,
-  endCurrentPlayerTurn,
-  moveAction,
-  attackAction,
-  placeUnitOnHex,
-  confirmPlacementReady,
-  placeOrderMarker,
-  confirmOrderMarkersReady,
-} from './moves'
+import {moves} from './moves'
 
 let isDevMode = true
 //! TOGGLE DEV MODE HERE
@@ -104,23 +91,13 @@ export const HexedMeadow = {
       ...initialGameState,
     }
   },
-  moves: {
-    placeUnitOnHex,
-    confirmPlacementReady,
-    placeOrderMarker,
-    confirmOrderMarkersReady,
-    moveAction,
-    attackAction,
-    endCurrentPlayerTurn,
-    endCurrentMoveStage,
-  },
+  moves,
   seed: 'random_string',
   playerView: PlayerView.STRIP_SECRETS,
   phases: {
     //PHASE-PLACEMENT
     [phaseNames.placement]: {
       start: true,
-      moves: { placeUnitOnHex, confirmPlacementReady },
       //onBegin
       onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
         ctx.events.setActivePlayers({ all: stageNames.placingUnits })
@@ -148,11 +125,6 @@ export const HexedMeadow = {
       //endIf - -all players are ready
       endIf: (G) => {
         return G.orderMarkersReady['0'] && G.orderMarkersReady['1']
-      },
-      //🎆
-      moves: {
-        placeOrderMarker,
-        confirmOrderMarkersReady,
       },
       next: phaseNames.roundOfPlay,
     },

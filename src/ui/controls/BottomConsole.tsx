@@ -1,5 +1,6 @@
 import React from 'react'
-import { useBoardContext } from 'ui/hooks'
+import { usePlayerID } from 'ui/hooks/bgio-context'
+import { useCtx } from 'ui/hooks/bgio-context'
 import {
   RopIdleControls,
   RopMoveControls,
@@ -9,17 +10,17 @@ import {
 } from 'ui/controls'
 
 export const BottomConsole = () => {
+  const { playerID } = usePlayerID()
+  const { ctx } = useCtx()
   const {
-    playerID,
+    gameover,
     isOrderMarkerPhase,
     isPlacementPhase,
     isRoundOfPlayPhase,
     isMyTurn,
     isAttackingStage,
     isGameover,
-    ctx,
-  } = useBoardContext()
-  const { gameover } = ctx
+  } = ctx
 
   if (isPlacementPhase) {
     return <PlacementControls />

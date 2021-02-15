@@ -6,13 +6,13 @@ import {
 } from 'react-icons/hi'
 import Button from 'react-bootstrap/esm/Button'
 
-import { useBoardContext, useTurnContext } from 'ui/hooks'
+import { useMoves, useG, usePlayContext } from 'ui/hooks'
 import { RopArmyCardsList } from './RopArmyCardsList'
 
 export const RopIdleControls = () => {
-  const { G } = useBoardContext()
+  const { G } = useG()
   const { currentOrderMarker } = G
-  const { revealedGameCard } = useTurnContext()
+  const { revealedGameCard } = usePlayContext()
   return (
     <>
       <h2>
@@ -25,10 +25,12 @@ export const RopIdleControls = () => {
 }
 
 export const RopMoveControls = () => {
-  const { G, moves, undo, redo } = useBoardContext()
+  const { G } = useG()
+  const { moves, undo, redo } = useMoves()
+  const { revealedGameCard } = usePlayContext()
+
   const { unitsMoved, currentOrderMarker } = G
   const { endCurrentMoveStage } = moves
-  const { revealedGameCard } = useTurnContext()
 
   //🛠 handlers
   const handleEndMovementClick = () => {
@@ -64,15 +66,12 @@ export const RopMoveControls = () => {
 }
 
 export const RopAttackControls = () => {
-  const {
-    G,
-    moves,
-    // computed
-  } = useBoardContext()
+  const { G } = useG()
+  const { moves } = useMoves()
   const { endCurrentPlayerTurn } = moves
   const { unitsAttacked, currentOrderMarker } = G
 
-  const { revealedGameCard } = useTurnContext()
+  const { revealedGameCard } = usePlayContext()
 
   const handleEndTurnButtonClick = () => {
     endCurrentPlayerTurn()

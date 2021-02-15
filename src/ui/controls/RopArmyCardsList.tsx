@@ -1,21 +1,17 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { useBoardContext, useTurnContext } from 'ui/hooks'
+import { useG, usePlayerID, useUIContext, usePlayContext } from 'ui/hooks'
 import { UnitIcon } from 'ui/icons'
 import { hexagonsHeroPatternDataUrl } from 'assets/hexagonsHeroPatternDataUrl'
 import { GameArmyCard } from 'game/startingUnits'
 
 export const RopArmyCardsList = () => {
-  const {
-    playerID,
-    //state
-    selectedGameCardID,
-    // computed
-    myCards,
-  } = useBoardContext()
+  const { playerID } = usePlayerID()
+  const { myCards } = useG()
+  const { selectedGameCardID } = useUIContext()
 
-  const { currentTurnGameCardID, onSelectCard__turn } = useTurnContext()
+  const { currentTurnGameCardID, onSelectCard__turn } = usePlayContext()
   const hexagonBgDataUrl = hexagonsHeroPatternDataUrl(playerID)
 
   const handleArmyCardClick = (gameCardID: string) => {

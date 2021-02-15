@@ -4,7 +4,7 @@ import React, {
   useContext,
   useState,
 } from 'react'
-import { useBoardContext } from './useBoardContext'
+import { usePlayerID, useMoves, useG, useUIContext, useMapContext } from '.'
 import { BoardHex } from 'game/mapGen'
 import { ArmyCard, GameUnit } from 'game/startingUnits'
 
@@ -20,11 +20,7 @@ export type PlacementUnit = GameUnit & {
   name: string
 }
 type PlacementContextValue = {
-  // state
   placementUnits: PlacementUnit[]
-  setPlacementUnits: React.Dispatch<React.SetStateAction<PlacementUnit[]>>
-  removeUnitFromAvailable: (unit: GameUnit) => void
-  // handlers
   onClickPlacementUnit: (unitID: string) => void
   onClickBoardHex_placement: (
     event: React.SyntheticEvent,
@@ -32,21 +28,12 @@ type PlacementContextValue = {
   ) => void
 }
 const PlacementContextProvider: React.FC = (props) => {
-  const {
-    G,
-    playerID,
-    moves,
-    // computed
-    myUnits,
-    myCards,
-    myStartZone,
-    activeUnit,
-    // ui state
-    selectedUnitID,
-    setSelectedUnitID,
-    setActiveHexID,
-    setErrorMsg,
-  } = useBoardContext()
+  const { playerID } = usePlayerID()
+  const { G, myUnits, myCards, myStartZone } = useG()
+  const { moves } = useMoves()
+  const { setSelectedMapHex } = useMapContext()
+  const { selectedUnitID, setSelectedUnitID } = useUIContext()
+
   const { boardHexes, gameUnits } = G
   const { placeUnitOnHex } = moves
   //🛠 STATE
@@ -69,6 +56,7 @@ const PlacementContextProvider: React.FC = (props) => {
       })
     return units
   })
+  const activeUnit: GameUnit = G.gameUnits[selectedUnitID]
   const removeUnitFromAvailable = (unit: GameUnit) => {
     const newState = placementUnits.filter((u) => {
       return !(u.unitID === unit.unitID)
@@ -82,7 +70,7 @@ const PlacementContextProvider: React.FC = (props) => {
       setSelectedUnitID('')
     } else {
       setSelectedUnitID(unitID)
-      setActiveHexID('')
+      setSelectedMapHex('')
     }
   }
   function onClickBoardHex_placement(
@@ -95,8 +83,7 @@ const PlacementContextProvider: React.FC = (props) => {
     const isInStartZone = myStartZone.includes(hexID)
     //  No unit, select hex
     if (!selectedUnitID) {
-      setActiveHexID(hexID)
-      setErrorMsg('')
+      setSelectedMapHex(hexID)
       return
     }
     // have unit, clicked in start zone, place unit
@@ -104,12 +91,11 @@ const PlacementContextProvider: React.FC = (props) => {
       placeUnitOnHex(hexID, activeUnit)
       removeUnitFromAvailable(activeUnit)
       setSelectedUnitID('')
-      setErrorMsg('')
       return
     }
     // have unit, clicked hex outside start zone, error
     if (selectedUnitID && !isInStartZone) {
-      setErrorMsg(
+      console.error(
         'Invalid hex selected. You must place units inside your start zone.'
       )
       return
@@ -119,11 +105,7 @@ const PlacementContextProvider: React.FC = (props) => {
   return (
     <PlacementContext.Provider
       value={{
-        // state
         placementUnits,
-        setPlacementUnits,
-        removeUnitFromAvailable,
-        // handlers
         onClickPlacementUnit,
         onClickBoardHex_placement,
       }}

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import { useBoardContext } from 'ui/hooks'
+import { useG } from 'ui/hooks'
 import {
   ReactHexgrid,
   MapHexStyles,
@@ -10,7 +10,7 @@ import {
 } from './'
 
 export const MapDisplay = () => {
-  const { G } = useBoardContext()
+  const { G } = useG()
   const { hexMap } = G
   const mapSize = hexMap.mapSize
   const mapRef = useRef()
