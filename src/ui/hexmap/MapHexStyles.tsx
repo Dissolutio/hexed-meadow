@@ -35,8 +35,8 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   //🛠 All Hex Styles
   // highlight all hexes
   svg g polygon {
-    stroke: var(--player-color);
-    stroke-width: 0.01;
+    stroke: var(--white);
+    stroke-width: 0.1;
   }
   // paint all hexes
   .hexagon-group {
@@ -51,11 +51,6 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     }
   }
   //
-  //🛠 Hex Terrain
-  .maphex__terrain--grass > g polygon {
-    fill: var(--neon-green);
-    fill-opacity: 0.2;
-  }
   //🛠 Selected Map Hex
   .maphex__selected--active > g polygon {
     stroke: var(--white);

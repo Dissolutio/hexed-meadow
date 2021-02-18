@@ -1,95 +1,30 @@
 import { TurnOrder, PlayerView } from 'boardgame.io/core'
 import { BoardProps } from 'boardgame.io/react'
 
-import { rollD20Initiative } from './rollInitiative'
 import {
   calcUnitMoveRange,
   selectUnitsForCard,
   selectUnrevealedGameCard,
 } from './selectors'
 import {
-  gameUnits,
-  armyCards,
-  GameArmyCard,
-  GameUnits,
-  GameUnit,
-  generateBlankMoveRange,
-} from './startingUnits'
-import {
-  makeHexagonShapedMap,
-  BoardHexes,
-  HexMap,
-  StartZones,
-} from './mapGen'
-import {
   phaseNames,
   stageNames,
-  OrderMarkers,
   OM_COUNT,
-  initialOrderMarkers,
-  initialPlayerState,
-  devPlayerState,
-  OrderMarker,
+  generateBlankOrderMarkers,
+  generateBlankMoveRange,
+  generateBlankPlayersOrderMarkers,
 } from './constants'
-import {moves} from './moves'
 
-let isDevMode = true
-//! TOGGLE DEV MODE HERE
-// isDevMode = false
-//!
-
-if (process.env.NODE_ENV === 'production') {
-  isDevMode = false
-}
-const mapSize = 3
-const hexagonMap = makeHexagonShapedMap(mapSize, isDevMode)
-const players = isDevMode ? devPlayerState : initialPlayerState
-
-type PlayerStateToggle = {
-  [playerID: string]: Boolean
-}
-export type GameState = {
-  armyCards: GameArmyCard[]
-  gameUnits: GameUnits
-  players: typeof players
-  hexMap: HexMap
-  boardHexes: BoardHexes
-  startZones: StartZones
-  orderMarkers: OrderMarkers
-  initiative: string[]
-  currentRound: number
-  currentOrderMarker: number
-  placementReady: PlayerStateToggle
-  orderMarkersReady: PlayerStateToggle
-  roundOfPlayStartReady: PlayerStateToggle
-  unitsMoved: string[]
-  unitsAttacked: string[]
-}
-const initialGameState: GameState = {
-  armyCards,
-  gameUnits,
-  players,
-  hexMap: hexagonMap.hexMap,
-  boardHexes: hexagonMap.boardHexes,
-  startZones: hexagonMap.startZones,
-  initiative: [], // RoundOfPlay turn order
-  currentRound: 0,
-  currentOrderMarker: 0,
-  orderMarkers: initialOrderMarkers,
-  placementReady: { '0': isDevMode, '1': isDevMode },
-  orderMarkersReady: { '0': isDevMode, '1': isDevMode },
-  roundOfPlayStartReady: { '0': isDevMode, '1': isDevMode },
-  unitsMoved: [],
-  unitsAttacked: [],
-  // secret: {},
-}
+import { GameState, OrderMarker, GameUnit } from './types'
+import { moves } from './moves'
+import { rollD20Initiative } from './rollInitiative'
+import { hexagonMapScenario, testScenario } from './test'
 
 export const HexedMeadow = {
   name: 'HexedMeadow',
   setup: (_ctx) => {
-    return {
-      ...initialGameState,
-    }
+    // return hexagonMapScenario()
+    return testScenario()
   },
   moves,
   seed: 'random_string',
@@ -103,7 +38,7 @@ export const HexedMeadow = {
         ctx.events.setActivePlayers({ all: stageNames.placingUnits })
       },
       //endIf
-      endIf: (G) => {
+      endIf: (G: GameState) => {
         return G.placementReady['0'] && G.placementReady['1']
       },
       next: phaseNames.placeOrderMarkers,
@@ -111,19 +46,20 @@ export const HexedMeadow = {
     //PHASE-ORDER MARKERS
     [phaseNames.placeOrderMarkers]: {
       //onBegin
-      onBegin: (G, ctx: BoardProps['ctx']) => {
-        //🛠 reset state
-        const shouldUseDevModeValue = isDevMode && G.currentRound === 0
-        G.orderMarkers = initialOrderMarkers
-        G.orderMarkersReady = {
-          '0': shouldUseDevModeValue,
-          '1': shouldUseDevModeValue,
+      onBegin: (G: GameState, ctx: BoardProps['ctx']) => {
+        //🛠 reset state in future rounds
+        if (G.currentRound > 0) {
+          G.orderMarkers = generateBlankOrderMarkers()
+          G.orderMarkersReady = {
+            '0': false,
+            '1': false,
+          }
         }
         //🛠 set player stages
         ctx.events.setActivePlayers({ all: stageNames.placeOrderMarkers })
       },
       //endIf - -all players are ready
-      endIf: (G) => {
+      endIf: (G: GameState) => {
         return G.orderMarkersReady['0'] && G.orderMarkersReady['1']
       },
       next: phaseNames.roundOfPlay,
@@ -146,16 +82,17 @@ export const HexedMeadow = {
         )
         //🛠 Roll Initiative
         const initiativeRoll = rollD20Initiative(['0', '1'])
-        console.count(initiativeRoll)
         G.initiative = initiativeRoll
         G.currentOrderMarker = 0
       },
       //onEnd
       onEnd: (G: GameState, ctx: BoardProps['ctx']) => {
+        // clear secret order marker state
+        G.players['0'].orderMarkers = generateBlankPlayersOrderMarkers()
+        G.players['1'].orderMarkers = generateBlankPlayersOrderMarkers()
         //🛠 Setup for Next Round
         G.orderMarkersReady = { '0': false, '1': false }
         G.roundOfPlayStartReady = { '0': false, '1': false }
-        G.players = { ...G.players, ...initialPlayerState }
         G.currentOrderMarker = 0
         G.currentRound += 1
       },

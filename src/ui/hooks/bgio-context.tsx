@@ -1,8 +1,13 @@
 import * as React from 'react'
-import { GameState } from 'game/game'
-import { PlayerOrderMarkers, phaseNames, stageNames } from 'game/constants'
-import { GameArmyCard, GameUnit } from 'game/startingUnits'
 import { BoardProps } from 'boardgame.io/react'
+
+import { phaseNames, stageNames } from 'game/constants'
+import {
+  PlayerOrderMarkers,
+  GameState,
+  GameArmyCard,
+  GameUnit,
+} from 'game/types'
 
 //🛠️ PLAYERID
 type PlayerIDProviderProps = { children: React.ReactNode; playerID: string }

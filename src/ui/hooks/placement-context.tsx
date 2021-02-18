@@ -5,8 +5,7 @@ import React, {
   useState,
 } from 'react'
 import { usePlayerID, useMoves, useG, useUIContext, useMapContext } from '.'
-import { BoardHex } from 'game/mapGen'
-import { ArmyCard, GameUnit } from 'game/startingUnits'
+import { BoardHex, ArmyCard, GameUnit } from 'game/types'
 
 const PlacementContext = createContext<Partial<PlacementContextValue>>({})
 

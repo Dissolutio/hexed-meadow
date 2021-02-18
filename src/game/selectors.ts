@@ -1,14 +1,17 @@
 import { HexUtils } from 'react-hexgrid'
 
 import {
+  BoardHexes,
+  BoardHex,
   GameArmyCard,
   GameUnits,
   GameUnit,
   MoveRange,
-  generateBlankMoveRange,
-} from './startingUnits'
-import { BoardHexes, BoardHex, makeHexID } from './mapGen'
-import { OrderMarkers, OrderMarker } from './constants'
+  OrderMarkers,
+  OrderMarker,
+  PlayerOrderMarkers,
+} from './types'
+import { generateHexID, generateBlankMoveRange } from './constants'
 
 export function selectHexForUnit(unitID: string, boardHexes: BoardHexes) {
   return {
@@ -55,7 +58,7 @@ export function selectRevealedGameCard(
   return selectGameCardByID(armyCards, gameCardID)
 }
 export function selectUnrevealedGameCard(
-  playerOrderMarkers: { [order: string]: string },
+  playerOrderMarkers: PlayerOrderMarkers,
   armyCards: GameArmyCard[],
   currentOrderMarker: number
 ) {
@@ -164,9 +167,9 @@ export function selectHexNeighbors(
   const startHex = boardHexes[startHexID]
   return HexUtils.neighbours(startHex)
     .map((hex) => {
-      const id = makeHexID(hex)
+      const id = generateHexID(hex)
       const exists = Object.keys(boardHexes).includes(id)
-      return exists ? { ...boardHexes[makeHexID(hex)] } : null
+      return exists ? { ...boardHexes[generateHexID(hex)] } : null
     })
     .filter((item) => Boolean(item))
 }

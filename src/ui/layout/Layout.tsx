@@ -61,4 +61,5 @@ const LayoutBottom = styled.div`
   min-height: calc(100vh - 50vh - var(--navbar-height));
   padding: 5px;
   margin: 0;
+  background: var(--black);
 `

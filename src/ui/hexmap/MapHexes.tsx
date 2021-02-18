@@ -11,9 +11,9 @@ import {
   usePlayContext,
 } from 'ui/hooks'
 import { UnitIcon } from 'ui/icons/UnitIcon'
-import { generateBlankMoveRange } from 'game/startingUnits'
+import { generateBlankMoveRange } from 'game/constants'
 import { selectHexForUnit, selectGameCardByID } from 'game/selectors'
-import { BoardHex, BoardHexTerrains } from 'game/mapGen'
+import { BoardHex } from 'game/types'
 
 type MapHexesProps = {
   hexSize: number
@@ -78,10 +78,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     }
     // assign
     let classNames = ''
-    //🛠 paint terrain
-    if (hex.terrain === BoardHexTerrains.grass) {
-      classNames = classNames.concat(' maphex__terrain--grass ')
-    }
     //phase: Placement
     if (isPlacementPhase) {
       //🛠 paint all player startzones

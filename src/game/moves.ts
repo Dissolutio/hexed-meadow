@@ -1,7 +1,6 @@
 import { BoardProps } from 'boardgame.io/react'
 import { HexUtils } from 'react-hexgrid'
 
-import { GameState } from 'game/game'
 import {
   selectHexForUnit,
   selectGameCardByID,
@@ -9,8 +8,7 @@ import {
   selectUnitsForCard,
   selectUnrevealedGameCard,
 } from './selectors'
-import { GameUnits, GameUnit } from './startingUnits'
-import { BoardHexes, BoardHex } from './mapGen'
+import { GameState, BoardHexes, BoardHex, GameUnits, GameUnit } from './types'
 import { stageNames } from './constants'
 
 export const moves = {
@@ -22,7 +20,7 @@ export const moves = {
   confirmPlacementReady,
   placeOrderMarker,
   confirmOrderMarkersReady,
-} 
+}
 
 //phase:___RoundOfPlay
 function endCurrentMoveStage(G: GameState, ctx: BoardProps['ctx']) {

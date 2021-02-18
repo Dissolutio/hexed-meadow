@@ -1,11 +1,17 @@
+type Roll = {
+  playerID: string,
+  roll: number
+}
+
 export function rollD20Initiative(playerIDs: string[]) {
   const initialRolls = genRolls(playerIDs)
-  return initialRolls.reduce(rollsToInitiative, [])
+ return initialRolls.reduce(rollsToInitiative, [])
 }
-function rollsToInitiative(prev, curr, i, arr) {
+
+function rollsToInitiative(initiative: string[], curr: Roll, i: number, arr: Roll[]): string[] {
   // Player already in initiative result? Move on
-  if (prev.find((elem) => elem === curr.playerID)) {
-    return [...prev]
+  if (initiative.find((elem) => elem === curr.playerID)) {
+    return [...initiative]
   }
   // Player has tied other player(s) ? Settle tie, add all involved to initiative
   const tiedRolls = arr.filter((rollObj) => rollObj.roll === curr.roll)
@@ -16,19 +22,18 @@ function rollsToInitiative(prev, curr, i, arr) {
       rollsToInitiative,
       []
     )
-    return [...prev, ...initiativeFromTieBreaker]
+    return [...initiative, ...initiativeFromTieBreaker]
   } else {
-    return [...prev, curr.playerID]
+    return [...initiative, curr.playerID]
   }
 }
-
-function genRolls(players) {
+function genRolls(players: string[]) {
   const rolls = players.map(function (playerID) {
     return { playerID: playerID, roll: rollDie(20) }
   })
   return rolls.sort(highToLow)
 }
-function highToLow(a, b) {
+function highToLow(a: Roll, b: Roll) {
   if (a.roll === b.roll) {
     return 0
   }

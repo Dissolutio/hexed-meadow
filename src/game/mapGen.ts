@@ -1,36 +1,13 @@
-import { GridGenerator, Hex } from 'react-hexgrid'
-import { gameUnits } from './startingUnits'
+import { BoardHexes, GameMap, GameUnits, StartZones } from './types'
+import { generateHexagon } from './hexGen'
 
-export interface BoardHex {
-  id: string
-  q: number
-  r: number
-  s: number
-  occupyingUnitID: string
-  terrain: string
-  altitude: number
-}
-export interface BoardHexes {
-  [key: string]: BoardHex
-}
-export interface StartZones {
-  [key: string]: string[]
-}
-export type HexMap = {
-  mapShape: string
-  mapSize: number
-  hexGridLayout: string
-  hexHeight: number
-  hexWidth: number
-}
-export const BoardHexTerrains = {
-  grass: 'grass',
-}
 export function makeHexagonShapedMap(
   mapSize: number,
   isDevMode: boolean,
+  gameUnits: GameUnits,
+  // flat-top, or pointy-top hexes
   flat: boolean = false
-) {
+): GameMap {
   const flatDimensions = {
     hexGridLayout: 'flat',
     hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
@@ -47,28 +24,27 @@ export function makeHexagonShapedMap(
     mapShape: 'hexagon',
     mapSize,
   }
-  const startZones: StartZones = hexagonStartZones(
+  const startZones: StartZones = startZonesNoUnits(
     generateHexagon(mapSize),
     mapSize
   )
-  const devStartZones: StartZones = hexagonStartZones(
+  const devStartZones: StartZones = startZonesNoUnits(
     generateHexagon(mapSize),
     mapSize
   )
   const boardHexes: BoardHexes = generateHexagon(mapSize)
-  const devBoardHexes: BoardHexes = withPrePlaceUnits(
+  const devBoardHexes: BoardHexes = startZonesWithUnits(
     generateHexagon(mapSize),
-    devStartZones
+    devStartZones,
+    gameUnits
   )
-
   return {
     boardHexes: isDevMode ? devBoardHexes : boardHexes,
     startZones: isDevMode ? devStartZones : startZones,
     hexMap,
   }
 }
-
-function hexagonStartZones(
+function startZonesNoUnits(
   boardHexes: BoardHexes,
   mapSize: number
 ): StartZones {
@@ -84,7 +60,11 @@ function hexagonStartZones(
     '1': P1StartZone,
   }
 }
-function withPrePlaceUnits(hexes: BoardHexes, zones: StartZones): BoardHexes {
+function startZonesWithUnits(
+  hexes: BoardHexes,
+  zones: StartZones,
+  gameUnits: GameUnits
+): BoardHexes {
   const allUnits = Object.values(gameUnits)
   allUnits.forEach((unit) => {
     const { playerID } = unit
@@ -100,49 +80,3 @@ function withPrePlaceUnits(hexes: BoardHexes, zones: StartZones): BoardHexes {
   })
   return hexes
 }
-// HEX DATA
-export const makeHexID = (hex: Hex) => {
-  return `${hex.q},${hex.r},${hex.s}`
-}
-const fillHexInfo = (prev: BoardHexes, curr: Hex): BoardHexes => {
-  const boardHex = {
-    ...curr,
-    id: makeHexID(curr),
-    occupyingUnitID: '',
-    terrain: 'grass',
-    altitude: 1,
-  }
-  return {
-    ...prev,
-    [boardHex.id]: boardHex,
-  }
-}
-function convertHexgridHexesToBoardHexes(hexgridHexes: Hex[]) {
-  return hexgridHexes.reduce(fillHexInfo, {})
-}
-// REACT-HEXGRID GENERATORS
-function generateHexagon(mapSize): BoardHexes {
-  const hexgridHexes = GridGenerator.hexagon(mapSize)
-  const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
-  return boardHexes
-}
-// function generateOrientedRectangle(mapSize: number): BoardHexes {
-//   const hexgridHexes = GridGenerator.orientedRectangle(mapSize, mapSize)
-//   const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
-//   return boardHexes
-// }
-// function generateRectangle(mapSize: number): BoardHexes {
-//   const hexgridHexes = GridGenerator.rectangle(mapSize + 1, mapSize + 1)
-//   const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
-//   return boardHexes
-// }
-// function generateParallelogram(mapSize: number): BoardHexes {
-//   const hexgridHexes = GridGenerator.parallelogram(
-//     -mapSize - 2,
-//     mapSize + 2,
-//     -mapSize,
-//     mapSize
-//   )
-//   const boardHexes = convertHexgridHexesToBoardHexes(hexgridHexes)
-//   return boardHexes
-// }

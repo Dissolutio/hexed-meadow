@@ -6,13 +6,9 @@ import React, {
 } from 'react'
 import { HexUtils } from 'react-hexgrid'
 
-import {
-  GameArmyCard,
-  GameUnit,
-  generateBlankMoveRange,
-} from 'game/startingUnits'
+import { BoardHex, GameArmyCard, GameUnit } from 'game/types'
 import { selectHexForUnit, selectRevealedGameCard } from 'game/selectors'
-import { BoardHex } from 'game/mapGen'
+import { generateBlankMoveRange } from 'game/constants'
 import { usePlayerID, useMoves, useG, useCtx, useUIContext } from 'ui/hooks'
 
 const PlayContext = createContext<Partial<PlayContextValue>>({})
