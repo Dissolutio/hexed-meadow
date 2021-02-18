@@ -11,7 +11,7 @@ import {
   PlacementContextProvider,
   PlayContextProvider,
 } from 'ui/hooks'
-import { Layout, AppNavbar } from 'ui/layout'
+import { Layout, HeaderNav } from 'ui/layout'
 import { BottomConsole } from 'ui/controls'
 import { MapDisplay } from 'ui/hexmap'
 import { theme } from './theme'
@@ -35,7 +35,7 @@ export const Board: React.FunctionComponent<BoardProps> = ({
                   <PlacementContextProvider>
                     <PlayContextProvider>
                       <Layout>
-                        <AppNavbar />
+                        <HeaderNav />
                         <MapDisplay />
                         <BottomConsole />
                       </Layout>

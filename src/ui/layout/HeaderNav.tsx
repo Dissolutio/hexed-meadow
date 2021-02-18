@@ -8,12 +8,12 @@ import { usePlayerID } from 'ui/hooks'
 import beesBigLogo from 'assets/beesBigLogo.png'
 import butterfliesLogo from 'assets/butterfliesLogo.png'
 
-export const AppNavbar = () => {
+export const HeaderNav = () => {
   const { playerID } = usePlayerID()
   const opponentPlayerID = playerID === '0' ? '1' : '0'
   const isProductionApp = process.env.NODE_ENV === 'production'
   return (
-    <StyledTopConsole collapseOnSelect expand="lg">
+    <StyledNavbar collapseOnSelect expand="lg">
       <Navbar.Brand
         href={
           isProductionApp
@@ -45,13 +45,11 @@ export const AppNavbar = () => {
           </Nav.Link>
         </Nav>
       </Navbar.Collapse>
-    </StyledTopConsole>
+    </StyledNavbar>
   )
 }
 
-// const _StyledTopConsole = ({ playerID, ...rest }) => <Navbar {...rest} />
-
-const StyledTopConsole = styled(Navbar)`
+const StyledNavbar = styled(Navbar)`
   background-color: var(--black);
   padding: 4px 16px 0px 16px;
   z-index: 10;
