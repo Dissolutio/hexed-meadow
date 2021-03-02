@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useG, useCtx } from 'ui/hooks'
+import { useG, useCtx } from 'ui/contexts'
 
 export const TurnCounter = () => {
   const { G } = useG()

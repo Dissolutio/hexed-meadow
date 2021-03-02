@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { usePlayerID, useMoves, useG } from 'ui/hooks'
+import { usePlayerID, useMoves, useG } from 'ui/contexts'
 import { ArmyListStyle } from 'ui/layout'
 
 export const PlaceOrderMarkersControls = () => {

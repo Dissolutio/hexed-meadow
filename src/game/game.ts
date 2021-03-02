@@ -5,7 +5,7 @@ import {
   calcUnitMoveRange,
   selectUnitsForCard,
   selectUnrevealedGameCard,
-} from './selectors'
+} from './g-selectors'
 import {
   phaseNames,
   stageNames,
@@ -18,13 +18,14 @@ import {
 import { GameState, OrderMarker, GameUnit } from './types'
 import { moves } from './moves'
 import { rollD20Initiative } from './rollInitiative'
-import { hexagonMapScenario, testScenario } from './test'
+import { hexagonMapScenario, testScenario } from './setup'
 
 export const HexedMeadow = {
   name: 'HexedMeadow',
   setup: (_ctx) => {
-    // return hexagonMapScenario()
-    return testScenario()
+    // Setup returns G - the initial bgio game state
+    return hexagonMapScenario
+    // return testScenario
   },
   moves,
   seed: 'random_string',

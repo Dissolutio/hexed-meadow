@@ -49,7 +49,7 @@ export function generateBlankPlayersOrderMarkers(): PlayerOrderMarkers {
   }
 }
 
-export const generateHexID = (hex: Hex) => {
+export function generateHexID(hex: Hex) {
   return `${hex.q},${hex.r},${hex.s}`
 }
 export function generateBlankMoveRange(): MoveRange {

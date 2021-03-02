@@ -9,10 +9,10 @@ import {
   useMapContext,
   usePlacementContext,
   usePlayContext,
-} from 'ui/hooks'
-import { UnitIcon } from 'ui/icons/UnitIcon'
+} from 'ui/contexts'
+import { UnitIcon } from 'ui/unit-icons/UnitIcon'
 import { generateBlankMoveRange } from 'game/constants'
-import { selectHexForUnit, selectGameCardByID } from 'game/selectors'
+import { selectHexForUnit, selectGameCardByID } from 'game/g-selectors'
 import { BoardHex } from 'game/types'
 
 type MapHexesProps = {

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import styled from 'styled-components'
-import { useG } from 'ui/hooks'
+import { useG } from 'ui/contexts'
 import {
   ReactHexgrid,
   MapHexStyles,

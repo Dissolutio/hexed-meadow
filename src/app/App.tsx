@@ -1,31 +1,40 @@
 import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
-import { Client, Lobby as BgioLobby } from 'boardgame.io/react'
+import { Client } from 'boardgame.io/react'
 import { Local, SocketIO } from 'boardgame.io/multiplayer'
 
 import { HexedMeadow } from 'game/game'
 import { Board } from './Board'
 import { PageRoutes } from './PageRoutes'
+import { Lobby } from './Lobby'
 
+//! LOCAL APP with NO SERVER
+// `npm run start`
+// local multiplayer, no server, no lobby
 const isDev = process.env.NODE_ENV === 'development'
-const withSeperateServer = Boolean(process.env.REACT_APP_WITH_SEPARATE_SERVER)
+
+//! APP with LOCAL SERVER
+// `npm run devstart` + `npm run devserver`
+// lobby & client that connect to the node server in ~/devserver.js
+const withSeparateServer = Boolean(process.env.REACT_APP_WITH_SEPARATE_SERVER)
+
+//! APP for PRODUCTION SERVER
+// `npm run build`
+// lobby & client as static asset for node server in ~/server.js
 const isProduction = process.env.NODE_ENV === 'production'
 
 export const App = () => {
+  const importedGames = [{ game: HexedMeadow, board: Board }]
   const { protocol, hostname, port } = window.location
   const serverAddress = isProduction
     ? `${protocol}//${hostname}:${port}`
     : `http://localhost:8000`
-  const importedGames = [{ game: HexedMeadow, board: Board }]
   return (
     <BrowserRouter>
-      {/* DEV - local multiplayer, no server, no lobby */}
-      {isDev && !withSeperateServer && <DevApp />}
-      {/* SEPARATE - lobby & client that connect to the node server in ~/devserver.js */}
-      {isDev && withSeperateServer && (
+      {isDev && !withSeparateServer && <LocalApp />}
+      {isDev && withSeparateServer && (
         <Lobby serverAddress={serverAddress} importedGames={importedGames} />
       )}
-      {/* PROD - lobby & client for build and deployment as static asset for node server in ~/server.js */}
       {isProduction && (
         <Lobby serverAddress={serverAddress} importedGames={importedGames} />
       )}
@@ -33,30 +42,12 @@ export const App = () => {
   )
 }
 
-const DevApp = () => {
+const LocalApp = () => {
   return (
     <Switch>
       <Route exact path="/">
         <GameClient matchID="matchID" playerID={'0'} />
         <GameClient matchID="matchID" playerID={'1'} />
-      </Route>
-      <PageRoutes />
-    </Switch>
-  )
-}
-
-const Lobby = ({ serverAddress, importedGames }) => {
-  return (
-    <Switch>
-      <Route exact path="/">
-        <div>
-          <h1>Hexed Meadow</h1>
-          <BgioLobby
-            gameServer={serverAddress}
-            lobbyServer={serverAddress}
-            gameComponents={importedGames}
-          />
-        </div>
       </Route>
       <PageRoutes />
     </Switch>
@@ -69,7 +60,7 @@ const clientOpts = {
   board: Board,
   multiplayer: isProduction
     ? SocketIO({ server: `https://${window.location.hostname}` })
-    : withSeperateServer
+    : withSeparateServer
     ? SocketIO({ server: 'http://localhost:8000' })
     : Local(),
   debug: false,

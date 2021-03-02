@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 
-import { usePlayerID } from 'ui/hooks'
+import { usePlayerID } from 'ui/contexts'
 import beesBigLogo from 'assets/beesBigLogo.png'
 import butterfliesLogo from 'assets/butterfliesLogo.png'
 

@@ -5,8 +5,8 @@ import {
   useG,
   useUIContext,
   usePlacementContext,
-} from 'ui/hooks'
-import { CardUnitIcon } from 'ui/icons'
+} from 'ui/contexts'
+import { CardUnitIcon } from 'ui/unit-icons'
 import { ArmyListStyle } from 'ui/layout'
 
 export const PlacementControls = () => {

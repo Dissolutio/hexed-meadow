@@ -1,6 +1,5 @@
 import React from 'react'
-import { usePlayerID } from 'ui/hooks/bgio-context'
-import { useCtx } from 'ui/hooks/bgio-context'
+import { usePlayerID, useCtx } from 'ui/contexts'
 import {
   RopIdleControls,
   RopMoveControls,

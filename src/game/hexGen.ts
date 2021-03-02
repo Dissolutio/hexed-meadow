@@ -2,7 +2,14 @@ import { GridGenerator, Hex } from 'react-hexgrid'
 import { BoardHexes } from './types'
 import { generateHexID } from './constants'
 
-const hexesToBoardHexes = (hexgridHexes: Hex[]) => {
+// REACT-HEXGRID GENERATORS
+export const generateHexagon = (mapSize: number): BoardHexes => {
+  const hexgridHexes = GridGenerator.hexagon(mapSize)
+  const boardHexes = hexesToBoardHexes(hexgridHexes)
+  return boardHexes
+}
+
+function hexesToBoardHexes(hexgridHexes: Hex[]): BoardHexes {
   return hexgridHexes.reduce((prev: BoardHexes, curr: Hex): BoardHexes => {
     const boardHex = {
       ...curr,
@@ -15,12 +22,6 @@ const hexesToBoardHexes = (hexgridHexes: Hex[]) => {
       [boardHex.id]: boardHex,
     }
   }, {})
-}
-// REACT-HEXGRID GENERATORS
-export function generateHexagon(mapSize: number): BoardHexes {
-  const hexgridHexes = GridGenerator.hexagon(mapSize)
-  const boardHexes = hexesToBoardHexes(hexgridHexes)
-  return boardHexes
 }
 
 //TODO -- generate other maps -- WIP

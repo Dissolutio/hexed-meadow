@@ -1,60 +1,56 @@
 import { hexedMeadowCards } from './cards'
 import {
   ArmyCard,
+  BaseGameOptions,
+  DevGameOptions,
   GameArmyCard,
-  MapOptions,
-  OrderMarkers,
+  GameState,
+  GameUnits,
   PlayersState,
-  PlayerStateToggle,
 } from './types'
-import { armyCardsToGameUnits } from './functions'
+// import { armyCardsToGameUnits } from './functions'
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
+import { unregister } from 'serviceWorker'
 
-const playersStateWithPrePlacedOMs: PlayersState = {
-  '0': {
-    orderMarkers: {
-      '0': 'p0_hm101',
-      '1': 'p0_hm101',
-      '2': 'p0_hm101',
-      X: 'p0_hm101',
+export const hexagonMapScenario = makeHexagonMapScenario({
+  placementReady: { '0': true, '1': true },
+  orderMarkersReady: { '0': true, '1': true },
+  roundOfPlayStartReady: { '0': true, '1': true },
+  withPrePlacedUnits: true,
+  players: playersStateWithPrePlacedOMs(),
+})
+
+export const testScenario = makeTestScenario({
+  mapSize: 2,
+  withPrePlacedUnits: false,
+})
+
+function playersStateWithPrePlacedOMs(): PlayersState {
+  return {
+    '0': {
+      orderMarkers: {
+        '0': 'p0_hm101',
+        '1': 'p0_hm101',
+        '2': 'p0_hm101',
+        X: 'p0_hm101',
+      },
     },
-  },
-  '1': {
-    orderMarkers: {
-      '0': 'p1_hm201',
-      '1': 'p1_hm201',
-      '2': 'p1_hm201',
-      X: 'p1_hm201',
+    '1': {
+      orderMarkers: {
+        '0': 'p1_hm201',
+        '1': 'p1_hm201',
+        '2': 'p1_hm201',
+        X: 'p1_hm201',
+      },
     },
-  },
-}
-type DevGameOptions = BaseGameOptions &
-  MapOptions & {
-    withPrePlacedUnits?: boolean
   }
-type BaseGameOptions =
-  | {
-      placementReady?: PlayerStateToggle
-      orderMarkersReady?: PlayerStateToggle
-      roundOfPlayStartReady?: PlayerStateToggle
-      currentRound?: number
-      currentOrderMarker?: number
-      orderMarkers?: OrderMarkers
-      initiative?: string[]
-      unitsMoved?: string[]
-      unitsAttacked?: string[]
-      players?: PlayersState
-    }
-  | undefined
+}
 
-// placementReady: { '0': true, '1': true },
-// orderMarkersReady: { '0': true, '1': true },
-// roundOfPlayStartReady: { '0': true, '1': true },
-const generateBaseGameState = (devOptions?: BaseGameOptions) => {
+function generateBaseGameState(devOptions?: BaseGameOptions) {
   const defaultDevOptions = {
     withPrePlacedUnits: false,
     placementReady: { '0': false, '1': false },
@@ -75,8 +71,8 @@ const generateBaseGameState = (devOptions?: BaseGameOptions) => {
   }
 }
 
-// FOR HEXAGON MAP SCENARIO
-export const hexagonMapScenario = (devOptions?: DevGameOptions) => {
+//!! FOR HEXAGON MAP SCENARIO
+function makeHexagonMapScenario(devOptions?: DevGameOptions): GameState {
   // GET CORE CARDS
   const hexedMeadowCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
   // MAKE CARDS TO GAMECARDS
@@ -101,13 +97,7 @@ export const hexagonMapScenario = (devOptions?: DevGameOptions) => {
 }
 
 //!! TEST SCENARIO
-export const testScenario = () =>
-  makeTestScenario({
-    mapSize: 2,
-    withPrePlacedUnits: false,
-  })
-// !!...and how its made
-const makeTestScenario = (devOptions?: DevGameOptions) => {
+function makeTestScenario(devOptions?: DevGameOptions): GameState {
   const { withPrePlacedUnits, mapSize } = devOptions
   // GET CORE CARDS
   const hexedMeadowCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
@@ -115,7 +105,7 @@ const makeTestScenario = (devOptions?: DevGameOptions) => {
   const armyCards: GameArmyCard[] = hexedMeadowCardsArr
     // filters for only hm101 and hm201 (3 figure common squads)
     .filter((c) => c.cardID.endsWith('01'))
-    //finally return gamecards
+    //todo this needs be different for this scenario
     .map(fillGameCardInfo)
 
   // MAKE GAMECARDS TO GAMEUNITS
@@ -135,11 +125,11 @@ const makeTestScenario = (devOptions?: DevGameOptions) => {
     startZones: hexagonMap.startZones,
   }
 }
-
+//!! sorts cards bees'n'butterflies to players '0' and '1'
 function fillGameCardInfo(card: GameArmyCard): GameArmyCard {
   const isCardABee = card.race === 'bee'
-  // give bees to player-0 and butterflies to player-1
-  const playerID = isCardABee ? '0' : '1'
+  const isCardAButterfly = card.race === 'butterfly'
+  const playerID = isCardABee ? '0' : isCardAButterfly ? '1' : ''
   const gameCardID = `p${playerID}_${card.cardID}`
   return {
     ...card,
@@ -147,4 +137,38 @@ function fillGameCardInfo(card: GameArmyCard): GameArmyCard {
     cardQuantity: 1,
     gameCardID,
   }
+}
+
+//!! cards to units, but needs flexibility
+export function armyCardsToGameUnits(cards: GameArmyCard[]): GameUnits {
+  // id factory
+  let unitID = 0
+  function makeUnitID(playerID: string) {
+    return `u${unitID++}-p${playerID}`
+  }
+  return cards.reduce((result, card) => {
+    // CARD => FIGURES
+    const numFigures = card.figures * card.cardQuantity
+    const figuresArr = Array.apply({}, Array(numFigures))
+    // FIGURES => UNITS
+    const unitsFromCard = figuresArr.reduce((unitsResult) => {
+      const unitID = makeUnitID(card.playerID)
+      const newGameUnit = {
+        unitID,
+        cardID: card.cardID,
+        playerID: card.playerID,
+        gameCardID: card.gameCardID,
+        movePoints: 0,
+        moveRange: { safe: [], engage: [], disengage: [], denied: [] },
+      }
+      return {
+        ...unitsResult,
+        [unitID]: newGameUnit,
+      }
+    }, {})
+    return {
+      ...result,
+      ...unitsFromCard,
+    }
+  }, {})
 }

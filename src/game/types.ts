@@ -100,6 +100,26 @@ export type OrderMarkers = {
   [playerID: string]: OrderMarker[]
 }
 
+export type DevGameOptions = BaseGameOptions &
+  MapOptions & {
+    withPrePlacedUnits?: boolean
+  }
+
+export type BaseGameOptions =
+  | {
+      placementReady?: PlayerStateToggle
+      orderMarkersReady?: PlayerStateToggle
+      roundOfPlayStartReady?: PlayerStateToggle
+      currentRound?: number
+      currentOrderMarker?: number
+      orderMarkers?: OrderMarkers
+      initiative?: string[]
+      unitsMoved?: string[]
+      unitsAttacked?: string[]
+      players?: PlayersState
+    }
+  | undefined
+
 export type MapOptions = {
   gameUnits?: GameUnits | undefined
   mapSize?: number

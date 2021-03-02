@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { usePlayerID } from 'ui/hooks'
+import { usePlayerID } from 'ui/contexts'
 import { playerColorUrlEncoded } from 'app/theme'
 import { contourLinesBG } from 'assets/contourLinesBG'
 

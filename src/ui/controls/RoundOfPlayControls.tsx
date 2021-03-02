@@ -6,7 +6,7 @@ import {
 } from 'react-icons/hi'
 import Button from 'react-bootstrap/esm/Button'
 
-import { useMoves, useG, usePlayContext } from 'ui/hooks'
+import { useMoves, useG, usePlayContext } from 'ui/contexts'
 import { RopArmyCardsList } from './RopArmyCardsList'
 
 export const RopIdleControls = () => {

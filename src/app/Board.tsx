@@ -10,7 +10,7 @@ import {
   UIContextProvider,
   PlacementContextProvider,
   PlayContextProvider,
-} from 'ui/hooks'
+} from 'ui/contexts'
 import { Layout, HeaderNav } from 'ui/layout'
 import { BottomConsole } from 'ui/controls'
 import { MapDisplay } from 'ui/hexmap'

@@ -7,7 +7,7 @@ import {
   calcUnitMoveRange,
   selectUnitsForCard,
   selectUnrevealedGameCard,
-} from './selectors'
+} from './g-selectors'
 import { GameState, BoardHexes, BoardHex, GameUnits, GameUnit } from './types'
 import { stageNames } from './constants'
 

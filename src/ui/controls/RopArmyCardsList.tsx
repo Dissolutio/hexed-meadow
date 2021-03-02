@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { GameArmyCard } from 'game/types'
-import { useG, usePlayerID, useUIContext, usePlayContext } from 'ui/hooks'
-import { UnitIcon } from 'ui/icons'
+import { useG, usePlayerID, useUIContext, usePlayContext } from 'ui/contexts'
+import { UnitIcon } from 'ui/unit-icons'
 import { hexagonsHeroPatternDataUrl } from 'assets/hexagonsHeroPatternDataUrl'
 
 export const RopArmyCardsList = () => {
