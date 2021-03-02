@@ -1,13 +1,13 @@
-import { BoardHexes, GameMap, GameUnits, StartZones } from './types'
+import { BoardHexes, GameMap, GameUnits, MapOptions, StartZones } from './types'
 import { generateHexagon } from './hexGen'
 
-export function makeHexagonShapedMap(
-  mapSize: number,
-  isDevMode: boolean,
-  gameUnits: GameUnits,
-  // flat-top, or pointy-top hexes
-  flat: boolean = false
-): GameMap {
+export function makeHexagonShapedMap(mapOptions?: MapOptions): GameMap {
+  const {
+    mapSize = 3,
+    withPrePlacedUnits = false,
+    gameUnits,
+    flat = false,
+  } = mapOptions
   const flatDimensions = {
     hexGridLayout: 'flat',
     hexHeight: Math.round(Math.sqrt(3) * 100) / 100,
@@ -33,14 +33,14 @@ export function makeHexagonShapedMap(
     mapSize
   )
   const boardHexes: BoardHexes = generateHexagon(mapSize)
-  const devBoardHexes: BoardHexes = startZonesWithUnits(
+  let devBoardHexes: BoardHexes = startZonesWithUnits(
     generateHexagon(mapSize),
     devStartZones,
     gameUnits
   )
   return {
-    boardHexes: isDevMode ? devBoardHexes : boardHexes,
-    startZones: isDevMode ? devStartZones : startZones,
+    boardHexes: withPrePlacedUnits ? devBoardHexes : boardHexes,
+    startZones: withPrePlacedUnits ? devStartZones : startZones,
     hexMap,
   }
 }
@@ -60,13 +60,14 @@ function startZonesNoUnits(
     '1': P1StartZone,
   }
 }
+// ! this function mutates input 'zones'
 function startZonesWithUnits(
   hexes: BoardHexes,
   zones: StartZones,
   gameUnits: GameUnits
 ): BoardHexes {
-  const allUnits = Object.values(gameUnits)
-  allUnits.forEach((unit) => {
+  const gameUnitsArr = Object.values(gameUnits)
+  gameUnitsArr.forEach((unit) => {
     const { playerID } = unit
     let randomHexID: string
     if (playerID === '0') {

@@ -1,5 +1,12 @@
 import { hexedMeadowCards } from './cards'
-import { ArmyCard, GameArmyCard, PlayersState } from './types'
+import {
+  ArmyCard,
+  GameArmyCard,
+  MapOptions,
+  OrderMarkers,
+  PlayersState,
+  PlayerStateToggle,
+} from './types'
 import { armyCardsToGameUnits } from './functions'
 import {
   generateBlankPlayersState,
@@ -7,10 +14,7 @@ import {
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
 
-//! DEV TOGGLES
-const isDevMode = true
-const mapSize = 3
-const devPlayerState: PlayersState = {
+const playersStateWithPrePlacedOMs: PlayersState = {
   '0': {
     orderMarkers: {
       '0': 'p0_hm101',
@@ -28,54 +32,104 @@ const devPlayerState: PlayersState = {
     },
   },
 }
-//!
+type DevGameOptions = BaseGameOptions &
+  MapOptions & {
+    withPrePlacedUnits?: boolean
+  }
+type BaseGameOptions =
+  | {
+      placementReady?: PlayerStateToggle
+      orderMarkersReady?: PlayerStateToggle
+      roundOfPlayStartReady?: PlayerStateToggle
+      currentRound?: number
+      currentOrderMarker?: number
+      orderMarkers?: OrderMarkers
+      initiative?: string[]
+      unitsMoved?: string[]
+      unitsAttacked?: string[]
+      players?: PlayersState
+    }
+  | undefined
 
-const generateBaseGameState = () => {
-  return {
-    placementReady: { '0': isDevMode, '1': isDevMode },
+// placementReady: { '0': true, '1': true },
+// orderMarkersReady: { '0': true, '1': true },
+// roundOfPlayStartReady: { '0': true, '1': true },
+const generateBaseGameState = (devOptions?: BaseGameOptions) => {
+  const defaultDevOptions = {
+    withPrePlacedUnits: false,
+    placementReady: { '0': false, '1': false },
+    orderMarkersReady: { '0': false, '1': false },
+    roundOfPlayStartReady: { '0': false, '1': false },
     currentRound: 0,
     currentOrderMarker: 0,
     orderMarkers: generateBlankOrderMarkers(),
-    orderMarkersReady: { '0': isDevMode, '1': isDevMode },
-    roundOfPlayStartReady: { '0': isDevMode, '1': isDevMode },
-    initiative: [], // play phase turn order
+    initiative: [],
     unitsMoved: [],
     unitsAttacked: [],
-    // secret: {},
+    players: generateBlankPlayersState(),
+  }
+
+  return {
+    ...defaultDevOptions,
+    ...devOptions,
   }
 }
 
 // FOR HEXAGON MAP SCENARIO
-export const hexagonMapScenario = () => {
-  const rawCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
-  const armyCards: GameArmyCard[] = rawCardsArr.map(fillGameCardInfo)
+export const hexagonMapScenario = (devOptions?: DevGameOptions) => {
+  // GET CORE CARDS
+  const hexedMeadowCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
+  // MAKE CARDS TO GAMECARDS
+  const armyCards: GameArmyCard[] = hexedMeadowCardsArr.map(fillGameCardInfo)
+  // MAKE GAMECARDS TO GAMEUNITS
+  // todo this could use some params, so some units can be pre-dead
   const gameUnits = armyCardsToGameUnits(armyCards)
-  const hexagonMap = makeHexagonShapedMap(mapSize, isDevMode, gameUnits)
+  // MAKE MAP
+  const hexagonMap = makeHexagonShapedMap({
+    mapSize: 3,
+    withPrePlacedUnits: true,
+    gameUnits,
+  })
   return {
-    ...generateBaseGameState(),
+    ...generateBaseGameState(devOptions),
     armyCards,
     gameUnits,
-    players: isDevMode ? devPlayerState : generateBlankPlayersState(),
     hexMap: hexagonMap.hexMap,
     boardHexes: hexagonMap.boardHexes,
     startZones: hexagonMap.startZones,
   }
 }
 
-// FOR TEST SCENARIO
-export const testScenario = () => {
-  const rawCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
-  const armyCards: GameArmyCard[] = rawCardsArr
+//!! TEST SCENARIO
+export const testScenario = () =>
+  makeTestScenario({
+    mapSize: 2,
+    withPrePlacedUnits: false,
+  })
+// !!...and how its made
+const makeTestScenario = (devOptions?: DevGameOptions) => {
+  const { withPrePlacedUnits, mapSize } = devOptions
+  // GET CORE CARDS
+  const hexedMeadowCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
+  // MAKE CARDS TO GAMECARDS
+  const armyCards: GameArmyCard[] = hexedMeadowCardsArr
     // filters for only hm101 and hm201 (3 figure common squads)
     .filter((c) => c.cardID.endsWith('01'))
+    //finally return gamecards
     .map(fillGameCardInfo)
+
+  // MAKE GAMECARDS TO GAMEUNITS
   const gameUnits = armyCardsToGameUnits(armyCards)
-  const hexagonMap = makeHexagonShapedMap(mapSize, isDevMode, gameUnits)
+  // MAKE MAP
+  const hexagonMap = makeHexagonShapedMap({
+    mapSize,
+    withPrePlacedUnits,
+    gameUnits,
+  })
   return {
     ...generateBaseGameState(),
     armyCards,
-    gameUnits: armyCardsToGameUnits(armyCards),
-    players: isDevMode ? devPlayerState : generateBlankPlayersState(),
+    gameUnits,
     hexMap: hexagonMap.hexMap,
     boardHexes: hexagonMap.boardHexes,
     startZones: hexagonMap.startZones,
