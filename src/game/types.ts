@@ -32,7 +32,7 @@ export type HexMap = {
   hexHeight: number
   hexWidth: number
 }
-export interface BoardHex {
+export type BoardHex = {
   id: string
   q: number
   r: number
@@ -40,10 +40,10 @@ export interface BoardHex {
   occupyingUnitID: string
   altitude: number
 }
-export interface BoardHexes {
+export type BoardHexes = {
   [key: string]: BoardHex
 }
-export interface StartZones {
+export type StartZones = {
   [key: string]: string[]
 }
 export type ArmyCard = {
@@ -60,7 +60,7 @@ export type ArmyCard = {
   hexes: number
 }
 
-export interface GameArmyCard extends ArmyCard {
+export type GameArmyCard = ArmyCard & {
   playerID: string
   gameCardID: string
   cardQuantity: number
@@ -75,11 +75,11 @@ export type GameUnit = {
   moveRange: MoveRange
 }
 
-export interface GameUnits {
+export type GameUnits = {
   [unitID: string]: GameUnit
 }
 
-type PlayerStateToggle = {
+export type PlayerStateToggle = {
   [playerID: string]: boolean
 }
 
@@ -98,4 +98,12 @@ export type OrderMarker = {
 
 export type OrderMarkers = {
   [playerID: string]: OrderMarker[]
+}
+
+export type MapOptions = {
+  gameUnits?: GameUnits | undefined
+  mapSize?: number
+  withPrePlacedUnits?: boolean
+  // flat-top, or pointy-top hexes
+  flat?: boolean
 }
