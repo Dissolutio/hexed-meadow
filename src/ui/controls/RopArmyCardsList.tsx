@@ -44,7 +44,7 @@ export const RopArmyCardsList = () => {
           isCurrentSelectedCard={isCurrentSelectedCard(card)}
         >
           <UnitIcon
-            cardID={card.cardID}
+            armyCardID={card.armyCardID}
             iconPlayerID={card.playerID}
             iconProps={{
               x: '50',

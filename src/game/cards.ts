@@ -1,7 +1,7 @@
 export const hexedMeadowCards = {
   hm101: {
     name: 'Beesty Boyz',
-    cardID: 'hm101',
+    armyCardID: 'hm101',
     move: 2,
     figures: 3,
     hexes: 1,
@@ -14,7 +14,7 @@ export const hexedMeadowCards = {
   },
   hm102: {
     name: 'B-squad',
-    cardID: 'hm102',
+    armyCardID: 'hm102',
     move: 2,
     figures: 2,
     hexes: 1,
@@ -27,7 +27,7 @@ export const hexedMeadowCards = {
   },
   hm103: {
     name: 'Queen Bae',
-    cardID: 'hm103',
+    armyCardID: 'hm103',
     move: 1,
     figures: 1,
     hexes: 2,
@@ -40,7 +40,7 @@ export const hexedMeadowCards = {
   },
   hm201: {
     name: 'ButterFries',
-    cardID: 'hm201',
+    armyCardID: 'hm201',
     move: 1,
     figures: 3,
     hexes: 1,
@@ -53,7 +53,7 @@ export const hexedMeadowCards = {
   },
   hm202: {
     name: 'Scarwings',
-    cardID: 'hm202',
+    armyCardID: 'hm202',
     move: 1,
     figures: 2,
     hexes: 1,
@@ -66,7 +66,7 @@ export const hexedMeadowCards = {
   },
   hm203: {
     name: 'Monarch',
-    cardID: 'hm203',
+    armyCardID: 'hm203',
     move: 2,
     figures: 1,
     hexes: 2,

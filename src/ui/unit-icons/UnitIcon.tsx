@@ -13,7 +13,7 @@ export const playerIconColors = {
   1: 'var(--butterfly-purple)',
 }
 type UnitIconTypes = {
-  cardID: string
+  armyCardID: string
   iconPlayerID?: string
   hexSize?: number
   iconProps?: {
@@ -22,12 +22,12 @@ type UnitIconTypes = {
   }
 }
 export const UnitIcon: React.FC<UnitIconTypes> = ({
-  cardID,
+  armyCardID,
   hexSize,
   iconProps,
   iconPlayerID,
 }) => {
-  if (!cardID) {
+  if (!armyCardID) {
     return null
   }
 
@@ -44,7 +44,7 @@ export const UnitIcon: React.FC<UnitIconTypes> = ({
     },
   }
 
-  switch (cardID) {
+  switch (armyCardID) {
     case 'hm101':
       return <GiBee {...gameIconProps} />
     case 'hm102':
@@ -65,7 +65,7 @@ export const UnitIcon: React.FC<UnitIconTypes> = ({
 export const CardUnitIcon = ({ unit }) => {
   return (
     <UnitIcon
-      cardID={unit.cardID}
+      armyCardID={unit.armyCardID}
       iconPlayerID={unit.playerID}
       iconProps={{
         x: '50',

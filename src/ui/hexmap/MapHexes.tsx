@@ -179,7 +179,7 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
             {gameUnit && isShowableUnit && (
               <UnitIcon
                 hexSize={hexSize}
-                cardID={gameUnit.cardID}
+                armyCardID={gameUnit.armyCardID}
                 iconPlayerID={gameUnit.playerID}
               />
             )}

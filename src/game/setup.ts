@@ -14,20 +14,6 @@ import {
   generateBlankOrderMarkers,
 } from './constants'
 import { makeHexagonShapedMap } from './mapGen'
-import { unregister } from 'serviceWorker'
-
-export const hexagonMapScenario = makeHexagonMapScenario({
-  placementReady: { '0': true, '1': true },
-  orderMarkersReady: { '0': true, '1': true },
-  roundOfPlayStartReady: { '0': true, '1': true },
-  withPrePlacedUnits: true,
-  players: playersStateWithPrePlacedOMs(),
-})
-
-export const testScenario = makeTestScenario({
-  mapSize: 2,
-  withPrePlacedUnits: false,
-})
 
 function playersStateWithPrePlacedOMs(): PlayersState {
   return {
@@ -71,6 +57,13 @@ function generateBaseGameState(devOptions?: BaseGameOptions) {
   }
 }
 
+export const hexagonMapScenario = makeHexagonMapScenario({
+  placementReady: { '0': true, '1': true },
+  orderMarkersReady: { '0': true, '1': true },
+  roundOfPlayStartReady: { '0': true, '1': true },
+  withPrePlacedUnits: true,
+  players: playersStateWithPrePlacedOMs(),
+})
 //!! FOR HEXAGON MAP SCENARIO
 function makeHexagonMapScenario(devOptions?: DevGameOptions): GameState {
   // GET CORE CARDS
@@ -96,6 +89,11 @@ function makeHexagonMapScenario(devOptions?: DevGameOptions): GameState {
   }
 }
 
+export const testScenario = makeTestScenario({
+  mapSize: 1,
+  withPrePlacedUnits: false,
+})
+
 //!! TEST SCENARIO
 function makeTestScenario(devOptions?: DevGameOptions): GameState {
   const { withPrePlacedUnits, mapSize } = devOptions
@@ -104,17 +102,16 @@ function makeTestScenario(devOptions?: DevGameOptions): GameState {
   // MAKE CARDS TO GAMECARDS
   const armyCards: GameArmyCard[] = hexedMeadowCardsArr
     // filters for only hm101 and hm201 (3 figure common squads)
-    .filter((c) => c.cardID.endsWith('01'))
-    //todo this needs be different for this scenario
+    .filter((c) => c.armyCardID.endsWith('01'))
     .map(fillGameCardInfo)
 
   // MAKE GAMECARDS TO GAMEUNITS
-  const gameUnits = armyCardsToGameUnits(armyCards)
+  const gameUnits = makeTestGameUnits()
   // MAKE MAP
   const hexagonMap = makeHexagonShapedMap({
     mapSize,
     withPrePlacedUnits,
-    gameUnits,
+    gameUnits: makeTestGameUnits(),
   })
   return {
     ...generateBaseGameState(),
@@ -125,17 +122,62 @@ function makeTestScenario(devOptions?: DevGameOptions): GameState {
     startZones: hexagonMap.startZones,
   }
 }
+//! TEST SCENARIO GAMEUNITS
+function makeTestGameUnits() {
+  const testGameUnitTemplate = {
+    movePoints: 0,
+    moveRange: {
+      safe: [],
+      engage: [],
+      disengage: [],
+      denied: [],
+    },
+  }
+  return {
+    p0u0: {
+      ...testGameUnitTemplate,
+      armyCardID: 'hm101',
+      gameCardID: 'p0_hm101',
+      playerID: '0',
+      unitID: 'p0u0',
+    },
+    p0u1: {
+      ...testGameUnitTemplate,
+      armyCardID: 'hm101',
+      gameCardID: 'p0_hm101',
+      playerID: '0',
+      unitID: 'p0u1',
+    },
+    p1u2: {
+      ...testGameUnitTemplate,
+      armyCardID: 'hm201',
+      gameCardID: 'p1_hm201',
+      playerID: '1',
+      unitID: 'p1u2',
+    },
+    p1u3: {
+      ...testGameUnitTemplate,
+      armyCardID: 'hm201',
+      gameCardID: 'p1_hm201',
+      playerID: '1',
+      unitID: 'p1u3',
+    },
+  }
+}
 //!! sorts cards bees'n'butterflies to players '0' and '1'
 function fillGameCardInfo(card: GameArmyCard): GameArmyCard {
   const isCardABee = card.race === 'bee'
   const isCardAButterfly = card.race === 'butterfly'
   const playerID = isCardABee ? '0' : isCardAButterfly ? '1' : ''
-  const gameCardID = `p${playerID}_${card.cardID}`
+  // id factory ...
+  function makeGameCardID() {
+    return `p${playerID}_${card.armyCardID}`
+  }
   return {
     ...card,
     playerID,
     cardQuantity: 1,
-    gameCardID,
+    gameCardID: makeGameCardID(),
   }
 }
 
@@ -144,7 +186,7 @@ export function armyCardsToGameUnits(cards: GameArmyCard[]): GameUnits {
   // id factory
   let unitID = 0
   function makeUnitID(playerID: string) {
-    return `u${unitID++}-p${playerID}`
+    return `p${playerID}u${unitID++}`
   }
   return cards.reduce((result, card) => {
     // CARD => FIGURES
@@ -155,7 +197,7 @@ export function armyCardsToGameUnits(cards: GameArmyCard[]): GameUnits {
       const unitID = makeUnitID(card.playerID)
       const newGameUnit = {
         unitID,
-        cardID: card.cardID,
+        armyCardID: card.armyCardID,
         playerID: card.playerID,
         gameCardID: card.gameCardID,
         movePoints: 0,
