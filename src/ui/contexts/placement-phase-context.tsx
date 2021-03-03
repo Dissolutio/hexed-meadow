@@ -46,7 +46,7 @@ const PlacementContextProvider: React.FC = (props) => {
       .filter((unit: GameUnit) => !myUnitIdsAlreadyOnMap.includes(unit.unitID))
       .map((unit) => {
         const armyCard = myCards.find(
-          (card: ArmyCard) => card.cardID === unit.cardID
+          (card: ArmyCard) => card.armyCardID === unit.armyCardID
         )
         return {
           ...unit,

@@ -65,6 +65,7 @@ export function useG() {
   if (context === undefined) {
     throw new Error('useG must be used within a GProvider')
   }
+  console.log(`🚀G`, context)
   return context
 }
 //🛠️ CTX

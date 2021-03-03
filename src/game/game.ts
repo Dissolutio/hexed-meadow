@@ -24,8 +24,8 @@ export const HexedMeadow = {
   name: 'HexedMeadow',
   setup: (_ctx) => {
     // Setup returns G - the initial bgio game state
-    return hexagonMapScenario
-    // return testScenario
+    // return hexagonMapScenario
+    return testScenario
   },
   moves,
   seed: 'random_string',

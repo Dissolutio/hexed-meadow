@@ -48,7 +48,7 @@ export type StartZones = {
 }
 export type ArmyCard = {
   name: string
-  cardID: string
+  armyCardID: string
   race: string
   life: number
   move: number
@@ -70,7 +70,7 @@ export type GameUnit = {
   unitID: string
   playerID: string
   gameCardID: string
-  cardID: string
+  armyCardID: string
   movePoints: number
   moveRange: MoveRange
 }
