@@ -1,3 +1,8 @@
+import { contourLinesBG } from '../assets/contourLinesBG'
+
+const bgContourLines = (playerID) =>
+  contourLinesBG(playerColorUrlEncoded(playerID), '0.5')
+
 export const colors = {
   gray: '#5d576b',
   grayUrlEncoded: '%235d576b',
@@ -31,4 +36,5 @@ export const theme = {
     '0': colors.beeYellow,
     '1': colors.butterflyPurple,
   },
+  bgContourLines,
 }

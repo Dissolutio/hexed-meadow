@@ -4,11 +4,14 @@ import { usePlayerID } from 'ui/contexts'
 import { playerColorUrlEncoded } from 'app/theme'
 import { contourLinesBG } from 'assets/contourLinesBG'
 
+// This component is where a player's theme is set to their player color
+// ? perhaps this could be move into theme.js, but the playerID will still be dynamic....
+
 export const Layout = ({ children }) => {
   const { playerID } = usePlayerID()
-  const contourLinesBgDataUrlStr = contourLinesBG({
-    color: playerColorUrlEncoded(playerID),
-  })
+  const contourLinesBgDataUrlStr = contourLinesBG(
+    playerColorUrlEncoded(playerID)
+  )
   return (
     <>
       <LayoutContainer
@@ -41,7 +44,8 @@ const LayoutContainer = styled.div<LayoutContainerProps>`
   padding: 0;
   margin: 0;
   color: var(--player-color);
-  background-image: url("${(props) => props.bg}");
+  background-image: url("${(props) =>
+    props.theme.bgContourLines(props.playerID)}");
 `
 const LayoutTop = styled.div`
   width: 100%;
