@@ -28,6 +28,7 @@ vscodeworkspace.code-workspace
 
 hexed-meadow.code-workspace
 
+.history/
 .vscode/settings.json
 
 # tsc compiled files, used by server.js and devserver.js
