@@ -8,7 +8,7 @@ import {
   PlaceOrderMarkersControls,
 } from 'ui/controls'
 
-export const BottomConsole = () => {
+export const Controls = () => {
   const { playerID } = usePlayerID()
   const { ctx } = useCtx()
   const {

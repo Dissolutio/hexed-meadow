@@ -8,7 +8,6 @@ import {
   GameUnits,
   PlayersState,
 } from './types'
-// import { armyCardsToGameUnits } from './functions'
 import {
   generateBlankPlayersState,
   generateBlankOrderMarkers,
@@ -57,6 +56,7 @@ function generateBaseGameState(devOptions?: BaseGameOptions) {
   }
 }
 
+//!! HEXAGON MAP SCENARIO
 export const hexagonMapScenario = makeHexagonMapScenario({
   placementReady: { '0': true, '1': true },
   orderMarkersReady: { '0': true, '1': true },
@@ -64,7 +64,6 @@ export const hexagonMapScenario = makeHexagonMapScenario({
   withPrePlacedUnits: true,
   players: playersStateWithPrePlacedOMs(),
 })
-//!! FOR HEXAGON MAP SCENARIO
 function makeHexagonMapScenario(devOptions?: DevGameOptions): GameState {
   // GET CORE CARDS
   const hexedMeadowCardsArr: ArmyCard[] = Object.values(hexedMeadowCards)
@@ -89,12 +88,11 @@ function makeHexagonMapScenario(devOptions?: DevGameOptions): GameState {
   }
 }
 
+//!! TEST SCENARIO
 export const testScenario = makeTestScenario({
   mapSize: 1,
   withPrePlacedUnits: false,
 })
-
-//!! TEST SCENARIO
 function makeTestScenario(devOptions?: DevGameOptions): GameState {
   const { withPrePlacedUnits, mapSize } = devOptions
   // GET CORE CARDS
@@ -164,7 +162,7 @@ function makeTestGameUnits() {
     },
   }
 }
-//!! sorts cards bees'n'butterflies to players '0' and '1'
+//!! BOTH SCENARIOS: sorts cards bees'n'butterflies to players '0' and '1'
 function fillGameCardInfo(card: GameArmyCard): GameArmyCard {
   const isCardABee = card.race === 'bee'
   const isCardAButterfly = card.race === 'butterfly'

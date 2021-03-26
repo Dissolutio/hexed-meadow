@@ -1,22 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 import { usePlayerID } from 'ui/contexts'
-import { playerColorUrlEncoded } from 'app/theme'
-import { contourLinesBG } from 'assets/contourLinesBG'
 
 // This component is where a player's theme is set to their player color
 // ? perhaps this could be move into theme.js, but the playerID will still be dynamic....
 
 export const Layout = ({ children }) => {
   const { playerID } = usePlayerID()
-  const contourLinesBgDataUrlStr = contourLinesBG(
-    playerColorUrlEncoded(playerID)
-  )
   return (
     <>
       <LayoutContainer
         id={`player${playerID}`} // for linking to this player view (useful in local dev)
-        bg={contourLinesBgDataUrlStr}
         playerID={playerID}
       >
         <LayoutTop>{children[0]}</LayoutTop>
@@ -28,11 +22,10 @@ export const Layout = ({ children }) => {
 }
 type LayoutContainerProps = {
   playerID: string
-  bg: string
 }
 const LayoutContainer = styled.div<LayoutContainerProps>`
 //🛠 SET CSS VARS
-  --player-color:  ${(props) => props.theme.playerColors[props.playerID]};
+  --player-color:  ${(props) => props.theme.playerColor};
   --navbar-height: 46px;
   --navbar-logo-height: 32px;
   
@@ -44,8 +37,7 @@ const LayoutContainer = styled.div<LayoutContainerProps>`
   padding: 0;
   margin: 0;
   color: var(--player-color);
-  background-image: url("${(props) =>
-    props.theme.bgContourLines(props.playerID)}");
+  background-image: url("${(props) => props.theme.bgContourLinesUrl}");
 `
 const LayoutTop = styled.div`
   width: 100%;
