@@ -1,7 +1,5 @@
 import { contourLinesBG } from '../assets/contourLinesBG'
-
-const bgContourLines = (playerID) =>
-  contourLinesBG(playerColorUrlEncoded(playerID), '0.5')
+import { makeHexagonsHeroPatternDataUrl } from 'assets/hexagonsHeroPatternDataUrl'
 
 export const colors = {
   gray: '#5d576b',
@@ -17,24 +15,35 @@ export const colors = {
   beetleBlueUrlEncoded: '%23058ed9',
   hummingbirdGreen: '#75DBCD',
   hummingbirdGreenUrlEncoded: '%2375DBCD',
-  orange: '#E8AA14',
-  orangeUrlEncoded: '%23E8AA14',
+  humansGoldenrod: '#E8AA14',
+  humansGoldenrodUrlEncoded: '%23E8AA14',
+}
+const playerColorsUrlEncoded = {
+  '0': colors.beeYellowUrlEncoded,
+  '1': colors.butterflyPurpleUrlEncoded,
+  '2': colors.waspRedUrlEncoded,
+  '3': colors.beetleBlueUrlEncoded,
+  '4': colors.hummingbirdGreen,
+  '5': colors.humansGoldenrodUrlEncoded,
 }
 
-export const playerColorUrlEncoded = (playerID: string) => {
-  if (playerID === '0') {
-    return colors.beeYellowUrlEncoded
-  }
-  if (playerID === '1') {
-    return colors.butterflyPurpleUrlEncoded
-  }
+const bgContourLines = (playerID: string) =>
+  contourLinesBG(playerColorsUrlEncoded[playerID], '0.1')
+const hexSvgBgUrl = (playerID: string) =>
+  makeHexagonsHeroPatternDataUrl(playerColors[playerID], 0.2)
+
+const playerColors = {
+  '0': colors.beeYellow,
+  '1': colors.butterflyPurple,
 }
 
-export const theme = {
-  colors,
-  playerColors: {
-    '0': colors.beeYellow,
-    '1': colors.butterflyPurple,
-  },
-  bgContourLines,
+export const theme = (playerID: string) => {
+  return {
+    colors,
+    playerColors,
+    playerColor: playerColors[playerID],
+    playerColorUrlEncoded: encodeURIComponent(playerColorsUrlEncoded[playerID]),
+    bgContourLinesUrl: bgContourLines(playerID),
+    hexSvgBgUrl: hexSvgBgUrl(playerID),
+  }
 }

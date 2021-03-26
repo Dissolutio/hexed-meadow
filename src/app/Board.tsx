@@ -12,7 +12,7 @@ import {
   PlayContextProvider,
 } from 'ui/contexts'
 import { Layout, HeaderNav } from 'ui/layout'
-import { BottomConsole } from 'ui/controls'
+import { Controls } from 'ui/controls'
 import { MapDisplay } from 'ui/hexmap'
 import { theme } from './theme'
 
@@ -25,7 +25,7 @@ export const Board: React.FunctionComponent<BoardProps> = ({
   redo,
 }) => {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme(playerID)}>
       <PlayerIDProvider playerID={playerID}>
         <GProvider G={G}>
           <CtxProvider ctx={ctx}>
@@ -37,7 +37,7 @@ export const Board: React.FunctionComponent<BoardProps> = ({
                       <Layout>
                         <HeaderNav />
                         <MapDisplay />
-                        <BottomConsole />
+                        <Controls />
                       </Layout>
                     </PlayContextProvider>
                   </PlacementContextProvider>

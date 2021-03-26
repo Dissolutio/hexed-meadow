@@ -15,6 +15,8 @@ export type GameState = {
   unitsMoved: string[]
   unitsAttacked: string[]
 }
+// for secret state
+// PlayersState keys are playerIDS, players only see their slice of it at G.players
 export type PlayersState = {
   [playerID: string]: {
     orderMarkers: PlayerOrderMarkers

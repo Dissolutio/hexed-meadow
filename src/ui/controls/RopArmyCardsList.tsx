@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { GameArmyCard } from 'game/types'
 import { useG, usePlayerID, useUIContext, usePlayContext } from 'ui/contexts'
 import { UnitIcon } from 'ui/unit-icons'
-import { hexagonsHeroPatternDataUrl } from 'assets/hexagonsHeroPatternDataUrl'
 
 export const RopArmyCardsList = () => {
   const { playerID } = usePlayerID()
@@ -12,7 +11,6 @@ export const RopArmyCardsList = () => {
   const { selectedGameCardID } = useUIContext()
 
   const { currentTurnGameCardID, onSelectCard__turn } = usePlayContext()
-  const hexagonBgDataUrl = hexagonsHeroPatternDataUrl(playerID)
 
   const handleArmyCardClick = (gameCardID: string) => {
     onSelectCard__turn(gameCardID)
@@ -40,7 +38,6 @@ export const RopArmyCardsList = () => {
           onClick={() => handleArmyCardClick(card.gameCardID)}
           id={`mtui-${card.gameCardID}`}
           key={card.gameCardID}
-          bg={hexagonBgDataUrl}
           isCurrentSelectedCard={isCurrentSelectedCard(card)}
         >
           <UnitIcon
@@ -70,7 +67,6 @@ const PlayerCardsStyledUL = styled.ul`
   }
 `
 type PlayerCardStyledLiProps = {
-  bg: string
   isCurrentSelectedCard: boolean
 }
 const PlayerCardStyledLi = styled.li<PlayerCardStyledLiProps>`
@@ -81,7 +77,7 @@ const PlayerCardStyledLi = styled.li<PlayerCardStyledLiProps>`
   color: var(--player-color);
   border: 0.1px solid var(--player-color);
   color: var(--player-color);
-  background-image: url("${(props) => props.bg}");
+  background-image: url("${(props) => props.theme.hexSvgBgUrl}");
   box-shadow: ${(props) =>
     props.isCurrentSelectedCard
       ? `1px 1px 2px var(--white), 1px 1px 2px var(--white) inset`
