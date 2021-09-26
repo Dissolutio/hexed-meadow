@@ -22,7 +22,7 @@ export const RopArmyCardsList = () => {
     const isCurrentTurnCard = (card: GameArmyCard) => {
       return card?.gameCardID === currentTurnGameCardID
     }
-    //🛠 sort active card to top
+    // sort active card to top
     const myActiveCard = myCards.find((card: GameArmyCard) =>
       isCurrentTurnCard(card)
     )

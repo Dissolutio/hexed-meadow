@@ -24,7 +24,7 @@ type LayoutContainerProps = {
   playerID: string
 }
 const LayoutContainer = styled.div<LayoutContainerProps>`
-//🛠 SET CSS VARS
+// SET CSS VARS
   --player-color:  ${(props) => props.theme.playerColor};
   --navbar-height: 46px;
   --navbar-logo-height: 32px;

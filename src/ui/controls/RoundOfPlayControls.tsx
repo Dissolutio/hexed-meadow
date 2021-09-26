@@ -32,7 +32,7 @@ export const RopMoveControls = () => {
   const { unitsMoved, currentOrderMarker } = G
   const { endCurrentMoveStage } = moves
 
-  //🛠 handlers
+  // handlers
   const handleEndMovementClick = () => {
     endCurrentMoveStage()
   }

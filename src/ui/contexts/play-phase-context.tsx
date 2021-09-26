@@ -53,7 +53,7 @@ export const PlayContextProvider = ({ children }) => {
 
   const currentTurnGameCardID =
     G.players?.[playerID]?.orderMarkers?.[G.currentOrderMarker] ?? ''
-  //🛠 EFFECTS
+  // EFFECTS
   useEffect(() => {
     // auto select card on turn begin
     if (isMyTurn) {
@@ -76,7 +76,7 @@ export const PlayContextProvider = ({ children }) => {
     setSelectedGameCardID,
     setSelectedUnitID,
   ])
-  //🛠 COMPUTED
+  // COMPUTED
   const selectedUnit = gameUnits?.[selectedUnitID]
   const revealedGameCard = selectRevealedGameCard(
     orderMarkers,
@@ -93,7 +93,7 @@ export const PlayContextProvider = ({ children }) => {
   const selectedGameCardUnits = Object.values(gameUnits).filter(
     (unit: GameUnit) => unit.gameCardID === selectedGameCardID
   )
-  //🛠 HANDLERS
+  // HANDLERS
   function onSelectCard__turn(gameCardID: string) {
     // deselect if already selected
     if (gameCardID === selectedGameCardID) {
@@ -115,7 +115,7 @@ export const PlayContextProvider = ({ children }) => {
       selectedGameCardID === currentTurnGameCardID
     const isUnitSelected = unitOnHex?.unitID === selectedUnitID
 
-    //🛠 MOVE STAGE
+    // MOVE STAGE
     if (isMyTurn && !isAttackingStage) {
       const moveRange = selectedUnit?.moveRange ?? generateBlankMoveRange()
       const { safe, engage, disengage } = moveRange
@@ -134,7 +134,7 @@ export const PlayContextProvider = ({ children }) => {
         setSelectedUnitID('')
       }
     }
-    //🛠 ATTACK STAGE
+    // ATTACK STAGE
     if (isMyTurn && isAttackingStage) {
       const isEndHexEnemyOccupied =
         isEndHexOccupied && endHexUnitPlayerID !== playerID

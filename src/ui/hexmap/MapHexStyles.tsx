@@ -7,7 +7,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   height: 100%;
   position: relative;
   overflow: scroll;
-  //🛠 Style Map Scrollbars
+  // Style Map Scrollbars
   scrollbar-width: thin;
   scrollbar-color: var(--player-color) var(--black);
   &::-webkit-scrollbar {
@@ -27,12 +27,12 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
   &::-webkit-scrollbar-corner {
     background: var(--black);
   }
-  //🛠 Style Hex Text
+  // Style Hex Text
   .maphex_altitude-text {
     fill: var(--sub-white);
     font-size: ${(props) => `${props.hexSize / 75}rem`};
   }
-  //🛠 All Hex Styles
+  // All Hex Styles
   // highlight all hexes
   svg g polygon {
     stroke: var(--white);
@@ -51,7 +51,7 @@ export const MapHexStyles = styled.div<MapHexStylesProps>`
     }
   }
   //
-  //🛠 Selected Map Hex
+  // Selected Map Hex
   .maphex__selected--active > g polygon {
     stroke: var(--white);
     stroke-width: 0.6;

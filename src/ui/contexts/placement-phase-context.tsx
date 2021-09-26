@@ -35,7 +35,7 @@ const PlacementContextProvider: React.FC = (props) => {
 
   const { boardHexes, gameUnits } = G
   const { placeUnitOnHex } = moves
-  //🛠 STATE
+  // STATE
   const [placementUnits, setPlacementUnits] = useState((): PlacementUnit[] => {
     const myUnitIdsAlreadyOnMap = Object.values(boardHexes)
       .map((bH: BoardHex) => bH.occupyingUnitID)
@@ -62,7 +62,7 @@ const PlacementContextProvider: React.FC = (props) => {
     })
     setPlacementUnits(newState)
   }
-  //🛠 HANDLERS
+  // HANDLERS
   function onClickPlacementUnit(unitID: string) {
     // either deselect unit, or select unit and deselect active hex
     if (unitID === selectedUnitID) {

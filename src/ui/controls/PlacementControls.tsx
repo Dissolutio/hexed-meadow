@@ -32,15 +32,15 @@ export const PlacementControls = () => {
       return {}
     }
   }
-  //🛠 RETURN CONFIRM DONE
+  // RETURN CONFIRM DONE
   if (placementUnits.length === 0 && !isReady) {
     return <ConfirmReady makeReady={makeReady} />
   }
-  //🛠 RETURN WAITING
+  // RETURN WAITING
   if (isReady) {
     return <WaitingForOpponent />
   }
-  //🛠 RETURN PLACEMENT UI
+  // RETURN PLACEMENT UI
   return (
     <ArmyListStyle>
       <h2>Place each unit in your start zone.</h2>

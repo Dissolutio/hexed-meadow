@@ -9,7 +9,7 @@ import {
   GameUnit,
 } from 'game/types'
 
-//🛠️ PLAYERID
+//️ PLAYERID
 type PlayerIDProviderProps = { children: React.ReactNode; playerID: string }
 const PlayerIDContext = React.createContext<
   { playerID: string; belongsToPlayer: (thing: any) => boolean } | undefined
@@ -34,7 +34,7 @@ export function usePlayerID() {
   return context
 }
 
-//🛠️ G
+//️ G
 type GProviderProps = { children: React.ReactNode; G: GameState }
 const GContext = React.createContext<
   | {
@@ -68,7 +68,7 @@ export function useG() {
   console.log(`🚀G`, context)
   return context
 }
-//🛠️ CTX
+//️ CTX
 type CtxProviderProps = {
   children: React.ReactNode
   ctx: BoardProps['ctx']
@@ -121,7 +121,7 @@ export function useCtx() {
   return context
 }
 
-//🛠️ MOVES
+//️ MOVES
 type MovesProviderProps = {
   children: React.ReactNode
   moves: BoardProps['moves']
