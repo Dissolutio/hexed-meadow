@@ -22,7 +22,7 @@ import { hexagonMapScenario, testScenario } from './setup'
 
 export const HexedMeadow = {
   name: 'HexedMeadow',
-  setup: (_ctx) => {
+  setup: (ctx, setupData) => {
     // Setup returns G - the initial bgio game state
     return hexagonMapScenario
     // return testScenario

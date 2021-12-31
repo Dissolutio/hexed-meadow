@@ -36,16 +36,13 @@ export function usePlayerID() {
 
 //️ G
 type GProviderProps = { children: React.ReactNode; G: GameState }
-const GContext = React.createContext<
-  | {
-      G: GameState
-      myCards: GameArmyCard[]
-      myStartZone: string[]
-      myUnits: GameUnit[]
-      myOrderMarkers: PlayerOrderMarkers
-    }
-  | undefined
->(undefined)
+type G = GameState & {
+  myCards: GameArmyCard[]
+  myStartZone: string[]
+  myUnits: GameUnit[]
+  myOrderMarkers: PlayerOrderMarkers
+}
+const GContext = React.createContext<G | undefined>(undefined)
 export function GProvider({ G, children }: GProviderProps) {
   const { playerID, belongsToPlayer } = usePlayerID()
   const myCards: GameArmyCard[] = G.armyCards.filter(belongsToPlayer)
@@ -54,7 +51,7 @@ export function GProvider({ G, children }: GProviderProps) {
   const myOrderMarkers: PlayerOrderMarkers = G.players?.[playerID]?.orderMarkers
   return (
     <GContext.Provider
-      value={{ G, myCards, myStartZone, myUnits, myOrderMarkers }}
+      value={{ ...G, myCards, myStartZone, myUnits, myOrderMarkers }}
     >
       {children}
     </GContext.Provider>
@@ -65,7 +62,6 @@ export function useG() {
   if (context === undefined) {
     throw new Error('useG must be used within a GProvider')
   }
-  console.log(`🚀G`, context)
   return context
 }
 //️ CTX

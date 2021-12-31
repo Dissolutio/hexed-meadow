@@ -28,12 +28,10 @@ type PlacementContextValue = {
 }
 const PlacementContextProvider: React.FC = (props) => {
   const { playerID } = usePlayerID()
-  const { G, myUnits, myCards, myStartZone } = useG()
+  const { boardHexes, gameUnits, myUnits, myCards, myStartZone } = useG()
   const { moves } = useMoves()
   const { setSelectedMapHex } = useMapContext()
   const { selectedUnitID, setSelectedUnitID } = useUIContext()
-
-  const { boardHexes, gameUnits } = G
   const { placeUnitOnHex } = moves
   // STATE
   const [placementUnits, setPlacementUnits] = useState((): PlacementUnit[] => {
@@ -55,7 +53,7 @@ const PlacementContextProvider: React.FC = (props) => {
       })
     return units
   })
-  const activeUnit: GameUnit = G.gameUnits[selectedUnitID]
+  const activeUnit: GameUnit = gameUnits[selectedUnitID]
   const removeUnitFromAvailable = (unit: GameUnit) => {
     const newState = placementUnits.filter((u) => {
       return !(u.unitID === unit.unitID)
