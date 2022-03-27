@@ -11,12 +11,11 @@ import { ArmyListStyle } from 'ui/layout'
 
 export const PlacementControls = () => {
   const { playerID } = usePlayerID()
-  const { G } = useG()
+  const { placementReady } = useG()
   const { moves } = useMoves()
   const { selectedUnitID } = useUIContext()
   const { placementUnits, onClickPlacementUnit } = usePlacementContext()
 
-  const { placementReady } = G
   const { confirmPlacementReady } = moves
   const isReady = placementReady[playerID] === true
   const makeReady = () => {

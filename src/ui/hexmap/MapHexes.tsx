@@ -21,7 +21,7 @@ type MapHexesProps = {
 
 export const MapHexes = ({ hexSize }: MapHexesProps) => {
   const { playerID } = usePlayerID()
-  const { G } = useG()
+  const { boardHexes, armyCards, startZones, gameUnits } = useG()
   const { selectedUnitID } = useUIContext()
   const { selectedMapHex } = useMapContext()
   const { ctx } = useCtx()
@@ -40,7 +40,6 @@ export const MapHexes = ({ hexSize }: MapHexesProps) => {
     isRoundOfPlayPhase,
     isAttackingStage,
   } = ctx
-  const { boardHexes, armyCards, startZones, gameUnits } = G
 
   // computed
   const selectedUnitMoveRange =

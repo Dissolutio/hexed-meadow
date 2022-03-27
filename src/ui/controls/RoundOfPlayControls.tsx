@@ -10,8 +10,7 @@ import { useMoves, useG, usePlayContext } from 'ui/contexts'
 import { RopArmyCardsList } from './RopArmyCardsList'
 
 export const RopIdleControls = () => {
-  const { G } = useG()
-  const { currentOrderMarker } = G
+  const { currentOrderMarker } = useG()
   const { revealedGameCard } = usePlayContext()
   return (
     <>
@@ -25,11 +24,10 @@ export const RopIdleControls = () => {
 }
 
 export const RopMoveControls = () => {
-  const { G } = useG()
+  const { unitsMoved, currentOrderMarker } = useG()
   const { moves, undo, redo } = useMoves()
   const { revealedGameCard } = usePlayContext()
 
-  const { unitsMoved, currentOrderMarker } = G
   const { endCurrentMoveStage } = moves
 
   // handlers
@@ -66,10 +64,9 @@ export const RopMoveControls = () => {
 }
 
 export const RopAttackControls = () => {
-  const { G } = useG()
+  const { unitsAttacked, currentOrderMarker } = useG()
   const { moves } = useMoves()
   const { endCurrentPlayerTurn } = moves
-  const { unitsAttacked, currentOrderMarker } = G
 
   const { revealedGameCard } = usePlayContext()
 

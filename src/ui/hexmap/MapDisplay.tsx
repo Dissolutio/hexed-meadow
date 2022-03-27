@@ -10,8 +10,7 @@ import {
 } from './'
 
 export const MapDisplay = () => {
-  const { G } = useG()
-  const { hexMap } = G
+  const { hexMap } = useG()
   const mapSize = hexMap.mapSize
   const mapRef = useRef()
   const zoomInterval = 100

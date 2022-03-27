@@ -31,7 +31,14 @@ type PlayContextValue = {
 
 export const PlayContextProvider = ({ children }) => {
   const { playerID } = usePlayerID()
-  const { G } = useG()
+  const {
+    boardHexes,
+    armyCards,
+    gameUnits,
+    orderMarkers,
+    currentOrderMarker,
+    players,
+  } = useG()
   const { ctx } = useCtx()
   const { moves } = useMoves()
   const {
@@ -41,18 +48,10 @@ export const PlayContextProvider = ({ children }) => {
     setSelectedGameCardID,
   } = useUIContext()
 
-  const {
-    boardHexes,
-    armyCards,
-    gameUnits,
-    orderMarkers,
-    currentOrderMarker,
-  } = G
   const { currentPlayer, isMyTurn, isAttackingStage } = ctx
   const { moveAction, attackAction } = moves
 
-  const currentTurnGameCardID =
-    G.players?.[playerID]?.orderMarkers?.[G.currentOrderMarker] ?? ''
+  const currentTurnGameCardID = players?.[playerID]?.orderMarkers?.[currentOrderMarker] ?? ''
   // EFFECTS
   useEffect(() => {
     // auto select card on turn begin

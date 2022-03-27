@@ -4,10 +4,9 @@ import { ArmyListStyle } from 'ui/layout'
 
 export const PlaceOrderMarkersControls = () => {
   const { playerID } = usePlayerID()
-  const { G, myCards, myOrderMarkers } = useG()
+  const { currentRound, orderMarkersReady, myCards, myOrderMarkers } = useG()
   const { moves } = useMoves()
 
-  const { currentRound, orderMarkersReady } = G
   const { confirmOrderMarkersReady, placeOrderMarker } = moves
   const [activeMarker, setActiveMarker] = useState('')
   const selectOrderMarker = (orderMarker) => {

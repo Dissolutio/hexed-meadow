@@ -3,11 +3,10 @@ import styled from 'styled-components'
 import { useG, useCtx } from 'ui/contexts'
 
 export const TurnCounter = () => {
-  const { G } = useG()
+  const { currentRound, currentOrderMarker } = useG()
   const { ctx } = useCtx()
 
   const { isPlacementPhase, isOrderMarkerPhase, isRoundOfPlayPhase } = ctx
-  const { currentRound, currentOrderMarker } = G
 
   return (
     <StyledTurnCounter>
