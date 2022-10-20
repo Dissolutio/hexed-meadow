@@ -12,7 +12,7 @@ import {
 export const MapDisplay = () => {
   const { hexMap } = useG()
   const mapSize = hexMap.mapSize
-  const mapRef = useRef()
+  const mapRef = useRef<HTMLDivElement>()
   const zoomInterval = 100
   const [mapState, setMapState] = React.useState(() => ({
     width: 100,
